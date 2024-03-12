@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'Evidencija.dart';
 
 class PocetnaPage extends StatelessWidget {
   final TextEditingController _imeController = TextEditingController();
@@ -113,6 +114,12 @@ class PocetnaPage extends StatelessWidget {
             grad: _gradController.text,
             brojTelefona: _brojTelefonaController.text,
             krvnaGrupa: _krvnaGrupaController.text,
+          );
+
+          // Nakon spremanja podataka, navigirajte na Evidencija stranicu
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => Evidencija()),
           );
         },
         child: Text('Spremi'),

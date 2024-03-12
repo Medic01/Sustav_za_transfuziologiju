@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'pocetna.dart'; // Import PocetnaPage
 
 class RegistracijaPage extends StatefulWidget {
   @override
@@ -46,7 +47,11 @@ class _RegistracijaPageState extends State<RegistracijaPage> {
                       password: _passwordController.text,
                     );
 
-                    // Npr. prikaz poruke o uspješnoj registraciji ili navigacija na početnu stranicu
+                    // Nakon uspješne registracije, navigacija na PocetnaPage
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => PocetnaPage()),
+                    );
                   } catch (e) {
                     // Ako dođe do greške prilikom registracije, rukovanje greškom
                     print('Greška prilikom registracije: $e');
