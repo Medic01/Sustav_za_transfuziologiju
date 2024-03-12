@@ -13,6 +13,12 @@ Future<void> main() async {
   runApp(MyApp());
 }
 
+class AuthenticationRepository {}
+
+class Get {
+  static put(AuthenticationRepository authenticationRepository) {}
+}
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
