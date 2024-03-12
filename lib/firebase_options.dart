@@ -49,6 +49,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '937263915138',
     projectId: 'sustav-za-zavod-za-zdravstvo',
     authDomain: 'sustav-za-zavod-za-zdrav-7c514.firebaseapp.com',
+    databaseURL: 'https://sustav-za-zavod-za-zdravstvo-default-rtdb.firebaseio.com',
     storageBucket: 'sustav-za-zavod-za-zdravstvo.appspot.com',
     measurementId: 'G-S6R9106326',
   );
@@ -58,6 +59,7 @@ class DefaultFirebaseOptions {
     appId: '1:937263915138:android:bf293817852d74a8f2549b',
     messagingSenderId: '937263915138',
     projectId: 'sustav-za-zavod-za-zdravstvo',
+    databaseURL: 'https://sustav-za-zavod-za-zdravstvo-default-rtdb.firebaseio.com',
     storageBucket: 'sustav-za-zavod-za-zdravstvo.appspot.com',
   );
 
@@ -66,6 +68,7 @@ class DefaultFirebaseOptions {
     appId: '1:937263915138:ios:7225fbddeb03fcb0f2549b',
     messagingSenderId: '937263915138',
     projectId: 'sustav-za-zavod-za-zdravstvo',
+    databaseURL: 'https://sustav-za-zavod-za-zdravstvo-default-rtdb.firebaseio.com',
     storageBucket: 'sustav-za-zavod-za-zdravstvo.appspot.com',
     androidClientId: '937263915138-6m05t083i9tde15542iu6tv0rjcds9j7.apps.googleusercontent.com',
     iosClientId: '937263915138-in29gn0uschjefks9idkec58dkgacoe1.apps.googleusercontent.com',
@@ -77,6 +80,7 @@ class DefaultFirebaseOptions {
     appId: '1:937263915138:ios:4206a2b162b3a511f2549b',
     messagingSenderId: '937263915138',
     projectId: 'sustav-za-zavod-za-zdravstvo',
+    databaseURL: 'https://sustav-za-zavod-za-zdravstvo-default-rtdb.firebaseio.com',
     storageBucket: 'sustav-za-zavod-za-zdravstvo.appspot.com',
     androidClientId: '937263915138-6m05t083i9tde15542iu6tv0rjcds9j7.apps.googleusercontent.com',
     iosClientId: '937263915138-9hvh7k1jqkd6ke21na4ir26pj8ch5sdj.apps.googleusercontent.com',
