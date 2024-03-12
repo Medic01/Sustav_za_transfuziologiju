@@ -45,7 +45,7 @@ class _RegistracijaPageState extends State<RegistracijaPage> {
                       email: _emailController.text,
                       password: _passwordController.text,
                     );
-                    // Ako je registracija uspješna, možete dodati dodatne radnje ovdje
+
                     // Npr. prikaz poruke o uspješnoj registraciji ili navigacija na početnu stranicu
                   } catch (e) {
                     // Ako dođe do greške prilikom registracije, rukovanje greškom

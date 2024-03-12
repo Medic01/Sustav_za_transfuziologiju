@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'pocetna.dart'; // Pretpostavljam da postoji stranica PocetnaPage
+import 'pocetna.dart';
 
 class PrijavaPage extends StatefulWidget {
   @override
