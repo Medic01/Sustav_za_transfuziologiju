@@ -3,8 +3,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:sustav_za_transfuziologiju/firebase_options.dart';
 import 'prijava.dart';
 import 'registracija.dart';
+import 'pocetna.dart';
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform)
       .then(
     (FirebaseApp value) => Get.put(AuthenticationRepository()),
