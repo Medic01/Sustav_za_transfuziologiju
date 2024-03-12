@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:sustav_za_transfuziologiju/firebase_options.dart';
-import 'prijava.dart';
-import 'registracija.dart';
+import 'Prijava.dart';
+import 'Registracija.dart';
 import 'pocetna.dart';
 
-Future<void> main() async {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform)
-      .then(
-    (FirebaseApp value) => Get.put(AuthenticationRepository()),
-  );
-
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(MyApp());
 }
 
