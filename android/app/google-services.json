@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "937263915138",
+    "project_id": "sustav-za-zavod-za-zdravstvo",
+    "storage_bucket": "sustav-za-zavod-za-zdravstvo.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:937263915138:android:bf293817852d74a8f2549b",
+        "android_client_info": {
+          "package_name": "com.example.sustav_za_transfuziologiju"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "937263915138-6m05t083i9tde15542iu6tv0rjcds9j7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.sustav_za_transfuziologiju",
+            "certificate_hash": "f7256c2490ba505079f655e6a3daf095ae5f65d2"
+          }
+        },
+        {
+          "client_id": "937263915138-jbpc2595rfaulh9fid6m7mc0pva90mu5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAIOU1C7aQ3lukk_xyquXByAuZ0p8bRCug"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "937263915138-jbpc2595rfaulh9fid6m7mc0pva90mu5.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "937263915138-9hvh7k1jqkd6ke21na4ir26pj8ch5sdj.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.sustavZaTransfuziologiju.RunnerTests"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
