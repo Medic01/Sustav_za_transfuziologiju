@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'pocetna.dart';
+import 'Prva.dart';
 
 class PrijavaPage extends StatefulWidget {
   @override
@@ -49,7 +50,7 @@ class _PrijavaPageState extends State<PrijavaPage> {
                     // Ako je prijava uspješna, navigiramo na početnu stranicu
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => PocetnaPage()),
+                      MaterialPageRoute(builder: (context) => WelcomePage()),
                     );
                   } catch (e) {
                     // Ako dođe do greške prilikom prijave, rukovanje greškom

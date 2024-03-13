@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'Evidencija_dolazaka.dart';
 
 class Evidencija extends StatelessWidget {
   @override
@@ -15,9 +16,23 @@ class Evidencija extends StatelessWidget {
               'Uspješno spremljeno',
               style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
             ),
+            SizedBox(height: 20.0),
+            _buildGoToBloodDonationFormButton(context),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildGoToBloodDonationFormButton(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => BloodDonationForm()),
+        );
+      },
+      child: Text('Idi na stranicu kontrola darivanja krvi'),
     );
   }
 }
