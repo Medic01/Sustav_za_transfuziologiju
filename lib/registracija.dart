@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crypto/crypto.dart';
+import 'package:sustav_za_transfuziologiju/prijava.dart';
 import 'dart:convert';
+
+import 'package:sustav_za_transfuziologiju/user_role.dart';
 
 class RegistracijaPage extends StatefulWidget {
   @override
@@ -12,12 +15,12 @@ class _RegistracijaPageState extends State<RegistracijaPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  @override
-  Widget build(BuildContext context) {
+  Widget build (BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Registracija'),
       ),
+
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
@@ -27,10 +30,12 @@ class _RegistracijaPageState extends State<RegistracijaPage> {
               TextField(
                 controller: _usernameController,
                 decoration: InputDecoration(
-                  labelText: 'Korisničko ime (Email)',
+                  labelText: 'Korisničko ime (Email)'
                 ),
               ),
-              SizedBox(height: 20.0),
+              SizedBox(
+                height: 20.0,
+              ),
               TextField(
                 controller: _passwordController,
                 decoration: InputDecoration(
@@ -38,22 +43,25 @@ class _RegistracijaPageState extends State<RegistracijaPage> {
                 ),
                 obscureText: true,
               ),
-              SizedBox(height: 20.0),
+              SizedBox(
+                height: 20.0,
+              ),
               ElevatedButton(
                 onPressed: () async {
-                  // Provjeri je li korisničko ime (email) i lozinka uneseni
-                  if (_usernameController.text.isNotEmpty && _passwordController.text.isNotEmpty) {
+                  if (_usernameController.text.isNotEmpty || _passwordController.text.isNotEmpty) {
                     try {
-                      // Provjeri je li email već u upotrebi
-                      final existingUser = await FirebaseFirestore.instance.collection('users').where('email', isEqualTo: _usernameController.text).get();
+                      final existingUser = await FirebaseFirestore.instance
+                      .collection('users')
+                      .where('email', isEqualTo: _usernameController.text)
+                      .get();
+
                       if (existingUser.docs.isNotEmpty) {
-                        // Ako email već postoji, prikaži poruku o grešci
                         showDialog(
                           context: context,
-                          builder: (BuildContext context) {
+                          builder: (BuildContext contex) {
                             return AlertDialog(
                               title: Text('Greška'),
-                              content: Text('Korisničko ime (email) već postoji.'),
+                              content: Text('Korisničko ime (Email) već postoji!'),
                               actions: [
                                 TextButton(
                                   onPressed: () {
@@ -63,30 +71,40 @@ class _RegistracijaPageState extends State<RegistracijaPage> {
                                 ),
                               ],
                             );
-                          },
+                          }
                         );
                       } else {
-                        // Hashiraj lozinku
-                        final passwordHash = sha256.convert(utf8.encode(_passwordController.text)).toString();
-                        
-                        // Spremi korisničke podatke u Firestore
+                        final passwordHash = sha256
+                            .convert(utf8.encode(_passwordController.text))
+                            .toString();
                         await FirebaseFirestore.instance.collection('users').doc().set({
                           'email': _usernameController.text,
-                          'lozinka': passwordHash,
-                          'uloga': 'korisnik',
+                          'password': passwordHash,
+                          'role': UserRole.USER.toString().split('.').last,
                         });
 
-                        // Nakon uspješne registracije, možemo navigirati korisnika na sljedeću stranicu
-                        // Ovdje bi bila logika za preusmjeravanje na odgovarajuću stranicu, ovisno o ulozi korisnika
+                        //logika preusmjeravanja na drugu stranicu.. na login
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Uspješno ste se registrirali!'),
+                            duration: Duration(seconds: 3),
+                          ),
+                        );
+                        
+                        Future.delayed(Duration(seconds: 1), () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (context) => PrijavaPage()),
+                          );
+                        });
                       }
                     } catch (e) {
-                      // Ako dođe do greške prilikom registracije, rukovanje greškom
-                      print('Greška prilikom registracije: $e');
+                      print("Greška prilikom registracije $e");
                     }
                   } else {
-                    // Ako korisničko ime (email) i lozinka nisu uneseni, prikaži poruku o grešci
                     showDialog(
-                      context: context,
+                      context: context, 
                       builder: (BuildContext context) {
                         return AlertDialog(
                           title: Text('Greška'),
@@ -100,16 +118,17 @@ class _RegistracijaPageState extends State<RegistracijaPage> {
                             ),
                           ],
                         );
-                      },
+                      }
                     );
                   }
                 },
                 child: Text('Registrirajte se'),
-              ),
+                ),
             ],
           ),
         ),
       ),
+
     );
   }
 }

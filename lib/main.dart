@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:sustav_za_transfuziologiju/firebase_options.dart';
-import 'Prijava.dart';
-import 'Registracija.dart';
-import 'pocetna.dart';
+import 'prijava.dart';
+import 'registracija.dart';
+import 'admin_page.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform)
+      .then(
+    (FirebaseApp value) => Get.put(AuthenticationRepository()),
+  );
+
   runApp(MyApp());
 }
 
@@ -36,7 +40,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Dobrodošli u Zavod za Zdravstvo'),
+        title: Text('Dobrodošli u Zavod za Zdravstvo'), 
       ),
       body: Center(
         child: Column(
