@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'Evidencija.dart';
+import 'evidencija.dart';
 
-class PocetnaPage extends StatelessWidget {
+class AdminPage extends StatelessWidget {
   final TextEditingController _imeController = TextEditingController();
   final TextEditingController _prezimeController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
