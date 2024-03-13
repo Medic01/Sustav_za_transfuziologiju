@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'evidencija.dart';
-import 'prva.dart';
+import 'thanks.dart';
+import 'user_page.dart';
 
 class BloodDonationForm extends StatelessWidget {
   final TextEditingController _datumController = TextEditingController();

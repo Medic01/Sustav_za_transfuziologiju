@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'pocetna.dart';
-import 'evidencija_dolazaka.dart';
-import 'korisnikPocetna.dart';
+import 'dataEntry.dart';
+import 'dataOnBloodDonatioControl.dart';
+import 'recordsOfDonations.dart';
 
 class AdminPage extends StatelessWidget {
   @override

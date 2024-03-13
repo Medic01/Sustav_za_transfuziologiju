@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
 import 'package:sustav_za_transfuziologiju/admin_page.dart';
-import 'prva.dart';
+import 'user_page.dart';
 
 class PrijavaPage extends StatefulWidget {
   @override

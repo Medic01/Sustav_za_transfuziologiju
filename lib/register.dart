@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crypto/crypto.dart';
-import 'package:sustav_za_transfuziologiju/prijava.dart';
+import 'package:sustav_za_transfuziologiju/login.dart';
 import 'dart:convert';
 
 import 'package:sustav_za_transfuziologiju/user_role.dart';
@@ -15,12 +15,11 @@ class _RegistracijaPageState extends State<RegistracijaPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  Widget build (BuildContext context) {
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Registracija'),
       ),
-
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
@@ -29,9 +28,8 @@ class _RegistracijaPageState extends State<RegistracijaPage> {
             children: <Widget>[
               TextField(
                 controller: _usernameController,
-                decoration: InputDecoration(
-                  labelText: 'Korisničko ime (Email)'
-                ),
+                decoration:
+                    InputDecoration(labelText: 'Korisničko ime (Email)'),
               ),
               SizedBox(
                 height: 20.0,
@@ -48,36 +46,40 @@ class _RegistracijaPageState extends State<RegistracijaPage> {
               ),
               ElevatedButton(
                 onPressed: () async {
-                  if (_usernameController.text.isNotEmpty || _passwordController.text.isNotEmpty) {
+                  if (_usernameController.text.isNotEmpty ||
+                      _passwordController.text.isNotEmpty) {
                     try {
                       final existingUser = await FirebaseFirestore.instance
-                      .collection('users')
-                      .where('email', isEqualTo: _usernameController.text)
-                      .get();
+                          .collection('users')
+                          .where('email', isEqualTo: _usernameController.text)
+                          .get();
 
                       if (existingUser.docs.isNotEmpty) {
                         showDialog(
-                          context: context,
-                          builder: (BuildContext contex) {
-                            return AlertDialog(
-                              title: Text('Greška'),
-                              content: Text('Korisničko ime (Email) već postoji!'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: Text('OK'),
-                                ),
-                              ],
-                            );
-                          }
-                        );
+                            context: context,
+                            builder: (BuildContext contex) {
+                              return AlertDialog(
+                                title: Text('Greška'),
+                                content:
+                                    Text('Korisničko ime (Email) već postoji!'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Text('OK'),
+                                  ),
+                                ],
+                              );
+                            });
                       } else {
                         final passwordHash = sha256
                             .convert(utf8.encode(_passwordController.text))
                             .toString();
-                        await FirebaseFirestore.instance.collection('users').doc().set({
+                        await FirebaseFirestore.instance
+                            .collection('users')
+                            .doc()
+                            .set({
                           'email': _usernameController.text,
                           'password': passwordHash,
                           'role': UserRole.USER.toString().split('.').last,
@@ -91,11 +93,12 @@ class _RegistracijaPageState extends State<RegistracijaPage> {
                             duration: Duration(seconds: 3),
                           ),
                         );
-                        
+
                         Future.delayed(Duration(seconds: 1), () {
                           Navigator.pushReplacement(
                             context,
-                            MaterialPageRoute(builder: (context) => PrijavaPage()),
+                            MaterialPageRoute(
+                                builder: (context) => PrijavaPage()),
                           );
                         });
                       }
@@ -104,31 +107,30 @@ class _RegistracijaPageState extends State<RegistracijaPage> {
                     }
                   } else {
                     showDialog(
-                      context: context, 
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: Text('Greška'),
-                          content: Text('Unesite korisničko ime (email) i lozinku.'),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: Text('OK'),
-                            ),
-                          ],
-                        );
-                      }
-                    );
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('Greška'),
+                            content: Text(
+                                'Unesite korisničko ime (email) i lozinku.'),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text('OK'),
+                              ),
+                            ],
+                          );
+                        });
                   }
                 },
                 child: Text('Registrirajte se'),
-                ),
+              ),
             ],
           ),
         ),
       ),
-
     );
   }
 }

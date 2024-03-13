@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'korisnikPocetna.dart';
+import 'recordsOfDonations.dart';
 
 class WelcomePage extends StatelessWidget {
   @override

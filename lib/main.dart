@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:sustav_za_transfuziologiju/firebase_options.dart';
-import 'prijava.dart';
-import 'registracija.dart';
+import 'login.dart';
+import 'register.dart';
 import 'admin_page.dart';
 
 Future<void> main() async {
@@ -40,7 +40,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Dobrodošli u Zavod za Zdravstvo'), 
+        title: Text('Dobrodošli u Zavod za Zdravstvo'),
       ),
       body: Center(
         child: Column(
