@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
 import 'package:sustav_za_transfuziologiju/admin_page.dart';
+import 'prva.dart';
 
 class PrijavaPage extends StatefulWidget {
   @override
@@ -63,56 +64,69 @@ class _PrijavaPageState extends State<PrijavaPage> {
                     if (_formKey.currentState!.validate()) {
                       try {
                         // Dohvatite podatke o korisniku iz Firestore-a
-                        final userSnapshot = await FirebaseFirestore.instance.collection('users').where('email', isEqualTo: _emailController.text).get();
-                        
+                        final userSnapshot = await FirebaseFirestore.instance
+                            .collection('users')
+                            .where('email', isEqualTo: _emailController.text)
+                            .get();
+
                         if (userSnapshot.docs.isNotEmpty) {
                           final userData = userSnapshot.docs.first.data();
                           final storedPasswordHash = userData['password'];
-                          
+
                           // Kriptirajte unesenu lozinku prije provjere
-                          final passwordHash = generateHash(_passwordController.text);
-                          
+                          final passwordHash =
+                              generateHash(_passwordController.text);
+
                           // Usporedite kriptirane lozinke
                           if (passwordHash == storedPasswordHash) {
                             final role = userData['role'];
                             if (role == 'ADMIN') {
                               showDialog(
-                                context: context, 
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: Text('Dobrodošao ADMIN!'),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: Text('OK'),
-                                      ),
-                                    ],
-                                  );
-                                }
-                              );
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text('Dobrodošao ADMIN!'),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      WelcomePage()),
+                                            );
+                                          },
+                                          child: Text('OK'),
+                                        ),
+                                      ],
+                                    );
+                                  });
                               Navigator.pushReplacement(
                                 context,
-                                MaterialPageRoute(builder: (context) => AdminPage()),
+                                MaterialPageRoute(
+                                    builder: (context) => AdminPage()),
                               );
                             } else if (role == 'USER') {
                               showDialog(
-                                context: context, 
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: Text('Dobrodošao USER!'),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: Text('OK'),
-                                      ),
-                                    ],
-                                  );
-                                }
-                              );
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text('Dobrodošao USER!'),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      WelcomePage()),
+                                            );
+                                          },
+                                          child: Text('OK'),
+                                        ),
+                                      ],
+                                    );
+                                  });
                               // Ako korisnik nije administrator, odvedemo ga na stranicu običnog korisnika
                               /*Navigator.pushReplacement(
                                 context,
@@ -122,11 +136,12 @@ class _PrijavaPageState extends State<PrijavaPage> {
                             return; // Izlaz iz funkcije nakon uspješne provjere
                           }
                         }
-                        
+
                         // Lozinke se ne podudaraju ili korisnik nije pronađen, prikažite poruku o grešci
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text('Pogrešno korisničko ime ili lozinka.'),
+                            content:
+                                Text('Pogrešno korisničko ime ili lozinka.'),
                             duration: Duration(seconds: 2),
                           ),
                         );
@@ -141,7 +156,6 @@ class _PrijavaPageState extends State<PrijavaPage> {
                       }
                     }
                   },
-
                   child: Text('Prijavi se'),
                 ),
               ],
