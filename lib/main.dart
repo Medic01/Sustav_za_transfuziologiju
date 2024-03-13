@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Zavod za Zdravstvo',
+      title: 'Health Institute',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -40,14 +40,14 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Dobrodošli u Zavod za Zdravstvo'),
+        title: Text('Welcome to Health Institute'),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'Dobrodošli!',
+              'Welcome!',
               style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 20.0),
@@ -55,20 +55,20 @@ class HomePage extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => PrijavaPage()),
+                  MaterialPageRoute(builder: (context) => LoginPage()),
                 );
               },
-              child: Text('Prijavite se'),
+              child: Text('Log In'),
             ),
             SizedBox(height: 10.0),
             TextButton(
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => RegistracijaPage()),
+                  MaterialPageRoute(builder: (context) => RegistrationPage()),
                 );
               },
-              child: Text('Registrirajte se'),
+              child: Text('Register'),
             ),
           ],
         ),

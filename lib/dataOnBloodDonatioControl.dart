@@ -1,45 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'thanks.dart';
+import 'evidence.dart';
 import 'user_page.dart';
 
 class BloodDonationForm extends StatelessWidget {
-  final TextEditingController _datumController = TextEditingController();
-  final TextEditingController _mjestoController = TextEditingController();
-  final TextEditingController _imeLijecnikaController = TextEditingController();
-  final TextEditingController _imeTehnicaraController = TextEditingController();
+  final TextEditingController _dateController = TextEditingController();
+  final TextEditingController _placeController = TextEditingController();
+  final TextEditingController _doctorNameController = TextEditingController();
+  final TextEditingController _technicianNameController =
+      TextEditingController();
   final TextEditingController _hemoglobinController = TextEditingController();
-  final TextEditingController _krvniTlakController = TextEditingController();
-  final TextEditingController _razlogOdbijanjaController =
+  final TextEditingController _bloodPressureController =
+      TextEditingController();
+  final TextEditingController _rejectionReasonController =
       TextEditingController();
 
   void saveDataToFirestore({
-    required String datum,
-    required String mjesto,
-    required String imeLijecnika,
-    required String imeTehnicara,
+    required String date,
+    required String place,
+    required String doctorName,
+    required String technicianName,
     required String hemoglobin,
-    required String krvniTlak,
-    required bool odbijenoDarivanje,
-    required String razlogOdbijanja,
+    required String bloodPressure,
+    required bool donationRejected,
+    required String rejectionReason,
   }) async {
     try {
       FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-      await firestore.collection('evidencija_dolazaka').add({
-        'datum': datum,
-        'mjesto': mjesto,
-        'imeLijecnika': imeLijecnika,
-        'imeTehnicara': imeTehnicara,
+      await firestore.collection('attendance_records').add({
+        'date': date,
+        'place': place,
+        'doctorName': doctorName,
+        'technicianName': technicianName,
         'hemoglobin': hemoglobin,
-        'krvniTlak': krvniTlak,
-        'odbijenoDarivanje': odbijenoDarivanje,
-        'razlogOdbijanja': razlogOdbijanja,
+        'bloodPressure': bloodPressure,
+        'donationRejected': donationRejected,
+        'rejectionReason': rejectionReason,
       });
 
-      print('Podaci su uspješno spremljeni u Firestore.');
+      print('Data successfully saved to Firestore.');
     } catch (error) {
-      print('Greška pri spremanju podataka: $error');
+      print('Error saving data: $error');
     }
   }
 
@@ -47,7 +49,7 @@ class BloodDonationForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Kontrola darivanja krvi'),
+        title: Text('Blood Donation Control'),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(20.0),
@@ -55,27 +57,26 @@ class BloodDonationForm extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(
-              'Popunite podatke o kontroli darivanja krvi:',
+              'Fill in the blood donation control details:',
               style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 20.0),
-            _buildTextField(labelText: 'Datum', controller: _datumController),
-            _buildTextField(labelText: 'Mjesto', controller: _mjestoController),
+            _buildTextField(labelText: 'Date', controller: _dateController),
+            _buildTextField(labelText: 'Place', controller: _placeController),
             _buildTextField(
-                labelText: 'Ime i prezime liječnika',
-                controller: _imeLijecnikaController),
+                labelText: 'Doctor Name', controller: _doctorNameController),
             _buildTextField(
-                labelText: 'Ime i prezime tehničara',
-                controller: _imeTehnicaraController),
+                labelText: 'Technician Name',
+                controller: _technicianNameController),
             _buildTextField(
                 labelText: 'Hemoglobin (g/dL)',
                 controller: _hemoglobinController),
             _buildTextField(
-                labelText: 'Krvni tlak darovatelja',
-                controller: _krvniTlakController),
+                labelText: 'Blood Pressure',
+                controller: _bloodPressureController),
             Row(
               children: [
-                Text('Odbijeno darivanje: '),
+                Text('Donation Rejected: '),
                 Checkbox(
                   value: false,
                   onChanged: null,
@@ -83,8 +84,8 @@ class BloodDonationForm extends StatelessWidget {
               ],
             ),
             _buildTextField(
-                labelText: 'Razlog odbijanja',
-                controller: _razlogOdbijanjaController),
+                labelText: 'Rejection Reason',
+                controller: _rejectionReasonController),
             SizedBox(height: 20.0),
             _buildSaveButton(context),
           ],
@@ -113,24 +114,23 @@ class BloodDonationForm extends StatelessWidget {
       child: ElevatedButton(
         onPressed: () {
           saveDataToFirestore(
-            datum: _datumController.text,
-            mjesto: _mjestoController.text,
-            imeLijecnika: _imeLijecnikaController.text,
-            imeTehnicara: _imeTehnicaraController.text,
+            date: _dateController.text,
+            place: _placeController.text,
+            doctorName: _doctorNameController.text,
+            technicianName: _technicianNameController.text,
             hemoglobin: _hemoglobinController.text,
-            krvniTlak: _krvniTlakController.text,
-            odbijenoDarivanje:
-                false, // Promijenite na true ako je darivanje odbijeno
-            razlogOdbijanja: _razlogOdbijanjaController.text,
+            bloodPressure: _bloodPressureController.text,
+            donationRejected: false, // Change to true if donation is rejected
+            rejectionReason: _rejectionReasonController.text,
           );
 
-          // Nakon spremanja podataka, možete dodati navigaciju na drugu stranicu ovdje
+          // After saving the data, you can add navigation to another page here
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => WelcomePage()),
           );
         },
-        child: Text('Spremi'),
+        child: Text('Save'),
       ),
     );
   }

@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class KorisnikPocetna extends StatelessWidget {
+class UserHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Korisnik Početna'),
+        title: Text('User Home'),
       ),
       body: StreamBuilder(
         stream: FirebaseFirestore.instance
-            .collection('evidencija_dolazaka')
+            .collection('kontrola_darivanja')
             .snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
-            return Text('Došlo je do greške: ${snapshot.error}');
+            return Text('An error occurred: ${snapshot.error}');
           }
 
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -25,20 +25,18 @@ class KorisnikPocetna extends StatelessWidget {
             children: snapshot.data!.docs.map((DocumentSnapshot document) {
               Map<String, dynamic> data =
                   document.data() as Map<String, dynamic>;
-              // Ovdje možete oblikovati kako želite prikazati podatke iz dokumenta
+              // Here you can format how you want to display the data from the document
               return ListTile(
-                title: Text('Datum: ${data['datum']}'),
+                title: Text('Date: ${data['date']}'),
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Mjesto: ${data['mjesto']}'),
-                    Text(
-                        'Ime i prezime liječnika: ${data['ime_prezime_lijecnika']}'),
-                    Text(
-                        'Ime i prezime tehničara: ${data['ime_prezime_tehnicara']}'),
-                    Text('Krvni tlak: ${data['krvni_tlak']}'),
-                    Text('Odbijeno darivanje: ${data['odbijeno_darivanje']}'),
-                    Text('Razlog odbijanja: ${data['razlog_odbijanja']}'),
+                    Text('Location: ${data['location']}'),
+                    Text('Doctor\'s name: ${data['doctor_name']}'),
+                    Text('Technician\'s name: ${data['technician_name']}'),
+                    Text('Blood pressure: ${data['blood_pressure']}'),
+                    Text('Donation rejected: ${data['donation_rejected']}'),
+                    Text('Rejection reason: ${data['rejection_reason']}'),
                   ],
                 ),
               );

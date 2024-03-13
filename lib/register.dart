@@ -6,19 +6,19 @@ import 'dart:convert';
 
 import 'package:sustav_za_transfuziologiju/user_role.dart';
 
-class RegistracijaPage extends StatefulWidget {
+class RegistrationPage extends StatefulWidget {
   @override
-  _RegistracijaPageState createState() => _RegistracijaPageState();
+  _RegistrationPageState createState() => _RegistrationPageState();
 }
 
-class _RegistracijaPageState extends State<RegistracijaPage> {
+class _RegistrationPageState extends State<RegistrationPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Registracija'),
+        title: Text('Registration'),
       ),
       body: Center(
         child: Padding(
@@ -28,8 +28,7 @@ class _RegistracijaPageState extends State<RegistracijaPage> {
             children: <Widget>[
               TextField(
                 controller: _usernameController,
-                decoration:
-                    InputDecoration(labelText: 'Korisničko ime (Email)'),
+                decoration: InputDecoration(labelText: 'Username (Email)'),
               ),
               SizedBox(
                 height: 20.0,
@@ -37,7 +36,7 @@ class _RegistracijaPageState extends State<RegistracijaPage> {
               TextField(
                 controller: _passwordController,
                 decoration: InputDecoration(
-                  labelText: 'Lozinka',
+                  labelText: 'Password',
                 ),
                 obscureText: true,
               ),
@@ -59,9 +58,9 @@ class _RegistracijaPageState extends State<RegistracijaPage> {
                             context: context,
                             builder: (BuildContext contex) {
                               return AlertDialog(
-                                title: Text('Greška'),
+                                title: Text('Error'),
                                 content:
-                                    Text('Korisničko ime (Email) već postoji!'),
+                                    Text('Username (Email) already exists!'),
                                 actions: [
                                   TextButton(
                                     onPressed: () {
@@ -85,11 +84,11 @@ class _RegistracijaPageState extends State<RegistracijaPage> {
                           'role': UserRole.USER.toString().split('.').last,
                         });
 
-                        //logika preusmjeravanja na drugu stranicu.. na login
+                        // Redirect logic to another page.. to login
 
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text('Uspješno ste se registrirali!'),
+                            content: Text('Registration successful!'),
                             duration: Duration(seconds: 3),
                           ),
                         );
@@ -98,21 +97,21 @@ class _RegistracijaPageState extends State<RegistracijaPage> {
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => PrijavaPage()),
+                                builder: (context) => LoginPage()),
                           );
                         });
                       }
                     } catch (e) {
-                      print("Greška prilikom registracije $e");
+                      print("Error during registration $e");
                     }
                   } else {
                     showDialog(
                         context: context,
                         builder: (BuildContext context) {
                           return AlertDialog(
-                            title: Text('Greška'),
+                            title: Text('Error'),
                             content: Text(
-                                'Unesite korisničko ime (email) i lozinku.'),
+                                'Please enter username (email) and password.'),
                             actions: [
                               TextButton(
                                 onPressed: () {
@@ -125,7 +124,7 @@ class _RegistracijaPageState extends State<RegistracijaPage> {
                         });
                   }
                 },
-                child: Text('Registrirajte se'),
+                child: Text('Register'),
               ),
             ],
           ),

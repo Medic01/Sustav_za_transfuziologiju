@@ -8,48 +8,45 @@ class AdminPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Prva stranica'),
+        title: Text('WELCOME ADMIN!'),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'Dobrodošli na prvu stranicu!',
+              'Welcome to the admin page!',
               style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 20.0),
             ElevatedButton(
               onPressed: () {
-                // Navigacija na PocetnaPage
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => PocetnaPage()),
+                  MaterialPageRoute(builder: (context) => StartPage()),
                 );
               },
-              child: Text('Idi na Početnu stranicu'),
+              child: Text('Go to Start Page'),
             ),
             SizedBox(height: 10.0),
             ElevatedButton(
               onPressed: () {
-                // Navigacija na EvidencijaDolazakaPage
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => BloodDonationForm()),
                 );
               },
-              child: Text('Idi na Evidenciju dolazaka'),
+              child: Text('Go to Blood Donation Form'),
             ),
             SizedBox(height: 10.0),
             ElevatedButton(
               onPressed: () {
-                // Navigacija na EvidencijaDolazakaPage
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => KorisnikPocetna()),
+                  MaterialPageRoute(builder: (context) => UserHomePage()),
                 );
               },
-              child: Text('Idi na Korisnik Pocetna'),
+              child: Text('Go to User Home Page'),
             ),
           ],
         ),

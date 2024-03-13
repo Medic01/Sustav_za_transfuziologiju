@@ -6,26 +6,26 @@ class WelcomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Prva stranica'),
+        title: Text('First Page'),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'Dobrodošli na prvu stranicu!',
+              'Welcome to the first page!',
               style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 10.0),
             ElevatedButton(
               onPressed: () {
-                // Navigacija na KorisnikPocetna
+                // Navigate to UserHomePage
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => KorisnikPocetna()),
+                  MaterialPageRoute(builder: (context) => UserHomePage()),
                 );
               },
-              child: Text('Idi na Korisnik Pocetna'),
+              child: Text('Go to User Home'),
             ),
           ],
         ),

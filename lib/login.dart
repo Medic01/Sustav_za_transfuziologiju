@@ -6,12 +6,12 @@ import 'dart:convert';
 import 'package:sustav_za_transfuziologiju/admin_page.dart';
 import 'user_page.dart';
 
-class PrijavaPage extends StatefulWidget {
+class LoginPage extends StatefulWidget {
   @override
-  _PrijavaPageState createState() => _PrijavaPageState();
+  _LoginPageState createState() => _LoginPageState();
 }
 
-class _PrijavaPageState extends State<PrijavaPage> {
+class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -22,7 +22,7 @@ class _PrijavaPageState extends State<PrijavaPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Prijava'),
+        title: Text('Login'),
       ),
       body: Center(
         child: Padding(
@@ -39,7 +39,7 @@ class _PrijavaPageState extends State<PrijavaPage> {
                   ),
                   validator: (value) {
                     if (value?.isEmpty ?? true) {
-                      return 'Unesite svoj email';
+                      return 'Enter your email';
                     }
                     return null;
                   },
@@ -48,12 +48,12 @@ class _PrijavaPageState extends State<PrijavaPage> {
                 TextFormField(
                   controller: _passwordController,
                   decoration: InputDecoration(
-                    labelText: 'Lozinka',
+                    labelText: 'Password',
                   ),
                   obscureText: true,
                   validator: (value) {
                     if (value?.isEmpty ?? true) {
-                      return 'Unesite svoju lozinku';
+                      return 'Enter your password';
                     }
                     return null;
                   },
@@ -63,7 +63,6 @@ class _PrijavaPageState extends State<PrijavaPage> {
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
                       try {
-                        // Dohvatite podatke o korisniku iz Firestore-a
                         final userSnapshot = await FirebaseFirestore.instance
                             .collection('users')
                             .where('email', isEqualTo: _emailController.text)
@@ -73,11 +72,9 @@ class _PrijavaPageState extends State<PrijavaPage> {
                           final userData = userSnapshot.docs.first.data();
                           final storedPasswordHash = userData['password'];
 
-                          // Kriptirajte unesenu lozinku prije provjere
                           final passwordHash =
                               generateHash(_passwordController.text);
 
-                          // Usporedite kriptirane lozinke
                           if (passwordHash == storedPasswordHash) {
                             final role = userData['role'];
                             if (role == 'ADMIN') {
@@ -85,7 +82,7 @@ class _PrijavaPageState extends State<PrijavaPage> {
                                   context: context,
                                   builder: (BuildContext context) {
                                     return AlertDialog(
-                                      title: Text('Dobrodošao ADMIN!'),
+                                      title: Text('Welcome ADMIN!'),
                                       actions: [
                                         TextButton(
                                           onPressed: () {
@@ -111,7 +108,7 @@ class _PrijavaPageState extends State<PrijavaPage> {
                                   context: context,
                                   builder: (BuildContext context) {
                                     return AlertDialog(
-                                      title: Text('Dobrodošao USER!'),
+                                      title: Text('Welcome USER!'),
                                       actions: [
                                         TextButton(
                                           onPressed: () {
@@ -127,36 +124,32 @@ class _PrijavaPageState extends State<PrijavaPage> {
                                       ],
                                     );
                                   });
-                              // Ako korisnik nije administrator, odvedemo ga na stranicu običnog korisnika
-                              /*Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(builder: (context) => UserPage()),
-                              );*/
+                              // Navigator.pushReplacement(
+                              //   context,
+                              //   MaterialPageRoute(builder: (context) => UserPage()),
+                              // );
                             }
-                            return; // Izlaz iz funkcije nakon uspješne provjere
+                            return;
                           }
                         }
 
-                        // Lozinke se ne podudaraju ili korisnik nije pronađen, prikažite poruku o grešci
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content:
-                                Text('Pogrešno korisničko ime ili lozinka.'),
+                            content: Text('Incorrect email or password.'),
                             duration: Duration(seconds: 2),
                           ),
                         );
                       } catch (e) {
-                        // Ako dođe do greške prilikom prijave, rukovanje greškom
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text('Greška prilikom prijave: $e'),
+                            content: Text('Login failed: $e'),
                             duration: Duration(seconds: 2),
                           ),
                         );
                       }
                     }
                   },
-                  child: Text('Prijavi se'),
+                  child: Text('Login'),
                 ),
               ],
             ),

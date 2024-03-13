@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 
-class Evidencija extends StatelessWidget {
+class Evidence extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Evidencija'),
+        title: Text('Evidence'),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'Uspješno spremljeno',
+              'Successfully saved',
               style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
             ),
           ],
