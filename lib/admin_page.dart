@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:sustav_za_transfuziologiju/main.dart';
 import 'dataEntry.dart';
 import 'dataOnBloodDonatioControl.dart';
 import 'recordsOfDonations.dart';
+import 'login.dart'; // Importirajte stranicu za prijavu
 
 class AdminPage extends StatelessWidget {
   @override
@@ -51,6 +53,18 @@ class AdminPage extends StatelessWidget {
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => HomePage()),
+          );
+        },
+        child: Icon(Icons.logout_rounded),
+        backgroundColor: Colors.blue, // Promijenite boju gumba u plavu
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation
+          .endDocked, // Postavite lokaciju gumba u desni donji kut
     );
   }
 }

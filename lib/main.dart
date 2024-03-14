@@ -41,6 +41,7 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Welcome to Health Institute'),
+        automaticallyImplyLeading: false,
       ),
       body: Center(
         child: Column(
