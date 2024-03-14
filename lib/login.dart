@@ -14,6 +14,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _isPasswordVisible = false;
 
   @override
   Widget build(BuildContext context) {
@@ -35,11 +36,11 @@ class _LoginPageState extends State<LoginPage> {
                 TextFormField(
                   controller: _emailController,
                   decoration: InputDecoration(
-                    labelText: 'Email',
+                    labelText: 'Korisničko ime (Email)',
                   ),
                   validator: (value) {
                     if (value?.isEmpty ?? true) {
-                      return 'Enter your email';
+                      return 'Unesite vaš email';
                     }
                     return null;
                   },
@@ -48,12 +49,22 @@ class _LoginPageState extends State<LoginPage> {
                 TextFormField(
                   controller: _passwordController,
                   decoration: InputDecoration(
-                    labelText: 'Password',
+                    labelText: 'Lozinka',
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _isPasswordVisible ? Icons.visibility : Icons.visibility_off
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _isPasswordVisible = !_isPasswordVisible;
+                        });
+                      },
+                    ),
                   ),
-                  obscureText: true,
+                  obscureText: !_isPasswordVisible,
                   validator: (value) {
                     if (value?.isEmpty ?? true) {
-                      return 'Enter your password';
+                      return 'Unesite vašu lozinku';
                     }
                     return null;
                   },
