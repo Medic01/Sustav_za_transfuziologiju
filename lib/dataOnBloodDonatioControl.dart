@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'evidence.dart';
 import 'user_page.dart';
 
 class BloodDonationForm extends StatelessWidget {
