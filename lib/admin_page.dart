@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:sustav_za_transfuziologiju/bloodDonationRecords.dart';
 import 'package:sustav_za_transfuziologiju/main.dart';
 import 'dataOnBloodDonatioControl.dart';
 import 'recordsOfDonations.dart';
+import 'bloodDonationRecords.dart';
+import 'recordTheDoze.dart';
+import 'dataEntry.dart';
 
 class AdminPage extends StatelessWidget {
   @override
@@ -37,6 +41,27 @@ class AdminPage extends StatelessWidget {
                 );
               },
               child: Text('Go to Blood Donation Form'),
+            ),
+            SizedBox(height: 10.0),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => BloodDonationRecords()),
+                );
+              },
+              child: Text('Go to Blood Donation Records'),
+            ),
+            SizedBox(height: 10.0),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => RecordTheDoze()),
+                );
+              },
+              child: Text('Go to Record The Doze'),
             ),
             SizedBox(height: 10.0),
             ElevatedButton(
