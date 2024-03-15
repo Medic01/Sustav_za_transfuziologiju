@@ -79,8 +79,18 @@ class BloodDonationRecords extends StatelessWidget {
                     SizedBox(width: 8),
                     ElevatedButton(
                       onPressed: () {
-                        // Implementacija logike za odbijanje donacije
-                        // Možete ažurirati status donacije u bazi podataka ili na drugi način
+                        // Stvaranje reference za dokument
+                        DocumentReference bloodDonationDocRef =
+                            FirebaseFirestore.instance
+                                .collection('blood_donation')
+                                .doc(document.id);
+
+                        // Brisanje dokumenta iz baze podataka
+                        bloodDonationDocRef.delete().then((value) {
+                          print('Document successfully deleted');
+                        }).catchError((error) {
+                          print('Error deleting document: $error');
+                        });
                       },
                       child: Text('Odbij'),
                     ),
