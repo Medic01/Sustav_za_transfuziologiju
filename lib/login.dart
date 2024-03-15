@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
 import 'package:sustav_za_transfuziologiju/admin_page.dart';
+import 'package:sustav_za_transfuziologiju/dataEntry.dart';
 import 'user_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -88,6 +89,9 @@ class _LoginPageState extends State<LoginPage> {
 
                           if (passwordHash == storedPasswordHash) {
                             final role = userData['role'];
+                            final isFirstLogin = userData['isFirstLogin'] ?? true;
+                            print(isFirstLogin);
+
                             if (role == 'ADMIN') {
                               showDialog(
                                   context: context,
@@ -115,30 +119,17 @@ class _LoginPageState extends State<LoginPage> {
                                     builder: (context) => AdminPage()),
                               );
                             } else if (role == 'USER') {
-                              showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      title: Text('Welcome USER!'),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () {
-                                            Navigator.pushReplacement(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      WelcomePage()),
-                                            );
-                                          },
-                                          child: Text('OK'),
-                                        ),
-                                      ],
-                                    );
-                                  });
-                              // Navigator.pushReplacement(
-                              //   context,
-                              //   MaterialPageRoute(builder: (context) => UserPage()),
-                              // );
+                              if (isFirstLogin) {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => DataEntryPage(userEmail: _emailController.text,)),
+                                );
+                              } else {
+                                Navigator.pushReplacement(
+                                 context,
+                                 MaterialPageRoute(builder: (context) => WelcomePage()),
+                               );
+                              }
                             }
                             return;
                           }

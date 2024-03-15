@@ -163,9 +163,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
                           .collection('users')
                           .doc()
                           .set({
-                        'email': _usernameController.text,
-                        'password': passwordHash,
-                        'role': UserRole.USER.toString().split('.').last,
+                            'email': _usernameController.text,
+                            'password': passwordHash,
+                            'role': UserRole.USER.toString().split('.').last,
+                            'isFirstLogin': true,
                       });
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(

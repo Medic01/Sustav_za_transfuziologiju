@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sustav_za_transfuziologiju/main.dart';
-import 'dataEntry.dart';
 import 'dataOnBloodDonatioControl.dart';
 import 'recordsOfDonations.dart';
-import 'login.dart'; // Importirajte stranicu za prijavu
 
 class AdminPage extends StatelessWidget {
   @override
@@ -25,7 +23,7 @@ class AdminPage extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => StartPage()),
+                  MaterialPageRoute(builder: (context) => UserHomePage()),
                 );
               },
               child: Text('Go to Start Page'),
