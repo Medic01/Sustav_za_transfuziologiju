@@ -3,9 +3,7 @@ import 'package:sustav_za_transfuziologiju/blood_donation_records.dart';
 import 'package:sustav_za_transfuziologiju/main.dart';
 import 'blood_donation_form.dart';
 import 'user_home_page.dart';
-import 'blood_donation_records.dart';
-import 'record_of_the_dose.dart';
-import 'data_entry_page.dart';
+import 'recordTheDoze.dart';
 
 class AdminPage extends StatelessWidget {
   @override
