@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:sustav_za_transfuziologiju/blood_donation_records.dart';
+import 'package:sustav_za_transfuziologiju/screens/donation/blood_donation_records.dart';
 import 'package:sustav_za_transfuziologiju/main.dart';
-import 'blood_donation_form.dart';
-import 'user_home_page.dart';
-import 'dose_entry_page.dart';
+import '../donation/blood_donation_form.dart';
+import '../user/user_home_page.dart';
+import '../donation/dose_entry_page.dart';
 
 class AdminPage extends StatelessWidget {
   @override
@@ -17,7 +17,7 @@ class AdminPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'Welcome to the admin page!',
+                'Welcome to the admin page!',
               style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 20.0),
@@ -59,7 +59,7 @@ class AdminPage extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => DoseEntryPage()),
                 );
               },
-              child: Text('Go to Record The Doze'),
+              child: Text('Go to Record The Dose'),
             ),
             SizedBox(height: 10.0),
             ElevatedButton(

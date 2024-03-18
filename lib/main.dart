@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:sustav_za_transfuziologiju/default_firebase_options.dart';
+import 'package:sustav_za_transfuziologiju/screens/utils/default_firebase_options.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'login_page.dart';
-import 'registration_page.dart';
+import 'screens/auth/login_page.dart';
+import 'screens/auth/registration_page.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // Load environment variables
