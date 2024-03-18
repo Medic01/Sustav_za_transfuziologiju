@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sustav_za_transfuziologiju/main.dart';
-import 'package:sustav_za_transfuziologiju/recordsOfDonations.dart';
-import 'login.dart'; // Importirajte stranicu za prijavu
+import 'package:sustav_za_transfuziologiju/user_home_page.dart';
+import 'login_page.dart'; // Importirajte stranicu za prijavu
 
 class WelcomePage extends StatelessWidget {
   @override

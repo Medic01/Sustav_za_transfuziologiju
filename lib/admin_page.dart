@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:sustav_za_transfuziologiju/bloodDonationRecords.dart';
+import 'package:sustav_za_transfuziologiju/blood_donation_records.dart';
 import 'package:sustav_za_transfuziologiju/main.dart';
-import 'dataOnBloodDonatioControl.dart';
-import 'recordsOfDonations.dart';
-import 'bloodDonationRecords.dart';
-import 'recordTheDoze.dart';
-import 'dataEntry.dart';
+import 'blood_donation_form.dart';
+import 'user_home_page.dart';
+import 'blood_donation_records.dart';
+import 'record_of_the_dose.dart';
+import 'data_entry_page.dart';
 
 class AdminPage extends StatelessWidget {
   @override

@@ -4,8 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
 import 'package:sustav_za_transfuziologiju/admin_page.dart';
-import 'package:sustav_za_transfuziologiju/dataEntry.dart';
-import 'user_page.dart';
+import 'package:sustav_za_transfuziologiju/data_entry_page.dart';
+import 'welcome_page.dart';
 
 class LoginPage extends StatefulWidget {
   @override
