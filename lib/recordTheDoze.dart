@@ -126,11 +126,13 @@ class RecordTheDoze extends StatelessWidget {
                                 ElevatedButton(
                                   onPressed: () {
                                     String quantity = quantityController.text;
+                                    int existingQuantity =
+                                        data['kolicina_donirane_doze'] ?? 0;
                                     if (quantity.isNotEmpty &&
                                         int.tryParse(quantity) != null &&
                                         int.parse(quantity) >=
-                                            (data['kolicina_donirane_doze'] ??
-                                                0)) {
+                                            existingQuantity &&
+                                        int.parse(quantity) <= 100) {
                                       FirebaseFirestore.instance
                                           .collection('accepted')
                                           .doc(document.id)
@@ -145,8 +147,22 @@ class RecordTheDoze extends StatelessWidget {
                                         print(
                                             'Greška prilikom unosa količine donirane doze: $error');
                                       });
+                                    } else if (int.parse(quantity) <
+                                        existingQuantity) {
+                                      print(
+                                          'Ne možete unijeti manju količinu od postojeće');
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                        content: Text(
+                                            'Ne možete unijeti manju količinu od postojeće'),
+                                      ));
                                     } else {
                                       print('Neispravan unos količine');
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                        content: Text(
+                                            'Količina mora biti između $existingQuantity i 100'),
+                                      ));
                                     }
                                   },
                                   child: Text('Potvrdi'),

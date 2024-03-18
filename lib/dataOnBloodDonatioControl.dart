@@ -1,6 +1,8 @@
+// BloodDonationForm.dart
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'user_page.dart';
+import 'bloodDonationRecords.dart';
 
 class BloodDonationForm extends StatelessWidget {
   final TextEditingController _dateController = TextEditingController();
@@ -27,15 +29,15 @@ class BloodDonationForm extends StatelessWidget {
     try {
       FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-      await firestore.collection('attendance_records').add({
-        'date': date,
-        'place': place,
-        'doctorName': doctorName,
-        'technicianName': technicianName,
+      await firestore.collection('blood_donation').add({
+        'blood_donation_location': place,
+        'date_od_donation': date,
+        'donor_blood_pressure': bloodPressure,
         'hemoglobin': hemoglobin,
-        'bloodPressure': bloodPressure,
-        'donationRejected': donationRejected,
-        'rejectionReason': rejectionReason,
+        'name_of_doctor': doctorName,
+        'status':
+            'pending', // Postavljamo status na "pending" jer je donacija nova
+        'user_id': '', // Ovaj podatak možete postaviti prema potrebi
       });
 
       print('Data successfully saved to Firestore.');
@@ -124,9 +126,9 @@ class BloodDonationForm extends StatelessWidget {
           );
 
           // After saving the data, you can add navigation to another page here
-          Navigator.push(
+          Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => WelcomePage()),
+            MaterialPageRoute(builder: (context) => BloodDonationRecords()),
           );
         },
         child: Text('Save'),
