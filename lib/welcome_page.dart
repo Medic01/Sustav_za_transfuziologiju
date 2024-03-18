@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sustav_za_transfuziologiju/main.dart';
+import 'package:sustav_za_transfuziologiju/screens/donation/dose_entry_page.dart';
 import 'package:sustav_za_transfuziologiju/screens/user/user_home_page.dart';
 
 class WelcomePage extends StatelessWidget {
@@ -28,6 +29,17 @@ class WelcomePage extends StatelessWidget {
               },
               child: Text('Go to User Home'),
             ),
+            SizedBox(height: 10.0),
+            ElevatedButton(
+              onPressed: () {
+                // Navigate to DoseEntryPage
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => DoseEntryPage()),
+                );
+              },
+              child: Text('Go to Dose Entry Page'),
+            ),
           ],
         ),
       ),
@@ -41,8 +53,7 @@ class WelcomePage extends StatelessWidget {
         child: Icon(Icons.logout_rounded),
         backgroundColor: Colors.blue, // Promijenite boju gumba u plavu
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation
-          .endDocked, // Postavite lokaciju gumba u desni donji kut
+      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked, // Postavite lokaciju gumba u desni donji kut
     );
   }
 }

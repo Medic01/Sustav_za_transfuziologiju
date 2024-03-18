@@ -10,17 +10,17 @@ class AdminPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('WELCOME ADMIN!'),
+        title: const Text('WELCOME ADMIN!'),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
+            const Text(
                 'Welcome to the admin page!',
               style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 20.0),
+            const SizedBox(height: 20.0),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
@@ -28,9 +28,9 @@ class AdminPage extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => UserHomePage()),
                 );
               },
-              child: Text('Go to Start Page'),
+              child: const Text('Go to Start Page'),
             ),
-            SizedBox(height: 10.0),
+            const SizedBox(height: 10.0),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
@@ -38,9 +38,9 @@ class AdminPage extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => BloodDonationForm()),
                 );
               },
-              child: Text('Go to Blood Donation Form'),
+              child: const Text('Go to Blood Donation Form'),
             ),
-            SizedBox(height: 10.0),
+            const SizedBox(height: 10.0),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
@@ -49,9 +49,9 @@ class AdminPage extends StatelessWidget {
                       builder: (context) => BloodDonationRecords()),
                 );
               },
-              child: Text('Go to Blood Donation Records'),
+              child: const Text('Go to Blood Donation Records'),
             ),
-            SizedBox(height: 10.0),
+            const SizedBox(height: 10.0),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
@@ -59,9 +59,9 @@ class AdminPage extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => DoseEntryPage()),
                 );
               },
-              child: Text('Go to Record The Dose'),
+              child: const Text('Go to Record The Dose'),
             ),
-            SizedBox(height: 10.0),
+            const SizedBox(height: 10.0),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
@@ -69,7 +69,7 @@ class AdminPage extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => UserHomePage()),
                 );
               },
-              child: Text('Go to User Home Page'),
+              child: const Text('Go to User Home Page'),
             ),
           ],
         ),
