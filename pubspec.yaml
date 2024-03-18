@@ -37,6 +37,7 @@ dependencies:
   crypto: ^3.0.3
   flutter_pw_validator: ^1.6.0
   flutter_dotenv: ^5.1.0
+  mask_text_input_formatter: ^2.9.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

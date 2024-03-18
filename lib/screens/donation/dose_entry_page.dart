@@ -37,8 +37,8 @@ class DoseEntryPage extends StatelessWidget {
                         'donor_blood_pressure ${data['donor_blood_pressure']}'),
                     Text('hemoglobin ${data['hemoglobin']}'),
                     Text('name_of_doctor ${data['name_of_doctor']}'),
-                    Text('status ${data['status']}'),
-                    Text('user_id ${data['user_id']}'),
+                    Text('blood_type ${data['blood_type']}'),
+
                     // New options
                     Text(
                       'Doza obrađena: ${data['doza_obradjena']}',
@@ -81,7 +81,7 @@ class DoseEntryPage extends StatelessWidget {
                               'Greška prilikom označavanja doze kao obrađene: $error');
                         });
                       },
-                      child: Text('Označi kao obrađeno'),
+                      child: Text('Doza obrađena'),
                     ),
                     SizedBox(width: 8),
                     ElevatedButton(
@@ -99,7 +99,7 @@ class DoseEntryPage extends StatelessWidget {
                               'Greška prilikom označavanja doze kao iskorištene: $error');
                         });
                       },
-                      child: Text('Označi kao iskorišteno'),
+                      child: Text('Doza iskorištena'),
                     ),
                     SizedBox(width: 8),
                     ElevatedButton(
@@ -172,7 +172,7 @@ class DoseEntryPage extends StatelessWidget {
                           },
                         );
                       },
-                      child: Text('Unesi količinu'),
+                      child: Text('Količina donirane doze'),
                     ),
                   ],
                 ),

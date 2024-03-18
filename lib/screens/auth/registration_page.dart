@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_pw_validator/flutter_pw_validator.dart';
 import 'package:crypto/crypto.dart';
-import 'package:sustav_za_transfuziologiju/screens/auth/login_page.dart'; 
+import 'package:sustav_za_transfuziologiju/screens/auth/login_page.dart';
 import 'dart:convert';
 
 import 'package:sustav_za_transfuziologiju/screens/enums/user_role.dart';
@@ -15,7 +15,8 @@ class RegistrationPage extends StatefulWidget {
 class _RegistrationPageState extends State<RegistrationPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
   bool _isPasswordValid = false;
   bool _isPasswordVisible = false;
 
@@ -34,6 +35,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
           ? 'Unesite ispravan email'
           : null;
     }
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Registracija'),
@@ -63,7 +65,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         });
                       },
                       icon: Icon(
-                        _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                        _isPasswordVisible
+                            ? Icons.visibility
+                            : Icons.visibility_off,
                       ),
                     ),
                   ),
@@ -148,8 +152,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     try {
                       final existingUser = await FirebaseFirestore.instance
                           .collection('users')
-                          .where('email',
-                              isEqualTo: _usernameController.text)
+                          .where('email', isEqualTo: _usernameController.text)
                           .get();
                       if (existingUser.docs.isNotEmpty) {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -163,10 +166,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
                           .collection('users')
                           .doc()
                           .set({
-                            'email': _usernameController.text,
-                            'password': passwordHash,
-                            'role': UserRole.USER.toString().split('.').last,
-                            'isFirstLogin': true,
+                        'email': _usernameController.text,
+                        'password': passwordHash,
+                        'role': UserRole.USER.toString().split('.').last,
+                        'isFirstLogin': true,
                       });
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
@@ -176,8 +179,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       Future.delayed(Duration(seconds: 1), () {
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(
-                              builder: (context) => LoginPage()),
+                          MaterialPageRoute(builder: (context) => LoginPage()),
                         );
                       });
                     } catch (e) {
@@ -192,4 +194,5 @@ class _RegistrationPageState extends State<RegistrationPage> {
         ),
       ),
     );
-  }}
+  }
+}

@@ -7,14 +7,16 @@ class DataEntryPage extends StatelessWidget {
   final TextEditingController _surnameController = TextEditingController();
   final TextEditingController _emailController;
   final TextEditingController _genderController = TextEditingController();
-  final TextEditingController _uniqueCitizensIdController = TextEditingController();
+  final TextEditingController _uniqueCitizensIdController =
+      TextEditingController();
   final TextEditingController _dateOfBirthController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _cityController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
   final TextEditingController _bloodTypeController = TextEditingController();
-  
-  DataEntryPage({required String userEmail}) : _emailController = TextEditingController(text: userEmail);
+
+  DataEntryPage({required String userEmail})
+      : _emailController = TextEditingController(text: userEmail);
 
   void saveDataToFirestore({
     required String name,
@@ -31,8 +33,11 @@ class DataEntryPage extends StatelessWidget {
   }) async {
     try {
       FirebaseFirestore firestore = FirebaseFirestore.instance;
-      
-      final userSnapshot = await firestore.collection('users').where('email', isEqualTo: email).get();
+
+      final userSnapshot = await firestore
+          .collection('users')
+          .where('email', isEqualTo: email)
+          .get();
       print("User Snapshot: $userSnapshot");
 
       final userId = userSnapshot.docs.first.id;
@@ -48,7 +53,7 @@ class DataEntryPage extends StatelessWidget {
         'city': city,
         'phoneNumber': phoneNumber,
         'bloodType': bloodType,
-        'gender' : gender,
+        'gender': gender,
         'isFirstLogin': false,
       });
 
@@ -69,7 +74,6 @@ class DataEntryPage extends StatelessWidget {
         context,
         MaterialPageRoute(builder: (context) => WelcomePage()),
       );
-      
     } catch (error) {
       print('Error saving data: $error');
     }
@@ -92,15 +96,25 @@ class DataEntryPage extends StatelessWidget {
             ),
             SizedBox(height: 20.0),
             _buildTextField(labelText: 'Name', controller: _nameController),
-            _buildTextField(labelText: 'Surname', controller: _surnameController),
-            _buildTextField(labelText: 'Email', controller: _emailController, readOnly: true),
-            _buildTextField(labelText: 'Unique Citizens ID', controller: _uniqueCitizensIdController),
-            _buildTextField(labelText: 'Date of Birth', controller: _dateOfBirthController),
+            _buildTextField(
+                labelText: 'Surname', controller: _surnameController),
+            _buildTextField(
+                labelText: 'Email',
+                controller: _emailController,
+                readOnly: true),
+            _buildTextField(
+                labelText: 'Unique Citizens ID',
+                controller: _uniqueCitizensIdController),
+            _buildTextField(
+                labelText: 'Date of Birth', controller: _dateOfBirthController),
             _buildTextField(labelText: 'Gender', controller: _genderController),
-            _buildTextField(labelText: 'Address', controller: _addressController),
+            _buildTextField(
+                labelText: 'Address', controller: _addressController),
             _buildTextField(labelText: 'City', controller: _cityController),
-            _buildTextField(labelText: 'Phone Number', controller: _phoneNumberController),
-            _buildTextField(labelText: 'Blood Type', controller: _bloodTypeController),
+            _buildTextField(
+                labelText: 'Phone Number', controller: _phoneNumberController),
+            _buildTextField(
+                labelText: 'Blood Type', controller: _bloodTypeController),
             SizedBox(height: 20.0),
             _buildSaveButton(context),
           ],
@@ -110,7 +124,9 @@ class DataEntryPage extends StatelessWidget {
   }
 
   Widget _buildTextField(
-      {required String labelText, required TextEditingController controller, bool readOnly = false}) {
+      {required String labelText,
+      required TextEditingController controller,
+      bool readOnly = false}) {
     return Container(
       margin: EdgeInsets.only(bottom: 10.0),
       child: TextFormField(

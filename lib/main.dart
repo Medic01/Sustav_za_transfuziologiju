@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:sustav_za_transfuziologiju/screens/utils/default_firebase_options.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'screens/auth/login_page.dart';
-import 'screens/auth/registration_page.dart';
+import 'package:sustav_za_transfuziologiju/screens/auth/login_page.dart';
+import 'package:sustav_za_transfuziologiju/screens/auth/registration_page.dart';
+import 'package:sustav_za_transfuziologiju/screens/utils/default_firebase_options.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // Load environment variables
@@ -24,6 +25,7 @@ Future<void> main() async {
   }
   runApp(MyApp());
 }
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -37,6 +39,7 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

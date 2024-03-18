@@ -5,7 +5,7 @@ import 'package:crypto/crypto.dart';
 import 'dart:convert';
 import 'package:sustav_za_transfuziologiju/screens/admin/admin_page.dart';
 import 'package:sustav_za_transfuziologiju/screens/user/data_entry_page.dart';
-import '../../welcome_page.dart';
+import 'package:sustav_za_transfuziologiju/welcome_page.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -52,9 +52,9 @@ class _LoginPageState extends State<LoginPage> {
                   decoration: InputDecoration(
                     labelText: 'Lozinka',
                     suffixIcon: IconButton(
-                      icon: Icon(
-                        _isPasswordVisible ? Icons.visibility : Icons.visibility_off
-                      ),
+                      icon: Icon(_isPasswordVisible
+                          ? Icons.visibility
+                          : Icons.visibility_off),
                       onPressed: () {
                         setState(() {
                           _isPasswordVisible = !_isPasswordVisible;
@@ -89,7 +89,8 @@ class _LoginPageState extends State<LoginPage> {
 
                           if (passwordHash == storedPasswordHash) {
                             final role = userData['role'];
-                            final isFirstLogin = userData['isFirstLogin'] ?? true;
+                            final isFirstLogin =
+                                userData['isFirstLogin'] ?? true;
                             print(isFirstLogin);
 
                             if (role == 'ADMIN') {
@@ -122,13 +123,17 @@ class _LoginPageState extends State<LoginPage> {
                               if (isFirstLogin) {
                                 Navigator.pushReplacement(
                                   context,
-                                  MaterialPageRoute(builder: (context) => DataEntryPage(userEmail: _emailController.text,)),
+                                  MaterialPageRoute(
+                                      builder: (context) => DataEntryPage(
+                                            userEmail: _emailController.text,
+                                          )),
                                 );
                               } else {
                                 Navigator.pushReplacement(
-                                 context,
-                                 MaterialPageRoute(builder: (context) => WelcomePage()),
-                               );
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => WelcomePage()),
+                                );
                               }
                             }
                             return;
