@@ -54,12 +54,12 @@ class _DoseEntryPageState extends State<DoseEntryPage> {
             child: StreamBuilder(
               stream: selectedBloodType == 'All'
                   ? FirebaseFirestore.instance
-                      .collection('accepted')
-                      .snapshots()
+                  .collection('accepted')
+                  .snapshots()
                   : FirebaseFirestore.instance
-                      .collection('accepted')
-                      .where('blood_type', isEqualTo: selectedBloodType)
-                      .snapshots(),
+                  .collection('accepted')
+                  .where('blood_type', isEqualTo: selectedBloodType)
+                  .snapshots(),
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.hasError) {
@@ -72,9 +72,9 @@ class _DoseEntryPageState extends State<DoseEntryPage> {
 
                 return ListView(
                   children:
-                      snapshot.data!.docs.map((DocumentSnapshot document) {
+                  snapshot.data!.docs.map((DocumentSnapshot document) {
                     Map<String, dynamic> data =
-                        document.data() as Map<String, dynamic>;
+                    document.data() as Map<String, dynamic>;
                     // Ovdje možete formatirati kako želite prikazati podatke iz dokumenta
                     return ListTile(
                       title: Text(
@@ -113,121 +113,103 @@ class _DoseEntryPageState extends State<DoseEntryPage> {
                           ),
                         ],
                       ),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              // Dodavanje logike za označavanje doze kao obrađene
-                              FirebaseFirestore.instance
-                                  .collection('accepted')
-                                  .doc(document.id)
-                                  .update({
-                                'doza_obradjena': true,
-                              }).then((value) {
-                                print('Doza je obrađena');
-                              }).catchError((error) {
-                                print(
-                                    'Greška prilikom označavanja doze kao obrađene: $error');
-                              });
-                            },
-                            child: Text('Doza obrađena'),
-                          ),
-                          SizedBox(width: 8),
-                          ElevatedButton(
-                            onPressed: () {
-                              // Dodavanje logike za označavanje doze kao iskorištene
-                              FirebaseFirestore.instance
-                                  .collection('accepted')
-                                  .doc(document.id)
-                                  .update({
-                                'doza_iskoristena': true,
-                              }).then((value) {
-                                print('Doza je iskorištena');
-                              }).catchError((error) {
-                                print(
-                                    'Greška prilikom označavanja doze kao iskorištene: $error');
-                              });
-                            },
-                            child: Text('Doza iskorištena'),
-                          ),
-                          SizedBox(width: 8),
-                          ElevatedButton(
-                            onPressed: () {
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title:
-                                        Text('Unesite količinu donirane doze'),
-                                    content: TextField(
-                                      controller: quantityController,
-                                      keyboardType: TextInputType.number,
-                                      decoration: InputDecoration(
-                                        labelText: 'Količina',
+                      trailing: SizedBox(
+                        width: 200, // Adjust width as needed
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                // Add logic for marking dose as processed
+                              },
+                              child: Text('Doza obrađena'),
+                            ),
+                            SizedBox(width: 8),
+                            ElevatedButton(
+                              onPressed: () {
+                                // Add logic for marking dose as used
+                              },
+                              child: Text('Doza iskorištena'),
+                            ),
+                            SizedBox(width: 8),
+                            ElevatedButton(
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title:
+                                      Text('Unesite količinu donirane doze'),
+                                      content: TextField(
+                                        controller: quantityController,
+                                        keyboardType: TextInputType.number,
+                                        decoration: InputDecoration(
+                                          labelText: 'Količina',
+                                        ),
                                       ),
-                                    ),
-                                    actions: [
-                                      ElevatedButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                        child: Text('Odustani'),
-                                      ),
-                                      ElevatedButton(
-                                        onPressed: () {
-                                          String quantity =
-                                              quantityController.text;
-                                          int existingQuantity =
-                                              data['kolicina_donirane_doze'] ??
-                                                  0;
-                                          if (quantity.isNotEmpty &&
-                                              int.tryParse(quantity) != null &&
-                                              int.parse(quantity) >=
-                                                  existingQuantity &&
-                                              int.parse(quantity) <= 100) {
-                                            FirebaseFirestore.instance
-                                                .collection('accepted')
-                                                .doc(document.id)
-                                                .update({
-                                              'kolicina_donirane_doze':
-                                                  int.parse(quantity),
-                                            }).then((value) {
+                                      actions: [
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: Text('Odustani'),
+                                        ),
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            String quantity =
+                                                quantityController.text;
+                                            int existingQuantity =
+                                                data['kolicina_donirane_doze'] ??
+                                                    0;
+                                            if (quantity.isNotEmpty &&
+                                                int.tryParse(quantity) != null &&
+                                                int.parse(quantity) >=
+                                                    existingQuantity &&
+                                                int.parse(quantity) <= 100) {
+                                              FirebaseFirestore.instance
+                                                  .collection('accepted')
+                                                  .doc(document.id)
+                                                  .update({
+                                                'kolicina_donirane_doze':
+                                                int.parse(quantity),
+                                              }).then((value) {
+                                                print(
+                                                    'Količina donirane doze je unesena');
+                                                Navigator.pop(context);
+                                              }).catchError((error) {
+                                                print(
+                                                    'Greška prilikom unosa količine donirane doze: $error');
+                                              });
+                                            } else if (int.parse(quantity) <
+                                                existingQuantity) {
                                               print(
-                                                  'Količina donirane doze je unesena');
-                                              Navigator.pop(context);
-                                            }).catchError((error) {
+                                                  'Ne možete unijeti manju količinu od postojeće');
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(SnackBar(
+                                                content: Text(
+                                                    'Ne možete unijeti manju količinu od postojeće'),
+                                              ));
+                                            } else {
                                               print(
-                                                  'Greška prilikom unosa količine donirane doze: $error');
-                                            });
-                                          } else if (int.parse(quantity) <
-                                              existingQuantity) {
-                                            print(
-                                                'Ne možete unijeti manju količinu od postojeće');
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(SnackBar(
-                                              content: Text(
-                                                  'Ne možete unijeti manju količinu od postojeće'),
-                                            ));
-                                          } else {
-                                            print('Neispravan unos količine');
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(SnackBar(
-                                              content: Text(
-                                                  'Količina mora biti između $existingQuantity i 100'),
-                                            ));
-                                          }
-                                        },
-                                        child: Text('Potvrdi'),
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
-                            },
-                            child: Text('Količina donirane doze'),
-                          ),
-                        ],
+                                                  'Neispravan unos količine');
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(SnackBar(
+                                                content: Text(
+                                                    'Količina mora biti između $existingQuantity i 100'),
+                                              ));
+                                            }
+                                          },
+                                          child: Text('Potvrdi'),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
+                              child: Text('Količina donirane doze'),
+                            ),
+                          ],
+                        ),
                       ),
                     );
                   }).toList(),
