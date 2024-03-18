@@ -8,13 +8,10 @@ class BloodDonationForm extends StatelessWidget {
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _placeController = TextEditingController();
   final TextEditingController _doctorNameController = TextEditingController();
-  final TextEditingController _technicianNameController =
-      TextEditingController();
+  final TextEditingController _technicianNameController = TextEditingController();
   final TextEditingController _hemoglobinController = TextEditingController();
-  final TextEditingController _bloodPressureController =
-      TextEditingController();
-  final TextEditingController _rejectionReasonController =
-      TextEditingController();
+  final TextEditingController _bloodPressureController = TextEditingController();
+  final TextEditingController _rejectionReasonController = TextEditingController();
 
   void saveDataToFirestore({
     required String date,
@@ -35,9 +32,8 @@ class BloodDonationForm extends StatelessWidget {
         'donor_blood_pressure': bloodPressure,
         'hemoglobin': hemoglobin,
         'name_of_doctor': doctorName,
-        'status':
-            'pending', // Postavljamo status na "pending" jer je donacija nova
-        'user_id': '', // Ovaj podatak možete postaviti prema potrebi
+        'status': 'pending', 
+        'user_id': '', 
       });
 
       print('Data successfully saved to Firestore.');

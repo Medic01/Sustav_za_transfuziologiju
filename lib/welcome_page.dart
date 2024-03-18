@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sustav_za_transfuziologiju/main.dart';
-import 'package:sustav_za_transfuziologiju/user_home_page.dart';
+import 'package:sustav_za_transfuziologiju/screens/user/user_home_page.dart';
 
 class WelcomePage extends StatelessWidget {
   @override
