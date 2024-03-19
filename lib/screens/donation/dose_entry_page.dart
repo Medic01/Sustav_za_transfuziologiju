@@ -18,48 +18,47 @@ class _DoseEntryPageState extends State<DoseEntryPage> {
         title: Text('Accepted bloods'),
       ),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: DropdownButtonFormField<String>(
-              decoration: InputDecoration(
-                labelText: 'Choose blood type',
-                border: OutlineInputBorder(),
-              ),
-              value: selectedBloodType,
-              onChanged: (String? newValue) {
-                setState(() {
-                  selectedBloodType = newValue;
-                });
-              },
-              items: <String>[
-                'All',
-                'A-',
-                'A+',
-                'B-',
-                'B+',
-                'AB+',
-                'AB-',
-                'O+',
-                'O-'
-              ].map((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
+          DropdownButtonFormField<String>(
+            decoration: InputDecoration(
+              labelText: 'Choose blood type',
+              border: OutlineInputBorder(),
             ),
+            value: selectedBloodType,
+            onChanged: (String? newValue) {
+              setState(() {
+                selectedBloodType = newValue;
+              });
+            },
+            items: <String>[
+              'All',
+              'A-',
+              'A+',
+              'B-',
+              'B+',
+              'AB+',
+              'AB-',
+              'O+',
+              'O-'
+            ].map((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
           ),
+          SizedBox(height: 8),
           Expanded(
             child: StreamBuilder(
               stream: selectedBloodType == 'All'
                   ? FirebaseFirestore.instance
-                  .collection('accepted')
-                  .snapshots()
+                      .collection('accepted')
+                      .snapshots()
                   : FirebaseFirestore.instance
-                  .collection('accepted')
-                  .where('blood_type', isEqualTo: selectedBloodType)
-                  .snapshots(),
+                      .collection('accepted')
+                      .where('blood_type', isEqualTo: selectedBloodType)
+                      .snapshots(),
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.hasError) {
@@ -67,79 +66,98 @@ class _DoseEntryPageState extends State<DoseEntryPage> {
                 }
 
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
+                  return Center(child: CircularProgressIndicator());
                 }
 
                 return ListView(
+                  shrinkWrap: true,
                   children:
-                  snapshot.data!.docs.map((DocumentSnapshot document) {
+                      snapshot.data!.docs.map((DocumentSnapshot document) {
                     Map<String, dynamic> data =
-                    document.data() as Map<String, dynamic>;
-                    // Ovdje možete formatirati kako želite prikazati podatke iz dokumenta
-                    return ListTile(
-                      title: Text(
-                          'blood_donation_location: ${data['blood_donation_location']}'),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('date_od_donation: ${data['date_od_donation']}'),
-                          Text(
-                              'donor_blood_pressure ${data['donor_blood_pressure']}'),
-                          Text('hemoglobin ${data['hemoglobin']}'),
-                          Text('name_of_doctor ${data['name_of_doctor']}'),
-                          Text('blood_type ${data['blood_type']}'),
-
-                          // New options
-                          Text(
-                            'Doza obrađena: ${data['doza_obradjena']}',
-                            style: TextStyle(
-                                color: data['doza_obradjena'] == true
-                                    ? Colors.green
-                                    : Colors.black),
+                        document.data() as Map<String, dynamic>;
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        ListTile(
+                          title: Text(
+                              'blood_donation_location: ${data['blood_donation_location']}'),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                  'date_od_donation: ${data['date_od_donation']}'),
+                              Text(
+                                  'donor_blood_pressure ${data['donor_blood_pressure']}'),
+                              Text('hemoglobin ${data['hemoglobin']}'),
+                              Text('name_of_doctor ${data['name_of_doctor']}'),
+                              Text('blood_type ${data['blood_type']}'),
+                              Text(
+                                'Doza obrađena: ${data['doza_obradjena']}',
+                                style: TextStyle(
+                                    color: data['doza_obradjena'] == true
+                                        ? Colors.green
+                                        : Colors.black),
+                              ),
+                              Text(
+                                'Doza iskorištena: ${data['doza_iskoristena']}',
+                                style: TextStyle(
+                                    color: data['doza_iskoristena'] == true
+                                        ? Colors.green
+                                        : Colors.black),
+                              ),
+                              Text(
+                                'Količina donirane doze: ${data['kolicina_donirane_doze'] ?? 'N/A'}',
+                                style: TextStyle(
+                                    color: data['kolicina_donirane_doze'] == 100
+                                        ? Colors.red
+                                        : Colors.green),
+                              ),
+                            ],
                           ),
-                          Text(
-                            'Doza iskorištena: ${data['doza_iskoristena']}',
-                            style: TextStyle(
-                                color: data['doza_iskoristena'] == true
-                                    ? Colors.green
-                                    : Colors.black),
-                          ),
-                          Text(
-                            'Količina donirane doze: ${data['kolicina_donirane_doze'] ?? 'N/A'}',
-                            style: TextStyle(
-                                color: data['kolicina_donirane_doze'] == 100
-                                    ? Colors.red
-                                    : Colors.green),
-                          ),
-                        ],
-                      ),
-                      trailing: SizedBox(
-                        width: 200, // Adjust width as needed
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             ElevatedButton(
                               onPressed: () {
-                                // Add logic for marking dose as processed
+                                FirebaseFirestore.instance
+                                    .collection('accepted')
+                                    .doc(document.id)
+                                    .update({
+                                  'doza_obradjena': true,
+                                }).then((value) {
+                                  print('Doza je obrađena');
+                                }).catchError((error) {
+                                  print(
+                                      'Greška prilikom označavanja doze kao obrađene: $error');
+                                });
                               },
-                              child: Text('Doza obrađena'),
+                              child: Text('Obrađena'),
                             ),
-                            SizedBox(width: 8),
                             ElevatedButton(
                               onPressed: () {
-                                // Add logic for marking dose as used
+                                FirebaseFirestore.instance
+                                    .collection('accepted')
+                                    .doc(document.id)
+                                    .update({
+                                  'doza_iskoristena': true,
+                                }).then((value) {
+                                  print('Doza je iskorištena');
+                                }).catchError((error) {
+                                  print(
+                                      'Greška prilikom označavanja doze kao iskorištene: $error');
+                                });
                               },
-                              child: Text('Doza iskorištena'),
+                              child: Text('Iskorišteno'),
                             ),
-                            SizedBox(width: 8),
                             ElevatedButton(
                               onPressed: () {
                                 showDialog(
                                   context: context,
                                   builder: (BuildContext context) {
                                     return AlertDialog(
-                                      title:
-                                      Text('Unesite količinu donirane doze'),
+                                      title: Text(
+                                          'Unesite količinu donirane doze'),
                                       content: TextField(
                                         controller: quantityController,
                                         keyboardType: TextInputType.number,
@@ -158,11 +176,12 @@ class _DoseEntryPageState extends State<DoseEntryPage> {
                                           onPressed: () {
                                             String quantity =
                                                 quantityController.text;
-                                            int existingQuantity =
-                                                data['kolicina_donirane_doze'] ??
-                                                    0;
+                                            int existingQuantity = data[
+                                                    'kolicina_donirane_doze'] ??
+                                                0;
                                             if (quantity.isNotEmpty &&
-                                                int.tryParse(quantity) != null &&
+                                                int.tryParse(quantity) !=
+                                                    null &&
                                                 int.parse(quantity) >=
                                                     existingQuantity &&
                                                 int.parse(quantity) <= 100) {
@@ -171,7 +190,7 @@ class _DoseEntryPageState extends State<DoseEntryPage> {
                                                   .doc(document.id)
                                                   .update({
                                                 'kolicina_donirane_doze':
-                                                int.parse(quantity),
+                                                    int.parse(quantity),
                                               }).then((value) {
                                                 print(
                                                     'Količina donirane doze je unesena');
@@ -190,8 +209,7 @@ class _DoseEntryPageState extends State<DoseEntryPage> {
                                                     'Ne možete unijeti manju količinu od postojeće'),
                                               ));
                                             } else {
-                                              print(
-                                                  'Neispravan unos količine');
+                                              print('Neispravan unos količine');
                                               ScaffoldMessenger.of(context)
                                                   .showSnackBar(SnackBar(
                                                 content: Text(
@@ -206,11 +224,12 @@ class _DoseEntryPageState extends State<DoseEntryPage> {
                                   },
                                 );
                               },
-                              child: Text('Količina donirane doze'),
+                              child: Text('Količina'),
                             ),
                           ],
                         ),
-                      ),
+                        SizedBox(height: 8),
+                      ],
                     );
                   }).toList(),
                 );
