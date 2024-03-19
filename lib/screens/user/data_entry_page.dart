@@ -8,7 +8,7 @@ class DataEntryPage extends StatelessWidget {
   final TextEditingController _emailController;
   final TextEditingController _genderController = TextEditingController();
   final TextEditingController _uniqueCitizensIdController =
-      TextEditingController();
+  TextEditingController();
   final TextEditingController _dateOfBirthController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _cityController = TextEditingController();
@@ -40,22 +40,26 @@ class DataEntryPage extends StatelessWidget {
           .get();
       print("User Snapshot: $userSnapshot");
 
-      final userId = userSnapshot.docs.first.id;
-      print("UserID: $userId");
 
-      await firestore.collection('users').doc(userId).update({
-        'name': name,
-        'surname': surname,
-        'email': email,
-        'unique_citizens_id': uniqueCitizensId,
-        'dateOfBirth': dateOfBirth,
-        'address': address,
-        'city': city,
-        'phoneNumber': phoneNumber,
-        'bloodType': bloodType,
-        'gender': gender,
-        'isFirstLogin': false,
-      });
+      if (userSnapshot.docs.isNotEmpty) {
+        final userId = userSnapshot.docs.first.id;
+        print("UserID: $userId");
+
+        await firestore.collection('users').doc(userId).update({
+          'name': name,
+          'surname': surname,
+          'email': email,
+          'unique_citizens_id': uniqueCitizensId,
+          'dateOfBirth': dateOfBirth,
+          'address': address,
+          'city': city,
+          'phoneNumber': phoneNumber,
+          'bloodType': bloodType,
+          'gender': gender,
+          'isFirstLogin': false,
+        });
+
+      }
 
       print('Data successfully saved to Firestore.');
 
@@ -125,8 +129,8 @@ class DataEntryPage extends StatelessWidget {
 
   Widget _buildTextField(
       {required String labelText,
-      required TextEditingController controller,
-      bool readOnly = false}) {
+        required TextEditingController controller,
+        bool readOnly = false}) {
     return Container(
       margin: EdgeInsets.only(bottom: 10.0),
       child: TextFormField(
