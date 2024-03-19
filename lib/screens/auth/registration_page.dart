@@ -1,11 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_pw_validator/flutter_pw_validator.dart';
 import 'package:crypto/crypto.dart';
-import 'package:sustav_za_transfuziologiju/screens/auth/login_page.dart';
-import 'dart:convert';
-
 import 'package:sustav_za_transfuziologiju/screens/enums/user_role.dart';
+import 'dart:convert';
+import 'package:sustav_za_transfuziologiju/screens/user/data_entry_page.dart';
 
 class RegistrationPage extends StatefulWidget {
   @override
@@ -15,10 +15,10 @@ class RegistrationPage extends StatefulWidget {
 class _RegistrationPageState extends State<RegistrationPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
   bool _isPasswordValid = false;
   bool _isPasswordVisible = false;
+  bool _isConfirmPasswordVisible = false;
 
   @override
   Widget build(BuildContext context) {
@@ -113,9 +113,22 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   controller: _confirmPasswordController,
                   decoration: InputDecoration(
                     labelText: 'Ponovite lozinku',
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
+                        });
+                      },
+                      icon: Icon(
+                        _isConfirmPasswordVisible
+                            ? Icons.visibility
+                            : Icons.visibility_off,
+                      ),
+                    ),
                   ),
-                  obscureText: true,
+                  obscureText: !_isConfirmPasswordVisible,
                 ),
+
                 SizedBox(height: 20.0),
                 ElevatedButton(
                   onPressed: () async {
@@ -171,17 +184,21 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         'role': UserRole.USER.toString().split('.').last,
                         'isFirstLogin': true,
                       });
+
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text('Uspješno ste se registrirali!'),
+                          duration: Duration(seconds: 2),
                         ),
                       );
-                      Future.delayed(Duration(seconds: 1), () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(builder: (context) => LoginPage()),
-                        );
-                      });
+
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DataEntryPage(userEmail: _usernameController.text),
+                        ),
+                      );
+
                     } catch (e) {
                       print("Greška prilikom registracije $e");
                     }
