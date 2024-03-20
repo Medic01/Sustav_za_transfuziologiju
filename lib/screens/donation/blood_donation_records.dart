@@ -16,11 +16,9 @@ class BloodDonationRecords extends StatelessWidget {
           if (snapshot.hasError) {
             return Text('An error occurred: ${snapshot.error}');
           }
-
           if (snapshot.connectionState == ConnectionState.waiting) {
             return CircularProgressIndicator();
           }
-
           return ListView(
             children: snapshot.data!.docs.map((DocumentSnapshot document) {
               Map<String, dynamic> data =
@@ -51,7 +49,6 @@ class BloodDonationRecords extends StatelessWidget {
                             .collection('blood_donation');
                         CollectionReference acceptedRef =
                             FirebaseFirestore.instance.collection('accepted');
-
                         // Stvaranje novog dokumenta u kolekciji "accepted"
                         acceptedRef.add({
                           'blood_donation_location':
@@ -61,6 +58,7 @@ class BloodDonationRecords extends StatelessWidget {
                           'hemoglobin': data['hemoglobin'],
                           'name_of_doctor': data['name_of_doctor'],
                           'blood_type': data['blood_type'],
+                          'userId': data['userId'],
                         }).then((value) {
                           // Uklonite ili ažurirajte izvorni dokument u kolekciji "blood_donation"
                           bloodDonationRef
@@ -82,7 +80,6 @@ class BloodDonationRecords extends StatelessWidget {
                             FirebaseFirestore.instance
                                 .collection('blood_donation')
                                 .doc(document.id);
-
                         // Brisanje dokumenta iz baze podataka
                         bloodDonationDocRef.delete().then((value) {
                           print('Document successfully deleted');

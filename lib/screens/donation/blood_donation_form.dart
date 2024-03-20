@@ -17,13 +17,12 @@ class BloodDonationForm extends StatelessWidget {
       TextEditingController();
   final TextEditingController _bloodTypeController =
       TextEditingController(); // Dodajemo kontroler za krvnu grupu
-
+  final TextEditingController _userIdController = TextEditingController();
   // Mask formatter for the date field
   final MaskTextInputFormatter _dateMaskFormatter = MaskTextInputFormatter(
     mask: '##/##/####',
     filter: {"#": RegExp(r'[0-9]')},
   );
-
   void saveDataToFirestore({
     required String date,
     required String place,
@@ -34,10 +33,10 @@ class BloodDonationForm extends StatelessWidget {
     required bool donationRejected,
     required String rejectionReason,
     required String bloodType, // Dodajemo bloodType kao argument
+    required String userId,
   }) async {
     try {
       FirebaseFirestore firestore = FirebaseFirestore.instance;
-
       await firestore.collection('blood_donation').add({
         'blood_donation_location': place,
         'date_od_donation': date,
@@ -46,8 +45,8 @@ class BloodDonationForm extends StatelessWidget {
         'name_of_doctor': doctorName,
         'technicianName': technicianName,
         'blood_type': bloodType, // Dodajemo krvnu grupu u dokument
+        'userId': userId,
       });
-
       print('Data successfully saved to Firestore.');
     } catch (error) {
       print('Error saving data: $error');
@@ -78,6 +77,10 @@ class BloodDonationForm extends StatelessWidget {
             _buildTextField(
               labelText: 'Place',
               controller: _placeController,
+            ),
+            _buildTextField(
+              labelText: 'User ID',
+              controller: _userIdController,
             ),
             _buildTextField(
               labelText: 'Doctor Name',
@@ -155,8 +158,8 @@ class BloodDonationForm extends StatelessWidget {
             rejectionReason: _rejectionReasonController.text,
             bloodType:
                 _bloodTypeController.text, // Prosleđujemo unetu krvnu grupu
+            userId: _userIdController.text,
           );
-
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => BloodDonationRecords()),

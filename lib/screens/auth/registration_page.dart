@@ -6,6 +6,7 @@ import 'package:crypto/crypto.dart';
 import 'package:sustav_za_transfuziologiju/screens/enums/user_role.dart';
 import 'dart:convert';
 import 'package:sustav_za_transfuziologiju/screens/user/data_entry_page.dart';
+import 'package:sustav_za_transfuziologiju/screens/auth/login_page.dart';
 
 class RegistrationPage extends StatefulWidget {
   @override
@@ -15,10 +16,17 @@ class RegistrationPage extends StatefulWidget {
 class _RegistrationPageState extends State<RegistrationPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
   bool _isPasswordValid = false;
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
+  String generateUserId(String email) {
+    // Koristimo SHA-1 hash funkciju za generiranje jedinstvenog userId-a
+    var bytes = utf8.encode(email);
+    var digest = sha1.convert(bytes);
+    return digest.toString();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -116,7 +124,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     suffixIcon: IconButton(
                       onPressed: () {
                         setState(() {
-                          _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
+                          _isConfirmPasswordVisible =
+                              !_isConfirmPasswordVisible;
                         });
                       },
                       icon: Icon(
@@ -128,7 +137,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   ),
                   obscureText: !_isConfirmPasswordVisible,
                 ),
-
                 SizedBox(height: 20.0),
                 ElevatedButton(
                   onPressed: () async {
@@ -175,30 +183,31 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         );
                         return;
                       }
+                      // Generiraj jedinstveni userId koristeći email adrese
+                      final userId = generateUserId(_usernameController.text);
                       await FirebaseFirestore.instance
                           .collection('users')
                           .doc()
                           .set({
+                        'userId': userId,
                         'email': _usernameController.text,
                         'password': passwordHash,
                         'role': UserRole.USER.toString().split('.').last,
                         'isFirstLogin': true,
                       });
-
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text('Uspješno ste se registrirali!'),
                           duration: Duration(seconds: 2),
                         ),
                       );
-
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => DataEntryPage(userEmail: _usernameController.text),
+                          builder: (context) => DataEntryPage(
+                              userEmail: _usernameController.text),
                         ),
                       );
-
                     } catch (e) {
                       print("Greška prilikom registracije $e");
                     }
