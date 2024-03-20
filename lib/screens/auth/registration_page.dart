@@ -6,7 +6,6 @@ import 'package:crypto/crypto.dart';
 import 'package:sustav_za_transfuziologiju/screens/enums/user_role.dart';
 import 'dart:convert';
 import 'package:sustav_za_transfuziologiju/screens/user/data_entry_page.dart';
-import 'package:sustav_za_transfuziologiju/screens/auth/login_page.dart';
 
 class RegistrationPage extends StatefulWidget {
   @override
@@ -205,7 +204,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => DataEntryPage(
-                              userEmail: _usernameController.text),
+                              email: _usernameController.text),
                         ),
                       );
                     } catch (e) {
