@@ -85,7 +85,7 @@ class _LoginPageState extends State<LoginPage> {
                           final storedPasswordHash = userData['password'];
 
                           final passwordHash =
-                              generateHash(_passwordController.text);
+                          generateHash(_passwordController.text);
 
                           if (passwordHash == storedPasswordHash) {
                             final role = userData['role'];
@@ -125,10 +125,9 @@ class _LoginPageState extends State<LoginPage> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => DataEntryPage(
-                                            email: _emailController.text,
-                                          )),
+                                        email: _emailController.text,
+                                      )),
                                 );
-
                               } else {
                                 Navigator.pushReplacement(
                                   context,
@@ -142,7 +141,7 @@ class _LoginPageState extends State<LoginPage> {
                         }
 
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
+                          const SnackBar(
                             content: Text('Incorrect email or password.'),
                             duration: Duration(seconds: 2),
                           ),
