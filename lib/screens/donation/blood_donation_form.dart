@@ -1,28 +1,32 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; // Importamo paket flutter/services
+import 'package:flutter/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import '../enums/blood_types.dart';
+import '../widgets/blood_type_dropdown.dart';
 import 'blood_donation_records.dart';
 
-class BloodDonationForm extends StatelessWidget {
+class BloodDonationForm extends StatefulWidget {
+  @override
+  _BloodDonationFormState createState() => _BloodDonationFormState();
+}
+
+class _BloodDonationFormState extends State<BloodDonationForm> {
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _placeController = TextEditingController();
   final TextEditingController _doctorNameController = TextEditingController();
-  final TextEditingController _technicianNameController =
-      TextEditingController();
+  final TextEditingController _technicianNameController = TextEditingController();
   final TextEditingController _hemoglobinController = TextEditingController();
-  final TextEditingController _bloodPressureController =
-      TextEditingController();
-  final TextEditingController _rejectionReasonController =
-      TextEditingController();
-  final TextEditingController _bloodTypeController =
-      TextEditingController(); // Dodajemo kontroler za krvnu grupu
-  final TextEditingController _userIdController = TextEditingController();
-  // Mask formatter for the date field
+  final TextEditingController _bloodPressureController = TextEditingController();
+  final TextEditingController _rejectionReasonController = TextEditingController();
+
   final MaskTextInputFormatter _dateMaskFormatter = MaskTextInputFormatter(
     mask: '##/##/####',
     filter: {"#": RegExp(r'[0-9]')},
   );
+
+  BloodTypes? _selectedBloodType;
+
   void saveDataToFirestore({
     required String date,
     required String place,
@@ -32,11 +36,11 @@ class BloodDonationForm extends StatelessWidget {
     required String bloodPressure,
     required bool donationRejected,
     required String rejectionReason,
-    required String bloodType, // Dodajemo bloodType kao argument
-    required String userId,
+    required BloodTypes? bloodType,
   }) async {
     try {
       FirebaseFirestore firestore = FirebaseFirestore.instance;
+
       await firestore.collection('blood_donation').add({
         'blood_donation_location': place,
         'date_od_donation': date,
@@ -44,9 +48,9 @@ class BloodDonationForm extends StatelessWidget {
         'hemoglobin': hemoglobin,
         'name_of_doctor': doctorName,
         'technicianName': technicianName,
-        'blood_type': bloodType, // Dodajemo krvnu grupu u dokument
-        'userId': userId,
+        'blood_type': bloodType.toString().split('.').last,
       });
+
       print('Data successfully saved to Firestore.');
     } catch (error) {
       print('Error saving data: $error');
@@ -64,11 +68,11 @@ class BloodDonationForm extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text(
+            const Text(
               'Fill in the blood donation control details:',
               style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 20.0),
+            const SizedBox(height: 20.0),
             _buildTextField(
               labelText: 'Date',
               controller: _dateController,
@@ -77,10 +81,6 @@ class BloodDonationForm extends StatelessWidget {
             _buildTextField(
               labelText: 'Place',
               controller: _placeController,
-            ),
-            _buildTextField(
-              labelText: 'User ID',
-              controller: _userIdController,
             ),
             _buildTextField(
               labelText: 'Doctor Name',
@@ -98,12 +98,15 @@ class BloodDonationForm extends StatelessWidget {
               labelText: 'Blood Pressure',
               controller: _bloodPressureController,
             ),
-            _buildTextField(
-              labelText: 'Blood Type', // Dodajemo labelu za krvnu grupu
-              controller:
-                  _bloodTypeController, // Dodajemo kontroler za krvnu grupu
+            BloodTypeDropdown(
+              onChanged: (BloodTypes? newValue) {
+                setState(() {
+                  _selectedBloodType = newValue;
+                });
+              },
+              value: _selectedBloodType, // Set the initial value
             ),
-            Row(
+            const Row(
               children: [
                 Text('Donation Rejected: '),
                 Checkbox(
@@ -130,13 +133,13 @@ class BloodDonationForm extends StatelessWidget {
     List<TextInputFormatter>? inputFormatter,
   }) {
     return Container(
-      margin: EdgeInsets.only(bottom: 10.0),
+      margin: const EdgeInsets.only(bottom: 10.0),
       child: TextField(
         controller: controller,
-        inputFormatters: inputFormatter, // Set input formatter here
+        inputFormatters: inputFormatter,
         decoration: InputDecoration(
           labelText: labelText,
-          border: OutlineInputBorder(),
+          border: const OutlineInputBorder(),
         ),
       ),
     );
@@ -156,16 +159,15 @@ class BloodDonationForm extends StatelessWidget {
             bloodPressure: _bloodPressureController.text,
             donationRejected: false,
             rejectionReason: _rejectionReasonController.text,
-            bloodType:
-                _bloodTypeController.text, // Prosleđujemo unetu krvnu grupu
-            userId: _userIdController.text,
+            bloodType: _selectedBloodType,
           );
+
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => BloodDonationRecords()),
           );
         },
-        child: Text('Save'),
+        child: const Text('Save'),
       ),
     );
   }
