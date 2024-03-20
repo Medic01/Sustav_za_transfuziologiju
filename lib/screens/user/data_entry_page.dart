@@ -1,22 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sustav_za_transfuziologiju/welcome_page.dart';
+import '../enums/blood_types.dart';
+import '../widgets/blood_type_dropdown.dart';
 
-class DataEntryPage extends StatelessWidget {
+class DataEntryPage extends StatefulWidget {
+  final String email;
+
+  DataEntryPage({required this.email});
+
+  @override
+  _DataEntryPageState createState() => _DataEntryPageState();
+}
+
+class _DataEntryPageState extends State<DataEntryPage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _surnameController = TextEditingController();
-  final TextEditingController _emailController;
-  final TextEditingController _genderController = TextEditingController();
-  final TextEditingController _uniqueCitizensIdController =
-  TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _uniqueCitizensIdController = TextEditingController();
   final TextEditingController _dateOfBirthController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _cityController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
-  final TextEditingController _bloodTypeController = TextEditingController();
+  BloodTypes? _selectedBloodType;
+  String _selectedGender = 'Male';
+  List<String> _genderOptions = ['Male', 'Female'];
 
-  DataEntryPage({required String userEmail})
-      : _emailController = TextEditingController(text: userEmail);
+  @override
+  void initState() {
+    super.initState();
+    _emailController.text = widget.email;
+  }
 
   void saveDataToFirestore({
     required String name,
@@ -27,7 +41,7 @@ class DataEntryPage extends StatelessWidget {
     required String address,
     required String city,
     required String phoneNumber,
-    required String bloodType,
+    required BloodTypes? bloodType,
     required String gender,
     required BuildContext context,
   }) async {
@@ -39,7 +53,6 @@ class DataEntryPage extends StatelessWidget {
           .where('email', isEqualTo: email)
           .get();
       print("User Snapshot: $userSnapshot");
-
 
       if (userSnapshot.docs.isNotEmpty) {
         final userId = userSnapshot.docs.first.id;
@@ -54,11 +67,10 @@ class DataEntryPage extends StatelessWidget {
           'address': address,
           'city': city,
           'phoneNumber': phoneNumber,
-          'bloodType': bloodType,
+          'bloodType': bloodType?.toString().split('.').last,
           'gender': gender,
           'isFirstLogin': false,
         });
-
       }
 
       print('Data successfully saved to Firestore.');
@@ -66,7 +78,7 @@ class DataEntryPage extends StatelessWidget {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
+          return const AlertDialog(
             title: Text("Successfully saved"),
           );
         },
@@ -87,39 +99,45 @@ class DataEntryPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Home Page'),
+        title: const Text('Home Page'),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text(
+            const Text(
               'Fill in your details:',
               style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 20.0),
+            const SizedBox(height: 20.0),
             _buildTextField(labelText: 'Name', controller: _nameController),
-            _buildTextField(
-                labelText: 'Surname', controller: _surnameController),
-            _buildTextField(
-                labelText: 'Email',
-                controller: _emailController,
-                readOnly: true),
-            _buildTextField(
-                labelText: 'Unique Citizens ID',
-                controller: _uniqueCitizensIdController),
-            _buildTextField(
-                labelText: 'Date of Birth', controller: _dateOfBirthController),
-            _buildTextField(labelText: 'Gender', controller: _genderController),
-            _buildTextField(
-                labelText: 'Address', controller: _addressController),
+            _buildTextField(labelText: 'Surname', controller: _surnameController),
+            _buildTextField(labelText: 'Email', controller: _emailController, readOnly: true),
+            _buildTextField(labelText: 'Unique Citizens ID', controller: _uniqueCitizensIdController),
+            _buildTextField(labelText: 'Date of Birth', controller: _dateOfBirthController),
+            _buildGenderDropdownField(labelText: 'Gender', value: _selectedGender, onChanged: (value) {
+              setState(() {
+                _selectedGender = value!;
+              });
+            }, items: _genderOptions.map<DropdownMenuItem<String>>((String gender) {
+              return DropdownMenuItem<String>(
+                value: gender,
+                child: Text(gender),
+              );
+            }).toList()),
+            _buildTextField(labelText: 'Address', controller: _addressController),
             _buildTextField(labelText: 'City', controller: _cityController),
-            _buildTextField(
-                labelText: 'Phone Number', controller: _phoneNumberController),
-            _buildTextField(
-                labelText: 'Blood Type', controller: _bloodTypeController),
-            SizedBox(height: 20.0),
+            _buildTextField(labelText: 'Phone Number', controller: _phoneNumberController),
+            BloodTypeDropdown(
+              onChanged: (newValue) {
+                setState(() {
+                  _selectedBloodType = newValue;
+                });
+              },
+              value: _selectedBloodType,
+            ),
+            const SizedBox(height: 20.0),
             _buildSaveButton(context),
           ],
         ),
@@ -127,19 +145,36 @@ class DataEntryPage extends StatelessWidget {
     );
   }
 
-  Widget _buildTextField(
-      {required String labelText,
-        required TextEditingController controller,
-        bool readOnly = false}) {
+  Widget _buildTextField({required String labelText, required TextEditingController controller, bool readOnly = false}) {
     return Container(
-      margin: EdgeInsets.only(bottom: 10.0),
+      margin: const EdgeInsets.only(bottom: 10.0),
       child: TextFormField(
         controller: controller,
         readOnly: readOnly,
         decoration: InputDecoration(
           labelText: labelText,
-          border: OutlineInputBorder(),
+          border: const OutlineInputBorder(),
         ),
+      ),
+    );
+  }
+
+  Widget _buildGenderDropdownField({
+    required String labelText,
+    required String value,
+    required ValueChanged<String?> onChanged,
+    required List<DropdownMenuItem<String>> items,
+  }) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10.0),
+      child: DropdownButtonFormField<String>(
+        decoration: InputDecoration(
+          labelText: labelText,
+          border: const OutlineInputBorder(),
+        ),
+        value: value,
+        onChanged: onChanged,
+        items: items,
       ),
     );
   }
@@ -154,16 +189,16 @@ class DataEntryPage extends StatelessWidget {
             surname: _surnameController.text,
             email: _emailController.text,
             uniqueCitizensId: _uniqueCitizensIdController.text,
-            gender: _genderController.text,
+            gender: _selectedGender,
             dateOfBirth: _dateOfBirthController.text,
             address: _addressController.text,
             city: _cityController.text,
             phoneNumber: _phoneNumberController.text,
-            bloodType: _bloodTypeController.text,
+            bloodType: _selectedBloodType,
             context: context,
           );
         },
-        child: Text('Save'),
+        child: const Text('Save'),
       ),
     );
   }

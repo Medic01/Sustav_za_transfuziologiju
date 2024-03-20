@@ -195,7 +195,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => DataEntryPage(userEmail: _usernameController.text),
+                          builder: (context) => DataEntryPage(email: _usernameController.text),
                         ),
                       );
 
