@@ -1,8 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sustav_za_transfuziologiju/welcome_page.dart';
 import '../enums/blood_types.dart';
-import '../widgets/blood_type_dropdown.dart';
+import '../widgets/blood_type_dropdown_widget.dart';
+import '../widgets/date_picker_widget.dart';
 
 class DataEntryPage extends StatefulWidget {
   final String email;
@@ -115,7 +117,7 @@ class _DataEntryPageState extends State<DataEntryPage> {
             _buildTextField(labelText: 'Surname', controller: _surnameController),
             _buildTextField(labelText: 'Email', controller: _emailController, readOnly: true),
             _buildTextField(labelText: 'Unique Citizens ID', controller: _uniqueCitizensIdController),
-            _buildTextField(labelText: 'Date of Birth', controller: _dateOfBirthController),
+            DatePickerWidget(controller: _dateOfBirthController),
             _buildGenderDropdownField(labelText: 'Gender', value: _selectedGender, onChanged: (value) {
               setState(() {
                 _selectedGender = value!;
@@ -129,7 +131,7 @@ class _DataEntryPageState extends State<DataEntryPage> {
             _buildTextField(labelText: 'Address', controller: _addressController),
             _buildTextField(labelText: 'City', controller: _cityController),
             _buildTextField(labelText: 'Phone Number', controller: _phoneNumberController),
-            BloodTypeDropdown(
+            BloodTypeDropdownWidget(
               onChanged: (newValue) {
                 setState(() {
                   _selectedBloodType = newValue;
@@ -158,7 +160,6 @@ class _DataEntryPageState extends State<DataEntryPage> {
       ),
     );
   }
-
   Widget _buildGenderDropdownField({
     required String labelText,
     required String value,
@@ -166,7 +167,7 @@ class _DataEntryPageState extends State<DataEntryPage> {
     required List<DropdownMenuItem<String>> items,
   }) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 10.0),
+      margin: const EdgeInsets.only(top: 10.0, bottom: 10.0),
       child: DropdownButtonFormField<String>(
         decoration: InputDecoration(
           labelText: labelText,
