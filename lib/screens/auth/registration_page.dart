@@ -1,11 +1,10 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_pw_validator/flutter_pw_validator.dart';
 import 'package:crypto/crypto.dart';
-import 'package:sustav_za_transfuziologiju/screens/enums/user_role.dart';
+import '../enums/user_role.dart';
 import 'dart:convert';
-import 'package:sustav_za_transfuziologiju/screens/user/data_entry_page.dart';
+import '../user/data_entry_page.dart';
 
 class RegistrationPage extends StatefulWidget {
   @override
@@ -20,8 +19,26 @@ class _RegistrationPageState extends State<RegistrationPage> {
   bool _isPasswordValid = false;
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
+  bool _isPasswordFocused = false;
+  FocusNode _passwordFocusNode = FocusNode();
+
+  @override
+  void dispose() {
+    _passwordFocusNode.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _passwordFocusNode.addListener(() {
+      setState(() {
+        _isPasswordFocused = _passwordFocusNode.hasFocus;
+      });
+    });
+  }
+
   String generateUserId(String email) {
-    // Koristimo SHA-1 hash funkciju za generiranje jedinstvenog userId-a
     var bytes = utf8.encode(email);
     var digest = sha1.convert(bytes);
     return digest.toString();
@@ -45,7 +62,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Registracija'),
+        title: const Text('Registracija'),
       ),
       body: SingleChildScrollView(
         child: Center(
@@ -56,12 +73,13 @@ class _RegistrationPageState extends State<RegistrationPage> {
               children: <Widget>[
                 TextField(
                   controller: _usernameController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Korisničko ime (Email)',
                   ),
                 ),
-                SizedBox(height: 20.0),
+                const SizedBox(height: 20.0),
                 TextField(
+                  focusNode: _passwordFocusNode,
                   controller: _passwordController,
                   decoration: InputDecoration(
                     labelText: 'Lozinka',
@@ -79,43 +97,56 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     ),
                   ),
                   obscureText: !_isPasswordVisible,
-                ),
-                SizedBox(height: 20.0),
-                FlutterPwValidator(
-                  controller: _passwordController,
-                  minLength: 6,
-                  uppercaseCharCount: 1,
-                  numericCharCount: 1,
-                  specialCharCount: 1,
-                  normalCharCount: 3,
-                  width: 200,
-                  height: 100,
-                  onSuccess: () {
-                    if (!_isPasswordValid) {
-                      setState(() {
-                        _isPasswordValid = true;
-                      });
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Lozinka je valjana!'),
-                        ),
-                      );
-                    }
+                  onTap: () {
+                    setState(() {
+                      _isPasswordFocused = true;
+                    });
                   },
-                  onFail: () {
-                    if (_isPasswordValid) {
-                      setState(() {
-                        _isPasswordValid = false;
-                      });
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Lozinka nije valjana!'),
-                        ),
-                      );
-                    }
+
+                  onChanged: (_) {
+                    setState(() {
+                      _isPasswordValid = false;
+                    });
                   },
                 ),
-                SizedBox(height: 20.0),
+                const SizedBox(height: 20.0),
+
+                if (_isPasswordFocused)
+                  FlutterPwValidator(
+                    controller: _passwordController,
+                    minLength: 6,
+                    uppercaseCharCount: 1,
+                    numericCharCount: 1,
+                    specialCharCount: 1,
+                    normalCharCount: 3,
+                    width: 200,
+                    height: 100,
+                    onSuccess: () {
+                      if (!_isPasswordValid) {
+                        setState(() {
+                          _isPasswordValid = true;
+                        });
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Lozinka je valjana!'),
+                          ),
+                        );
+                      }
+                    },
+                    onFail: () {
+                      if (_isPasswordValid) {
+                        setState(() {
+                          _isPasswordValid = false;
+                        });
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Lozinka nije valjana!'),
+                          ),
+                        );
+                      }
+                    },
+                  ),
+                const SizedBox(height: 20.0),
                 TextField(
                   controller: _confirmPasswordController,
                   decoration: InputDecoration(
@@ -136,7 +167,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   ),
                   obscureText: !_isConfirmPasswordVisible,
                 ),
-                SizedBox(height: 20.0),
+                const SizedBox(height: 20.0),
                 ElevatedButton(
                   onPressed: () async {
                     if (_usernameController.text.isEmpty ||
@@ -211,7 +242,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       print("Greška prilikom registracije $e");
                     }
                   },
-                  child: Text('Registrirajte se'),
+                  child: const Text('Registrirajte se'),
                 ),
               ],
             ),
