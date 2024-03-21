@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sustav_za_transfuziologiju/main.dart';
 import 'package:sustav_za_transfuziologiju/screens/user/user_home_page.dart';
+import 'package:sustav_za_transfuziologiju/screens/user/blood_donation_reservation_page.dart';
 
 class WelcomePage extends StatelessWidget {
   @override
@@ -27,6 +28,18 @@ class WelcomePage extends StatelessWidget {
                 );
               },
               child: Text('Go to User Home'),
+            ),
+            SizedBox(height: 10.0), // Dodajemo razmak od 10.0 visine
+            ElevatedButton(
+              onPressed: () {
+                // Navigate to BloodDonationReservationPage
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => BloodDonationReservationPage()),
+                );
+              },
+              child: Text('Reserve a Date for Blood Donation'),
             ),
           ],
         ),
