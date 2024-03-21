@@ -36,6 +36,8 @@ class BloodDonationRecords extends StatelessWidget {
                     Text('hemoglobin ${data['hemoglobin']}'),
                     Text('name_of_doctor ${data['name_of_doctor']}'),
                     Text('blood_type: ${data['blood_type']}'),
+                    Text('donor_name: ${data['donor_name']}'),
+                    Text('Tehnician Name: ${data['technicianName']}'),
                   ],
                 ),
                 trailing: Row(
@@ -59,11 +61,20 @@ class BloodDonationRecords extends StatelessWidget {
                           'name_of_doctor': data['name_of_doctor'],
                           'blood_type': data['blood_type'],
                           'userId': data['userId'],
+                          'donor_name': data['donor_name'],
                         }).then((value) {
                           // Uklonite ili ažurirajte izvorni dokument u kolekciji "blood_donation"
                           bloodDonationRef
                               .doc(document.id)
                               .delete(); // Ili .update() za ažuriranje statusa
+
+                          // Navigacija na stranicu DoseEntryPage
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    DoseEntryPage()), // Pretpostavljajući da postoji DoseEntryPage widget
+                          );
                         }).catchError((error) {
                           // Obrada grešaka ako dođe do problema s dodavanjem u kolekciju "accepted"
                           print(

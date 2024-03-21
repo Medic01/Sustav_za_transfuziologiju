@@ -4,7 +4,9 @@ import 'package:sustav_za_transfuziologiju/main.dart';
 import 'package:sustav_za_transfuziologiju/screens/donation/blood_donation_form.dart';
 import 'package:sustav_za_transfuziologiju/screens/donation/blood_donation_records.dart';
 import 'package:sustav_za_transfuziologiju/screens/donation/dose_entry_page.dart';
+import 'package:sustav_za_transfuziologiju/screens/donation/reservations.dart';
 import 'package:sustav_za_transfuziologiju/screens/user/user_home_page.dart';
+import 'package:sustav_za_transfuziologiju/welcome_page.dart';
 
 class AdminPage extends StatelessWidget {
   @override
@@ -26,20 +28,20 @@ class AdminPage extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => UserHomePage()),
+                  MaterialPageRoute(builder: (context) => Reservations()),
                 );
               },
-              child: Text('Go to Start Page'),
+              child: Text('Donor Reservations'),
             ),
             SizedBox(height: 10.0),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => BloodDonationForm()),
+                  MaterialPageRoute(builder: (context) => WelcomePage()),
                 );
               },
-              child: Text('Go to Blood Donation Form'),
+              child: Text('vicemo sta cemo s ovim'),
             ),
             SizedBox(height: 10.0),
             ElevatedButton(

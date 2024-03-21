@@ -8,25 +8,43 @@ import '../widgets/blood_type_dropdown_widget.dart';
 import 'blood_donation_records.dart';
 
 class BloodDonationForm extends StatefulWidget {
+  final String date;
+  final String donorName;
+  final String bloodType;
+
+  BloodDonationForm({
+    required this.date,
+    required this.donorName,
+    required this.bloodType,
+  });
+
   @override
   _BloodDonationFormState createState() => _BloodDonationFormState();
 }
 
 class _BloodDonationFormState extends State<BloodDonationForm> {
   final TextEditingController _dateController = TextEditingController();
+  final TextEditingController _donorNameController = TextEditingController();
+  BloodTypes? _selectedBloodType;
   final TextEditingController _placeController = TextEditingController();
   final TextEditingController _doctorNameController = TextEditingController();
-  final TextEditingController _technicianNameController = TextEditingController();
+  final TextEditingController _technicianNameController =
+      TextEditingController();
   final TextEditingController _hemoglobinController = TextEditingController();
-  final TextEditingController _bloodPressureController = TextEditingController();
-  final TextEditingController _rejectionReasonController = TextEditingController();
+  final TextEditingController _bloodPressureController =
+      TextEditingController();
+  final TextEditingController _rejectionReasonController =
+      TextEditingController();
 
-  final MaskTextInputFormatter _dateMaskFormatter = MaskTextInputFormatter(
-    mask: '##/##/####',
-    filter: {"#": RegExp(r'[0-9]')},
-  );
-
-  BloodTypes? _selectedBloodType;
+  @override
+  void initState() {
+    super.initState();
+    _dateController.text = widget.date;
+    _donorNameController.text = widget.donorName;
+    _selectedBloodType = BloodTypes.values.firstWhere(
+      (element) => element.toString().split('.').last == widget.bloodType,
+    );
+  }
 
   void saveDataToFirestore({
     required String date,
@@ -38,6 +56,7 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
     required bool donationRejected,
     required String rejectionReason,
     required BloodTypes? bloodType,
+    required String donorName,
   }) async {
     try {
       FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -50,9 +69,14 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
         'name_of_doctor': doctorName,
         'technicianName': technicianName,
         'blood_type': bloodType.toString().split('.').last,
+        'donor_name': donorName,
       });
 
       print('Data successfully saved to Firestore.');
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => BloodDonationRecords()),
+      );
     } catch (error) {
       print('Error saving data: $error');
     }
@@ -76,24 +100,28 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
             const SizedBox(height: 20.0),
             DatePickerWidget(controller: _dateController),
             _buildTextField(
+              labelText: 'Donor Name',
+              controller: _donorNameController,
+            ),
+            _buildTextField(
               labelText: 'Place',
-              controller: _placeController,
+              controller: _placeController, // Add your controller here
             ),
             _buildTextField(
               labelText: 'Doctor Name',
-              controller: _doctorNameController,
+              controller: _doctorNameController, // Add your controller here
             ),
             _buildTextField(
               labelText: 'Technician Name',
-              controller: _technicianNameController,
+              controller: _technicianNameController, // Add your controller here
             ),
             _buildTextField(
               labelText: 'Hemoglobin (g/dL)',
-              controller: _hemoglobinController,
+              controller: _hemoglobinController, // Add your controller here
             ),
             _buildTextField(
               labelText: 'Blood Pressure',
-              controller: _bloodPressureController,
+              controller: _bloodPressureController, // Add your controller here
             ),
             BloodTypeDropdownWidget(
               onChanged: (BloodTypes? newValue) {
@@ -114,7 +142,8 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
             ),
             _buildTextField(
               labelText: 'Rejection Reason',
-              controller: _rejectionReasonController,
+              controller:
+                  _rejectionReasonController, // Add your controller here
             ),
             SizedBox(height: 20.0),
             _buildSaveButton(context),
@@ -130,7 +159,7 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
     List<TextInputFormatter>? inputFormatter,
   }) {
     return Container(
-      margin: const EdgeInsets.only(top:10.0),
+      margin: const EdgeInsets.only(top: 10.0),
       child: TextField(
         controller: controller,
         inputFormatters: inputFormatter,
@@ -149,19 +178,18 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
         onPressed: () {
           saveDataToFirestore(
             date: _dateController.text,
-            place: _placeController.text,
-            doctorName: _doctorNameController.text,
-            technicianName: _technicianNameController.text,
-            hemoglobin: _hemoglobinController.text,
-            bloodPressure: _bloodPressureController.text,
+            place: _placeController.text, // Add your place here
+            doctorName: _doctorNameController.text, // Add your doctor name here
+            technicianName:
+                _technicianNameController.text, // Add your technician name here
+            hemoglobin: _hemoglobinController.text, // Add your hemoglobin here
+            bloodPressure:
+                _bloodPressureController.text, // Add your blood pressure here
             donationRejected: false,
-            rejectionReason: _rejectionReasonController.text,
+            rejectionReason: _rejectionReasonController
+                .text, // Add your rejection reason here
             bloodType: _selectedBloodType,
-          );
-
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => BloodDonationRecords()),
+            donorName: _donorNameController.text,
           );
         },
         child: const Text('Save'),

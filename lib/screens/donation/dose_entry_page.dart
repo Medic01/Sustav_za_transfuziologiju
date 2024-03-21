@@ -33,14 +33,14 @@ class _DoseEntryPageState extends State<DoseEntryPage> {
             },
             items: <String>[
               'All',
-              'A-',
-              'A+',
-              'B-',
-              'B+',
-              'AB+',
-              'AB-',
-              'O+',
-              'O-'
+              'A_POSITIVE',
+              'A_NEGATIVE',
+              'B_POSITIVE',
+              'B_NEGATIVE',
+              'AB_POSITIVE',
+              'AB_NEGATIVE',
+              'O_POSITIVE',
+              'O_NEGATIVE'
             ].map((String value) {
               return DropdownMenuItem<String>(
                 value: value,
@@ -91,6 +91,7 @@ class _DoseEntryPageState extends State<DoseEntryPage> {
                               Text('hemoglobin ${data['hemoglobin']}'),
                               Text('name_of_doctor ${data['name_of_doctor']}'),
                               Text('blood_type ${data['blood_type']}'),
+                              Text('donor_name ${data['donor_name']}'),
                               Text(
                                 'Doza obrađena: ${data['doza_obradjena']}',
                                 style: TextStyle(
