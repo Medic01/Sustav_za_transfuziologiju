@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import '../enums/blood_types.dart';
 
-class BloodTypeDropdown extends StatefulWidget{
+class BloodTypeDropdownWidget extends StatefulWidget{
   final ValueChanged<BloodTypes?> onChanged;
   final BloodTypes? value;
 
-  BloodTypeDropdown({required this.onChanged, required this.value});
+  BloodTypeDropdownWidget({required this.onChanged, required this.value});
 
   @override
-  _BloodTypeDropdownState createState() => _BloodTypeDropdownState();
+  _BloodTypeDropdownWidgetState createState() => _BloodTypeDropdownWidgetState();
 }
 
-class _BloodTypeDropdownState extends State<BloodTypeDropdown> {
+class _BloodTypeDropdownWidgetState extends State<BloodTypeDropdownWidget> {
   BloodTypes? _selectedBloodType;
 
   @override
@@ -23,7 +23,7 @@ class _BloodTypeDropdownState extends State<BloodTypeDropdown> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(bottom: 10.0),
+      margin: EdgeInsets.only(top: 10.0),
       child: DropdownButtonFormField<BloodTypes>(
         decoration: const InputDecoration(
           labelText: 'Blood Type',

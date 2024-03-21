@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import '../widgets/date_picker_widget.dart';
 import '../enums/blood_types.dart';
-import '../widgets/blood_type_dropdown.dart';
+import '../widgets/blood_type_dropdown_widget.dart';
 import 'blood_donation_records.dart';
 
 class BloodDonationForm extends StatefulWidget {
@@ -73,11 +74,7 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
               style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20.0),
-            _buildTextField(
-              labelText: 'Date',
-              controller: _dateController,
-              inputFormatter: [_dateMaskFormatter],
-            ),
+            DatePickerWidget(controller: _dateController),
             _buildTextField(
               labelText: 'Place',
               controller: _placeController,
@@ -98,7 +95,7 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
               labelText: 'Blood Pressure',
               controller: _bloodPressureController,
             ),
-            BloodTypeDropdown(
+            BloodTypeDropdownWidget(
               onChanged: (BloodTypes? newValue) {
                 setState(() {
                   _selectedBloodType = newValue;
@@ -133,7 +130,7 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
     List<TextInputFormatter>? inputFormatter,
   }) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 10.0),
+      margin: const EdgeInsets.only(top:10.0),
       child: TextField(
         controller: controller,
         inputFormatters: inputFormatter,
