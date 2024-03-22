@@ -4,39 +4,56 @@ import 'package:sustav_za_transfuziologiju/screens/admin/admin_welcome_page.dart
 import 'package:sustav_za_transfuziologiju/screens/donation/dose_entry_page.dart';
 import 'package:sustav_za_transfuziologiju/screens/donation/reservations.dart';
 
+class AdminPage extends StatefulWidget {
+  @override
+  _AdminPageState createState() => _AdminPageState();
+}
 
-class AdminPage extends StatelessWidget {
+class _AdminPageState extends State<AdminPage> {
+  int _selectedIndex = 0;
+
+  final List<Widget> _pages = [
+    AdminWelcomePage(),
+    Reservations(),
+    DoseEntryPage(),
+  ];
+
+  void _onTappedItem(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('WELCOME ADMIN!'),
-      ),
+      body: _pages[_selectedIndex],
 
       bottomNavigationBar: BottomAppBar(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
             IconButton(
-              icon: Icon(Icons.list),
+              icon: const Icon(Icons.home),
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Reservations()),
-                );
+                _onTappedItem(0);
+              },
+            ),
+
+            IconButton(
+              icon: const Icon(Icons.list),
+              onPressed: () {
+                _onTappedItem(1);
               },
             ),
             IconButton(
-              icon: Icon(Icons.book),
+              icon: const Icon(Icons.book),
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => DoseEntryPage()),
-                );
+                _onTappedItem(2);
               },
             ),
             IconButton(
-              icon: Icon(Icons.logout_rounded),
+              icon: const Icon(Icons.logout_rounded),
               onPressed: () {
                 Navigator.pushReplacement(
                   context,

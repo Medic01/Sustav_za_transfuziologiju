@@ -6,7 +6,7 @@ class AdminWelcomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('WELCOME ADMIN'),
+        title: const Text('Admin Home Page'),
       ),
 
       body: const Center(
