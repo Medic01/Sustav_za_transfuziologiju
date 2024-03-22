@@ -81,24 +81,78 @@ class BloodDonationRecords extends StatelessWidget {
                               'Error adding document to accepted collection: $error');
                         });
                       },
-                      child: Text('Prihvati'),
+                      child: Text('Accept'),
                     ),
                     SizedBox(width: 8),
                     ElevatedButton(
                       onPressed: () {
-                        // Stvaranje reference za dokument
-                        DocumentReference bloodDonationDocRef =
-                            FirebaseFirestore.instance
-                                .collection('blood_donation')
-                                .doc(document.id);
-                        // Brisanje dokumenta iz baze podataka
-                        bloodDonationDocRef.delete().then((value) {
-                          print('Document successfully deleted');
-                        }).catchError((error) {
-                          print('Error deleting document: $error');
-                        });
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            String declineReason =
+                                ''; // Varijabla za pohranu razloga odbijanja
+
+                            return AlertDialog(
+                              title: Text('Enter Decline Reason'),
+                              content: TextField(
+                                onChanged: (value) {
+                                  declineReason =
+                                      value; // Ažuriranje razloga odbijanja kad korisnik unese nešto
+                                },
+                                decoration: InputDecoration(
+                                  hintText: 'Enter reason here...',
+                                ),
+                              ),
+                              actions: <Widget>[
+                                ElevatedButton(
+                                  onPressed: () {
+                                    // Spremi odbijenu donaciju u Firebase zajedno s razlogom
+                                    FirebaseFirestore.instance
+                                        .collection('declined_donations')
+                                        .add({
+                                      'blood_donation_location':
+                                          data['blood_donation_location'],
+                                      'date_od_donation':
+                                          data['date_od_donation'],
+                                      'donor_blood_pressure':
+                                          data['donor_blood_pressure'],
+                                      'hemoglobin': data['hemoglobin'],
+                                      'name_of_doctor': data['name_of_doctor'],
+                                      'blood_type': data['blood_type'],
+                                      'userId': data['userId'],
+                                      'donor_name': data['donor_name'],
+                                      'reason_for_decline':
+                                          declineReason, // Dodavanje razloga odbijanja
+                                    }).then((value) {
+                                      print(
+                                          'Odbijena donacija dodana u kolekciju declined_donations');
+                                      // Uklonite dokument iz kolekcije "blood_donation"
+                                      FirebaseFirestore.instance
+                                          .collection('blood_donation')
+                                          .doc(document.id)
+                                          .delete()
+                                          .then((_) {
+                                        print('Dokument uspješno obrisan');
+                                      }).catchError((error) {
+                                        print(
+                                            'Greška pri brisanju dokumenta: $error');
+                                      });
+
+                                      Navigator.of(context)
+                                          .pop(); // Zatvaranje dijaloga nakon što korisnik pritisne gumb
+                                    }).catchError((error) {
+                                      print(
+                                          'Greška pri dodavanju odbijene donacije: $error');
+                                    });
+                                  },
+                                  child: Text('Submit'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
                       },
-                      child: Text('Odbij'),
+                      child: Text('Decline'),
                     ),
                   ],
                 ),

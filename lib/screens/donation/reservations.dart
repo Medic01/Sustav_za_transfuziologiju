@@ -67,7 +67,66 @@ class Reservations extends StatelessWidget {
                     SizedBox(width: 8),
                     ElevatedButton(
                       onPressed: () {
-                        // Implementirajte logiku za odbijanje rezervacije
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            String declineReason =
+                                ''; // Varijabla za pohranu razloga odbijanja
+
+                            return AlertDialog(
+                              title: Text('Enter Decline Reason'),
+                              content: TextField(
+                                onChanged: (value) {
+                                  declineReason =
+                                      value; // Ažuriranje razloga odbijanja kad korisnik unese nešto
+                                },
+                                decoration: InputDecoration(
+                                  hintText: 'Enter reason here...',
+                                ),
+                              ),
+                              actions: <Widget>[
+                                ElevatedButton(
+                                  onPressed: () {
+                                    // Spremi odbijenu donaciju u Firebase zajedno s razlogom
+                                    FirebaseFirestore.instance
+                                        .collection('declined_donations')
+                                        .add({
+                                      'name': data['name'],
+                                      'email': data['email'],
+                                      'date': data['date'],
+                                      'blood_type': data['blood_type'],
+                                      'reason_for_decline':
+                                          declineReason, // Dodavanje razloga odbijanja
+                                    }).then((value) {
+                                      print(
+                                          'Declined donation added to declined_donations collection');
+                                      // Nakon što uspješno dodate odbijenu donaciju,
+                                      // uklonite podatke iz baze podataka
+                                      FirebaseFirestore.instance
+                                          .collection(
+                                              'date_reservation_blood_donation')
+                                          .doc(document.id)
+                                          .delete()
+                                          .then((_) {
+                                        print('Document successfully deleted');
+                                      }).catchError((error) {
+                                        print(
+                                            'Error deleting document: $error');
+                                      });
+                                    }).catchError((error) {
+                                      print(
+                                          'Error adding declined donation: $error');
+                                    });
+
+                                    Navigator.of(context)
+                                        .pop(); // Zatvaranje dijaloga nakon što korisnik pritisne gumb
+                                  },
+                                  child: Text('Submit'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
                       },
                       child: Text('Decline'),
                     ),

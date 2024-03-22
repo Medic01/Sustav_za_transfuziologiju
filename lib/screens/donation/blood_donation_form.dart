@@ -131,20 +131,6 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
               },
               value: _selectedBloodType, // Set the initial value
             ),
-            const Row(
-              children: [
-                Text('Donation Rejected: '),
-                Checkbox(
-                  value: false,
-                  onChanged: null,
-                ),
-              ],
-            ),
-            _buildTextField(
-              labelText: 'Rejection Reason',
-              controller:
-                  _rejectionReasonController, // Add your controller here
-            ),
             SizedBox(height: 20.0),
             _buildSaveButton(context),
           ],
