@@ -1,19 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sustav_za_transfuziologiju/screens/donation/blood_donation_form.dart';
-import 'package:sustav_za_transfuziologiju/screens/utils/session_manager.dart';
 
 class Reservations extends StatelessWidget {
-  SessionManager sessionManager = SessionManager();
-  static String _userId = '';
-
-
   @override
   Widget build(BuildContext context) {
-
-    sessionManager.getUserId().then((value) {
-      _userId = value.toString();
-    });
 
     return Scaffold(
       appBar: AppBar(
@@ -57,7 +48,7 @@ class Reservations extends StatelessWidget {
                               date: data['date'],
                               donorName: data['name'],
                               bloodType: data['blood_type'],
-                              userId: _userId.toString(),
+                              userId: data['userId'],
                             ),
                           ),
                         ).then((_) {

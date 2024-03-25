@@ -36,10 +36,12 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
       TextEditingController();
   final TextEditingController _rejectionReasonController =
       TextEditingController();
+  late String _userId;
 
   @override
   void initState() {
     super.initState();
+    _userId = widget.userId;
     _dateController.text = widget.date;
     _donorNameController.text = widget.donorName;
     _selectedBloodType = BloodTypes.values.firstWhere(
@@ -58,6 +60,7 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
     required String rejectionReason,
     required BloodTypes? bloodType,
     required String donorName,
+    required String userId,
   }) async {
     try {
       FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -71,6 +74,7 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
         'technicianName': technicianName,
         'blood_type': bloodType.toString().split('.').last,
         'donor_name': donorName,
+        'userId': userId,
       });
 
       print('Data successfully saved to Firestore.');
@@ -177,6 +181,7 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
                 .text, // Add your rejection reason here
             bloodType: _selectedBloodType,
             donorName: _donorNameController.text,
+            userId: _userId
           );
         },
         child: const Text('Save'),
