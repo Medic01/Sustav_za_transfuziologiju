@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class AdminWelcomePage extends StatelessWidget {
+  const AdminWelcomePage({super.key});
+
 
   @override
   Widget build(BuildContext context) {

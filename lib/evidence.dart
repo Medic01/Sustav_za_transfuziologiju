@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 
 class Evidence extends StatelessWidget {
+  const Evidence({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Evidence'),
+        title: const Text('Evidence'),
       ),
-      body: Center(
+      body: const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[

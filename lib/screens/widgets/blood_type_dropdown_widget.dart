@@ -5,7 +5,7 @@ class BloodTypeDropdownWidget extends StatefulWidget{
   final ValueChanged<BloodTypes?> onChanged;
   final BloodTypes? value;
 
-  BloodTypeDropdownWidget({required this.onChanged, required this.value});
+  const BloodTypeDropdownWidget({super.key, required this.onChanged, required this.value});
 
   @override
   _BloodTypeDropdownWidgetState createState() => _BloodTypeDropdownWidgetState();
@@ -23,7 +23,7 @@ class _BloodTypeDropdownWidgetState extends State<BloodTypeDropdownWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 10.0),
+      margin: const EdgeInsets.only(top: 10.0),
       child: DropdownButtonFormField<BloodTypes>(
         decoration: const InputDecoration(
           labelText: 'Blood Type',

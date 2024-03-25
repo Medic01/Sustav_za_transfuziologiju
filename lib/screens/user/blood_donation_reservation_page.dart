@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/services.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:sustav_za_transfuziologiju/screens/user/welcome_page.dart';
+import 'package:sustav_za_transfuziologiju/screens/utils/session_manager.dart';
 import '../enums/blood_types.dart';
 import '../widgets/blood_type_dropdown_widget.dart';
 
 class BloodDonationReservationPage extends StatefulWidget {
+  const BloodDonationReservationPage({super.key});
+
   @override
   _BloodDonationReservationPageState createState() =>
       _BloodDonationReservationPageState();
@@ -20,11 +22,18 @@ class _BloodDonationReservationPageState
   final _dateController = TextEditingController();
   String? _selectedBloodType;
   late MaskTextInputFormatter _dateMaskFormatter;
+  String? _userId;
   final _emailRegExp =
       RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$'); // RegExp za provjeru e-pošte
 
+  SessionManager sessionManager = SessionManager();
+
   @override
   void initState() {
+
+    sessionManager.getUserId().then((value) {
+      _userId = value;
+    });
     super.initState();
     _dateMaskFormatter = MaskTextInputFormatter(
       mask: '##/##/####',
@@ -43,24 +52,26 @@ class _BloodDonationReservationPageState
         'email': _emailController.text,
         'date': _dateController.text,
         'blood_type': _selectedBloodType, // Sprema se kao string
+        'userId': _userId
       });
 
       // Show success dialog
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text('Success'),
-          content: Text('Your blood donation reservation has been submitted.'),
+          title: const Text('Success'),
+          content:
+              const Text('Your blood donation reservation has been submitted.'),
           actions: [
             TextButton(
               onPressed: () {
                 // Navigirajte na WelcomePage
                 Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (context) => WelcomePage()),
+                  MaterialPageRoute(builder: (context) => const WelcomePage()),
                   (Route<dynamic> route) => false,
                 );
               },
-              child: Text('OK'),
+              child: const Text('OK'),
             ),
           ],
         ),
@@ -72,7 +83,7 @@ class _BloodDonationReservationPageState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Blood Donation Reservation'),
+        title: const Text('Blood Donation Reservation'),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -84,7 +95,7 @@ class _BloodDonationReservationPageState
               children: [
                 TextFormField(
                   controller: _nameController,
-                  decoration: InputDecoration(labelText: 'Full Name'),
+                  decoration: const InputDecoration(labelText: 'Full Name'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your full name';
@@ -92,10 +103,10 @@ class _BloodDonationReservationPageState
                     return null;
                   },
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 TextFormField(
                   controller: _emailController,
-                  decoration: InputDecoration(labelText: 'Email'),
+                  decoration: const InputDecoration(labelText: 'Email'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your email';
@@ -106,10 +117,11 @@ class _BloodDonationReservationPageState
                     return null;
                   },
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 TextFormField(
                   controller: _dateController,
-                  decoration: InputDecoration(labelText: 'Preferred Date'),
+                  decoration:
+                      const InputDecoration(labelText: 'Preferred Date'),
                   inputFormatters: [_dateMaskFormatter],
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -118,7 +130,7 @@ class _BloodDonationReservationPageState
                     return null;
                   },
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 BloodTypeDropdownWidget(
                   onChanged: (value) {
                     setState(() {
@@ -131,10 +143,10 @@ class _BloodDonationReservationPageState
                           _selectedBloodType)
                       : null,
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: _submitForm,
-                  child: Text('Submit'),
+                  child: const Text('Submit'),
                 ),
               ],
             ),

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DoseEntryPage extends StatefulWidget {
+  const DoseEntryPage({super.key});
+
   @override
   _DoseEntryPageState createState() => _DoseEntryPageState();
 }
@@ -15,13 +17,13 @@ class _DoseEntryPageState extends State<DoseEntryPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Accepted bloods'),
+        title: const Text('Accepted bloods'),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           DropdownButtonFormField<String>(
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'Choose blood type',
               border: OutlineInputBorder(),
             ),
@@ -48,7 +50,7 @@ class _DoseEntryPageState extends State<DoseEntryPage> {
               );
             }).toList(),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Expanded(
             child: StreamBuilder(
               stream: selectedBloodType == 'All'
@@ -66,7 +68,7 @@ class _DoseEntryPageState extends State<DoseEntryPage> {
                 }
 
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator());
                 }
 
                 return ListView(
@@ -133,7 +135,7 @@ class _DoseEntryPageState extends State<DoseEntryPage> {
                                       'Greška prilikom označavanja doze kao obrađene: $error');
                                 });
                               },
-                              child: Text('Obrađena'),
+                              child: const Text('Obrađena'),
                             ),
                             ElevatedButton(
                               onPressed: () {
@@ -149,7 +151,7 @@ class _DoseEntryPageState extends State<DoseEntryPage> {
                                       'Greška prilikom označavanja doze kao iskorištene: $error');
                                 });
                               },
-                              child: Text('Iskorišteno'),
+                              child: const Text('Iskorišteno'),
                             ),
                             ElevatedButton(
                               onPressed: () {
@@ -157,12 +159,12 @@ class _DoseEntryPageState extends State<DoseEntryPage> {
                                   context: context,
                                   builder: (BuildContext context) {
                                     return AlertDialog(
-                                      title: Text(
+                                      title: const Text(
                                           'Unesite količinu donirane doze'),
                                       content: TextField(
                                         controller: quantityController,
                                         keyboardType: TextInputType.number,
-                                        decoration: InputDecoration(
+                                        decoration: const InputDecoration(
                                           labelText: 'Količina',
                                         ),
                                       ),
@@ -171,7 +173,7 @@ class _DoseEntryPageState extends State<DoseEntryPage> {
                                           onPressed: () {
                                             Navigator.pop(context);
                                           },
-                                          child: Text('Odustani'),
+                                          child: const Text('Odustani'),
                                         ),
                                         ElevatedButton(
                                           onPressed: () {
@@ -205,7 +207,7 @@ class _DoseEntryPageState extends State<DoseEntryPage> {
                                               print(
                                                   'Ne možete unijeti manju količinu od postojeće');
                                               ScaffoldMessenger.of(context)
-                                                  .showSnackBar(SnackBar(
+                                                  .showSnackBar(const SnackBar(
                                                 content: Text(
                                                     'Ne možete unijeti manju količinu od postojeće'),
                                               ));
@@ -218,18 +220,18 @@ class _DoseEntryPageState extends State<DoseEntryPage> {
                                               ));
                                             }
                                           },
-                                          child: Text('Potvrdi'),
+                                          child: const Text('Potvrdi'),
                                         ),
                                       ],
                                     );
                                   },
                                 );
                               },
-                              child: Text('Količina'),
+                              child: const Text('Količina'),
                             ),
                           ],
                         ),
-                        SizedBox(height: 8),
+                        const SizedBox(height: 8),
                       ],
                     );
                   }).toList(),

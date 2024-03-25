@@ -5,11 +5,13 @@ import 'package:sustav_za_transfuziologiju/screens/donation/blood_donation_form.
 class Reservations extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Blood Donation Reservations'),
+        title: const Text('Blood Donation Reservations'),
       ),
       body: StreamBuilder(
+
         stream: FirebaseFirestore.instance
             .collection('date_reservation_blood_donation')
             .snapshots(),
@@ -18,7 +20,7 @@ class Reservations extends StatelessWidget {
             return Text('An error occurred: ${snapshot.error}');
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator();
+            return const CircularProgressIndicator();
           }
           return ListView(
             children: snapshot.data!.docs.map((DocumentSnapshot document) {
@@ -46,6 +48,7 @@ class Reservations extends StatelessWidget {
                               date: data['date'],
                               donorName: data['name'],
                               bloodType: data['blood_type'],
+                              userId: data['userId'],
                             ),
                           ),
                         ).then((_) {
@@ -62,9 +65,9 @@ class Reservations extends StatelessWidget {
                           });
                         });
                       },
-                      child: Text('Accept'),
+                      child: const Text('Accept'),
                     ),
-                    SizedBox(width: 8),
+                    const SizedBox(width: 8),
                     ElevatedButton(
                       onPressed: () {
                         showDialog(
@@ -74,13 +77,13 @@ class Reservations extends StatelessWidget {
                                 ''; // Varijabla za pohranu razloga odbijanja
 
                             return AlertDialog(
-                              title: Text('Enter Decline Reason'),
+                              title: const Text('Enter Decline Reason'),
                               content: TextField(
                                 onChanged: (value) {
                                   declineReason =
                                       value; // Ažuriranje razloga odbijanja kad korisnik unese nešto
                                 },
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                   hintText: 'Enter reason here...',
                                 ),
                               ),
@@ -121,14 +124,14 @@ class Reservations extends StatelessWidget {
                                     Navigator.of(context)
                                         .pop(); // Zatvaranje dijaloga nakon što korisnik pritisne gumb
                                   },
-                                  child: Text('Submit'),
+                                  child: const Text('Submit'),
                                 ),
                               ],
                             );
                           },
                         );
                       },
-                      child: Text('Decline'),
+                      child: const Text('Decline'),
                     ),
                   ],
                 ),

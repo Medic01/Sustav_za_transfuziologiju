@@ -6,8 +6,12 @@ import 'dart:convert';
 import 'package:sustav_za_transfuziologiju/screens/admin/admin_page.dart';
 import 'package:sustav_za_transfuziologiju/screens/user/data_entry_page.dart';
 import 'package:sustav_za_transfuziologiju/screens/user/welcome_page.dart';
+import 'package:sustav_za_transfuziologiju/screens/user/user_home_page.dart';
+import 'package:sustav_za_transfuziologiju/screens/utils/session_manager.dart'; // Import UserHomePage
 
 class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -15,28 +19,32 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  SessionManager sessionManager = SessionManager();
+
+
   bool _isPasswordVisible = false;
+  Map<String, dynamic>? _loggedInUserData;
 
   @override
   Widget build(BuildContext context) {
-    final _formKey = GlobalKey<FormState>();
-    final _auth = FirebaseAuth.instance;
+    final formKey = GlobalKey<FormState>();
+    final auth = FirebaseAuth.instance;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login'),
+        title: const Text('Login'),
       ),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Form(
-            key: _formKey,
+            key: formKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 TextFormField(
                   controller: _emailController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Korisničko ime (Email)',
                   ),
                   validator: (value) {
@@ -46,7 +54,7 @@ class _LoginPageState extends State<LoginPage> {
                     return null;
                   },
                 ),
-                SizedBox(height: 20.0),
+                const SizedBox(height: 20.0),
                 TextFormField(
                   controller: _passwordController,
                   decoration: InputDecoration(
@@ -70,10 +78,10 @@ class _LoginPageState extends State<LoginPage> {
                     return null;
                   },
                 ),
-                SizedBox(height: 20.0),
+                const SizedBox(height: 20.0),
                 ElevatedButton(
                   onPressed: () async {
-                    if (_formKey.currentState!.validate()) {
+                    if (formKey.currentState!.validate()) {
                       try {
                         final userSnapshot = await FirebaseFirestore.instance
                             .collection('users')
@@ -84,10 +92,16 @@ class _LoginPageState extends State<LoginPage> {
                           final userData = userSnapshot.docs.first.data();
                           final storedPasswordHash = userData['password'];
 
+                          sessionManager.setUserId(userData['userId']);
+            
                           final passwordHash =
                               generateHash(_passwordController.text);
 
                           if (passwordHash == storedPasswordHash) {
+                            setState(() {
+                              _loggedInUserData = userData;
+                            });
+
                             final role = userData['role'];
                             final isFirstLogin =
                                 userData['isFirstLogin'] ?? true;
@@ -98,7 +112,7 @@ class _LoginPageState extends State<LoginPage> {
                                   context: context,
                                   builder: (BuildContext context) {
                                     return AlertDialog(
-                                      title: Text('Welcome ADMIN!'),
+                                      title: const Text('Welcome ADMIN!'),
                                       actions: [
                                         TextButton(
                                           onPressed: () {
@@ -106,10 +120,10 @@ class _LoginPageState extends State<LoginPage> {
                                               context,
                                               MaterialPageRoute(
                                                   builder: (context) =>
-                                                      WelcomePage()),
+                                                      const WelcomePage()),
                                             );
                                           },
-                                          child: Text('OK'),
+                                          child: const Text('OK'),
                                         ),
                                       ],
                                     );
@@ -117,7 +131,7 @@ class _LoginPageState extends State<LoginPage> {
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => AdminPage()),
+                                    builder: (context) => const AdminPage()),
                               );
                             } else if (role == 'USER') {
                               if (isFirstLogin) {
@@ -129,10 +143,12 @@ class _LoginPageState extends State<LoginPage> {
                                           )),
                                 );
                               } else {
+                                // Prijavljivanje korisnika i prijenos podataka na UserHomePage
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => WelcomePage()),
+                                      builder: (context) => UserHomePage(
+                                          userData: _loggedInUserData)),
                                 );
                               }
                             }
@@ -141,7 +157,7 @@ class _LoginPageState extends State<LoginPage> {
                         }
 
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
+                          const SnackBar(
                             content: Text('Incorrect email or password.'),
                             duration: Duration(seconds: 2),
                           ),
@@ -150,13 +166,13 @@ class _LoginPageState extends State<LoginPage> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text('Login failed: $e'),
-                            duration: Duration(seconds: 2),
+                            duration: const Duration(seconds: 2),
                           ),
                         );
                       }
                     }
                   },
-                  child: Text('Login'),
+                  child: const Text('Login'),
                 ),
               ],
             ),
