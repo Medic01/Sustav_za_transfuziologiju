@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sustav_za_transfuziologiju/screens/user/welcome_page.dart';
@@ -9,7 +8,7 @@ import '../widgets/date_picker_widget.dart';
 class DataEntryPage extends StatefulWidget {
   final String email;
 
-  DataEntryPage({required this.email});
+  const DataEntryPage({super.key, required this.email});
 
   @override
   _DataEntryPageState createState() => _DataEntryPageState();
@@ -27,7 +26,7 @@ class _DataEntryPageState extends State<DataEntryPage> {
   final TextEditingController _phoneNumberController = TextEditingController();
   BloodTypes? _selectedBloodType;
   String _selectedGender = 'Male';
-  List<String> _genderOptions = ['Male', 'Female'];
+  final List<String> _genderOptions = ['Male', 'Female'];
 
   @override
   void initState() {
@@ -87,11 +86,11 @@ class _DataEntryPageState extends State<DataEntryPage> {
         },
       );
 
-      await Future.delayed(Duration(seconds: 1));
+      await Future.delayed(const Duration(seconds: 1));
 
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => WelcomePage()),
+        MaterialPageRoute(builder: (context) => const WelcomePage()),
       );
     } catch (error) {
       print('Error saving data: $error');

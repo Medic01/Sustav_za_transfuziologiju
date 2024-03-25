@@ -5,6 +5,8 @@ import 'package:sustav_za_transfuziologiju/screens/donation/dose_entry_page.dart
 import 'package:sustav_za_transfuziologiju/screens/donation/reservations.dart';
 
 class AdminPage extends StatefulWidget {
+  const AdminPage({super.key});
+
   @override
   _AdminPageState createState() => _AdminPageState();
 }
@@ -57,7 +59,7 @@ class _AdminPageState extends State<AdminPage> {
               onPressed: () {
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => HomePage()),
+                  MaterialPageRoute(builder: (context) => const HomePage()),
                 );
               },
             ),

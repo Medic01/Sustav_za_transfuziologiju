@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import '../widgets/date_picker_widget.dart';
 import '../enums/blood_types.dart';
 import '../widgets/blood_type_dropdown_widget.dart';
@@ -11,11 +10,13 @@ class BloodDonationForm extends StatefulWidget {
   final String date;
   final String donorName;
   final String bloodType;
+  final String userId;
 
-  BloodDonationForm({
+  const BloodDonationForm({super.key, 
     required this.date,
     required this.donorName,
     required this.bloodType,
+    required this.userId
   });
 
   @override
@@ -75,7 +76,7 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
       print('Data successfully saved to Firestore.');
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => BloodDonationRecords()),
+        MaterialPageRoute(builder: (context) => const BloodDonationRecords()),
       );
     } catch (error) {
       print('Error saving data: $error');
@@ -86,10 +87,10 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Blood Donation Control'),
+        title: const Text('Blood Donation Control'),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -131,7 +132,7 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
               },
               value: _selectedBloodType, // Set the initial value
             ),
-            SizedBox(height: 20.0),
+            const SizedBox(height: 20.0),
             _buildSaveButton(context),
           ],
         ),

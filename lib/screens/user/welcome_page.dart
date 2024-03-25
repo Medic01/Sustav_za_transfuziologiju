@@ -4,6 +4,8 @@ import 'package:sustav_za_transfuziologiju/screens/user/user_home_page.dart';
 import 'package:sustav_za_transfuziologiju/screens/user/blood_donation_reservation_page.dart';
 
 class WelcomePage extends StatefulWidget {
+  const WelcomePage({super.key});
+
   @override
   _WelcomePageState createState () => _WelcomePageState();
 }
@@ -12,8 +14,8 @@ class _WelcomePageState extends State<WelcomePage> {
   int _selectedIndex = 0;
 
   final List<Widget> _pages = <Widget> [
-    UserHomePage(),
-    BloodDonationReservationPage(),
+    const UserHomePage(),
+    const BloodDonationReservationPage(),
   ];
 
   void _onItemTapped(int index) {
@@ -49,7 +51,7 @@ class _WelcomePageState extends State<WelcomePage> {
                 onPressed: () {
                   Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
+                      MaterialPageRoute(builder: (context) => const HomePage()),
                   );
                 },
                 icon: const Icon(Icons.logout_rounded),

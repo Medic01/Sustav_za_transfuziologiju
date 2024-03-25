@@ -7,6 +7,8 @@ import 'dart:convert';
 import '../user/data_entry_page.dart';
 
 class RegistrationPage extends StatefulWidget {
+  const RegistrationPage({super.key});
+
   @override
   _RegistrationPageState createState() => _RegistrationPageState();
 }
@@ -20,7 +22,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
   bool _isPasswordFocused = false;
-  FocusNode _passwordFocusNode = FocusNode();
+  final FocusNode _passwordFocusNode = FocusNode();
 
   @override
   void dispose() {

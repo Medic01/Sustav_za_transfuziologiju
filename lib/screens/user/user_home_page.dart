@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:sustav_za_transfuziologiju/screens/auth/registration_page.dart';
-import 'package:sustav_za_transfuziologiju/screens/donation/reservations.dart';
 import 'package:sustav_za_transfuziologiju/screens/user/blood_donation_reservation_page.dart';
 import 'package:sustav_za_transfuziologiju/screens/user/welcome_page.dart';
 
 class UserHomePage extends StatelessWidget {
   final Map<String, dynamic>? userData;
 
-  UserHomePage({this.userData});
+  const UserHomePage({super.key, this.userData});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +15,7 @@ class UserHomePage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('User Home'),
+        title: const Text('User Home'),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -26,14 +24,14 @@ class UserHomePage extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: Text(
               'Welcome, ${userData != null ? userData!['name'] : 'Unknown'}!',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
               'Email: $userEmail',
-              style: TextStyle(fontSize: 16),
+              style: const TextStyle(fontSize: 16),
             ),
           ),
           Expanded(
@@ -49,11 +47,11 @@ class UserHomePage extends StatelessWidget {
                 }
 
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator());
                 }
 
                 if (snapshot.data!.docs.isEmpty) {
-                  return Center(child: Text('No user data found.'));
+                  return const Center(child: Text('No user data found.'));
                 }
 
                 final userData =
@@ -71,11 +69,11 @@ class UserHomePage extends StatelessWidget {
                     }
 
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator());
+                      return const Center(child: CircularProgressIndicator());
                     }
 
                     if (snapshot.data!.docs.isEmpty) {
-                      return Center(child: Text('No accepted data found.'));
+                      return const Center(child: Text('No accepted data found.'));
                     }
 
                     final acceptedData = snapshot.data!.docs
@@ -119,7 +117,7 @@ class UserHomePage extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => BloodDonationReservationPage()),
+                      builder: (context) => const BloodDonationReservationPage()),
                 );
               },
               icon: const Icon(Icons.calendar_today),
@@ -129,7 +127,7 @@ class UserHomePage extends StatelessWidget {
                 // Navigacija na početnu stranicu aplikacije
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => WelcomePage()),
+                  MaterialPageRoute(builder: (context) => const WelcomePage()),
                 );
               },
               icon: const Icon(Icons.logout_rounded),

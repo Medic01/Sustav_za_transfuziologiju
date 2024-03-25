@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class DatePickerWidget extends StatefulWidget {
   final TextEditingController controller;
 
-  DatePickerWidget({required this.controller});
+  const DatePickerWidget({super.key, required this.controller});
 
   @override
   _DatePickerWidgetState createState() => _DatePickerWidgetState();

@@ -3,11 +3,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dose_entry_page.dart';
 
 class BloodDonationRecords extends StatelessWidget {
+  const BloodDonationRecords({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Blood Donation Records'),
+        title: const Text('Blood Donation Records'),
       ),
       body: StreamBuilder(
         stream:
@@ -17,7 +19,7 @@ class BloodDonationRecords extends StatelessWidget {
             return Text('An error occurred: ${snapshot.error}');
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator();
+            return const CircularProgressIndicator();
           }
           return ListView(
             children: snapshot.data!.docs.map((DocumentSnapshot document) {
@@ -73,7 +75,7 @@ class BloodDonationRecords extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
-                                    DoseEntryPage()), // Pretpostavljajući da postoji DoseEntryPage widget
+                                    const DoseEntryPage()), // Pretpostavljajući da postoji DoseEntryPage widget
                           );
                         }).catchError((error) {
                           // Obrada grešaka ako dođe do problema s dodavanjem u kolekciju "accepted"
@@ -81,9 +83,9 @@ class BloodDonationRecords extends StatelessWidget {
                               'Error adding document to accepted collection: $error');
                         });
                       },
-                      child: Text('Accept'),
+                      child: const Text('Accept'),
                     ),
-                    SizedBox(width: 8),
+                    const SizedBox(width: 8),
                     ElevatedButton(
                       onPressed: () {
                         showDialog(
@@ -93,13 +95,13 @@ class BloodDonationRecords extends StatelessWidget {
                                 ''; // Varijabla za pohranu razloga odbijanja
 
                             return AlertDialog(
-                              title: Text('Enter Decline Reason'),
+                              title: const Text('Enter Decline Reason'),
                               content: TextField(
                                 onChanged: (value) {
                                   declineReason =
                                       value; // Ažuriranje razloga odbijanja kad korisnik unese nešto
                                 },
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                   hintText: 'Enter reason here...',
                                 ),
                               ),
@@ -145,14 +147,14 @@ class BloodDonationRecords extends StatelessWidget {
                                           'Greška pri dodavanju odbijene donacije: $error');
                                     });
                                   },
-                                  child: Text('Submit'),
+                                  child: const Text('Submit'),
                                 ),
                               ],
                             );
                           },
                         );
                       },
-                      child: Text('Decline'),
+                      child: const Text('Decline'),
                     ),
                   ],
                 ),
