@@ -38,6 +38,8 @@ dependencies:
   flutter_pw_validator: ^1.6.0
   flutter_dotenv: ^5.1.0
   mask_text_input_formatter: ^2.9.0
+  shared_preferences: ^2.2.2
+  http: ^1.2.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

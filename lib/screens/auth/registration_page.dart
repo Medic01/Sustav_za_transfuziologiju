@@ -102,7 +102,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       _isPasswordFocused = true;
                     });
                   },
-
                   onChanged: (_) {
                     setState(() {
                       _isPasswordValid = false;
@@ -110,7 +109,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   },
                 ),
                 const SizedBox(height: 20.0),
-
                 if (_isPasswordFocused)
                   FlutterPwValidator(
                     controller: _passwordController,
@@ -234,8 +232,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => DataEntryPage(
-                              email: _usernameController.text),
+                          builder: (context) =>
+                              DataEntryPage(email: _usernameController.text),
                         ),
                       );
                     } catch (e) {

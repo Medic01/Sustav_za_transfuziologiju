@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'package:sustav_za_transfuziologiju/screens/admin/admin_page.dart';
 import 'package:sustav_za_transfuziologiju/screens/user/data_entry_page.dart';
 import 'package:sustav_za_transfuziologiju/screens/user/welcome_page.dart';
+import 'package:sustav_za_transfuziologiju/screens/user/user_home_page.dart'; // Import UserHomePage
 
 class LoginPage extends StatefulWidget {
   @override
@@ -16,6 +17,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isPasswordVisible = false;
+  Map<String, dynamic>? _loggedInUserData;
 
   @override
   Widget build(BuildContext context) {
@@ -88,6 +90,10 @@ class _LoginPageState extends State<LoginPage> {
                               generateHash(_passwordController.text);
 
                           if (passwordHash == storedPasswordHash) {
+                            setState(() {
+                              _loggedInUserData = userData;
+                            });
+
                             final role = userData['role'];
                             final isFirstLogin =
                                 userData['isFirstLogin'] ?? true;
@@ -129,10 +135,12 @@ class _LoginPageState extends State<LoginPage> {
                                           )),
                                 );
                               } else {
+                                // Prijavljivanje korisnika i prijenos podataka na UserHomePage
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => WelcomePage()),
+                                      builder: (context) => UserHomePage(
+                                          userData: _loggedInUserData)),
                                 );
                               }
                             }
