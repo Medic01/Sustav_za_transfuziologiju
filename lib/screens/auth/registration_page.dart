@@ -40,10 +40,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
     });
   }
 
-  String generateUserId(String email) {
-    var bytes = utf8.encode(email);
-    var digest = sha1.convert(bytes);
-    return digest.toString();
+  String generateTimestampId() {
+    DateTime now = DateTime.now();
+    String timestampId = now.microsecondsSinceEpoch.toString();
+    return timestampId;
   }
 
   @override
@@ -214,10 +214,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         return;
                       }
                       // Generiraj jedinstveni userId koristeći email adrese
-                      final userId = generateUserId(_usernameController.text);
+                      final userId = generateTimestampId();
                       await FirebaseFirestore.instance
                           .collection('users')
-                          .doc()
+                          .doc(userId)
                           .set({
                         'userId': userId,
                         'email': _usernameController.text,
