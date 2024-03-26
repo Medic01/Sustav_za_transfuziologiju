@@ -29,11 +29,13 @@ class _BloodDonationReservationPageState
 
   @override
   void initState() {
-
-    sessionManager.getUserId().then((value) {
-      _userId = value;
-    });
     super.initState();
+    sessionManager.getUserId().then((value) {
+      setState(() {
+        _userId = value;
+      });
+      _loadUserData();
+    });
     _dateMaskFormatter = MaskTextInputFormatter(
       mask: '##/##/####',
       filter: {"#": RegExp(r'[0-9]')},
@@ -41,16 +43,39 @@ class _BloodDonationReservationPageState
     );
   }
 
+  void _loadUserData() async {
+    if (_userId != null) {
+      final userData = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(_userId)
+          .get();
+
+      setState(() {
+        final name = userData['name'];
+        final surname = userData['surname'];
+        _nameController.text = '$name $surname';
+        _emailController.text = userData['email'];
+        _selectedBloodType = userData['blood_type'];
+      });
+    }
+  }
+
   void _submitForm() async {
     if (_formKey.currentState!.validate() && _selectedBloodType != null) {
-      await FirebaseFirestore.instance
-          .collection('donation_date')
-          .add({
+      await FirebaseFirestore.instance.collection('donation_date').add({
         'donor_name': _nameController.text,
         'email': _emailController.text,
         'date': _dateController.text,
         'blood_type': _selectedBloodType,
         'user_id': _userId
+      });
+
+      // Clear form data and reset blood type dropdown
+      _nameController.clear();
+      _emailController.clear();
+      _dateController.clear();
+      setState(() {
+        _selectedBloodType = null;
       });
 
       // Show success dialog
@@ -63,11 +88,8 @@ class _BloodDonationReservationPageState
           actions: [
             TextButton(
               onPressed: () {
-
-                Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (context) => const WelcomePage()),
-                  (Route<dynamic> route) => false,
-                );
+                // Zatvaranje dijaloga
+                Navigator.of(context).pop();
               },
               child: const Text('OK'),
             ),
@@ -118,8 +140,7 @@ class _BloodDonationReservationPageState
                 const SizedBox(height: 20),
                 TextFormField(
                   controller: _dateController,
-                  decoration:
-                      const InputDecoration(labelText: 'Datum'),
+                  decoration: const InputDecoration(labelText: 'Datum'),
                   inputFormatters: [_dateMaskFormatter],
                   validator: (value) {
                     if (value == null || value.isEmpty) {

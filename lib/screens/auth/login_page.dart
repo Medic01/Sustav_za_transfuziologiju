@@ -21,7 +21,6 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordController = TextEditingController();
   SessionManager sessionManager = SessionManager();
 
-
   bool _isPasswordVisible = false;
   Map<String, dynamic>? _loggedInUserData;
 
@@ -93,7 +92,7 @@ class _LoginPageState extends State<LoginPage> {
                           final storedPasswordHash = userData['password'];
 
                           sessionManager.setUserId(userData['user_id']);
-            
+
                           final passwordHash =
                               generateHash(_passwordController.text);
 

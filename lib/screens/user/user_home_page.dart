@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:sustav_za_transfuziologiju/main.dart';
 import 'package:sustav_za_transfuziologiju/screens/user/blood_donation_reservation_page.dart';
 import 'package:sustav_za_transfuziologiju/screens/user/welcome_page.dart';
 
@@ -73,7 +74,8 @@ class UserHomePage extends StatelessWidget {
                     }
 
                     if (snapshot.data!.docs.isEmpty) {
-                      return const Center(child: Text('No accepted data found.'));
+                      return const Center(
+                          child: Text('No accepted data found.'));
                     }
 
                     final acceptedData = snapshot.data!.docs
@@ -117,7 +119,8 @@ class UserHomePage extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const BloodDonationReservationPage()),
+                      builder: (context) =>
+                          const BloodDonationReservationPage()),
                 );
               },
               icon: const Icon(Icons.calendar_today),
@@ -126,7 +129,7 @@ class UserHomePage extends StatelessWidget {
               onPressed: () {
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => const WelcomePage()),
+                  MaterialPageRoute(builder: (context) => const HomePage()),
                 );
               },
               icon: const Icon(Icons.logout_rounded),
