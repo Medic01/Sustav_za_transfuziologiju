@@ -213,17 +213,16 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         );
                         return;
                       }
-                      // Generiraj jedinstveni userId koristeći email adrese
                       final userId = generateTimestampId();
                       await FirebaseFirestore.instance
                           .collection('users')
                           .doc(userId)
                           .set({
-                        'userId': userId,
+                        'user_id': userId,
                         'email': _usernameController.text,
                         'password': passwordHash,
                         'role': UserRole.USER.toString().split('.').last,
-                        'isFirstLogin': true,
+                        'is_first_login': true,
                       });
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(

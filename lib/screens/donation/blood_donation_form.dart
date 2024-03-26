@@ -66,15 +66,15 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
       FirebaseFirestore firestore = FirebaseFirestore.instance;
 
       await firestore.collection('blood_donation').add({
-        'blood_donation_location': place,
-        'date_od_donation': date,
-        'donor_blood_pressure': bloodPressure,
+        'location': place,
+        'date': date,
+        'blood_pressure': bloodPressure,
         'hemoglobin': hemoglobin,
-        'name_of_doctor': doctorName,
-        'technicianName': technicianName,
+        'doctor_name': doctorName,
+        'technician_name': technicianName,
         'blood_type': bloodType.toString().split('.').last,
         'donor_name': donorName,
-        'userId': userId,
+        'user_id': userId,
       });
 
       print('Data successfully saved to Firestore.');
@@ -91,7 +91,7 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Blood Donation Control'),
+        title: const Text('Blood Donation Form'),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
@@ -113,11 +113,11 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
               controller: _placeController, // Add your controller here
             ),
             _buildTextField(
-              labelText: 'Doctor Name',
+              labelText: 'Doctors Name',
               controller: _doctorNameController, // Add your controller here
             ),
             _buildTextField(
-              labelText: 'Technician Name',
+              labelText: 'Technicians Name',
               controller: _technicianNameController, // Add your controller here
             ),
             _buildTextField(
@@ -169,16 +169,13 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
         onPressed: () {
           saveDataToFirestore(
             date: _dateController.text,
-            place: _placeController.text, // Add your place here
-            doctorName: _doctorNameController.text, // Add your doctor name here
-            technicianName:
-                _technicianNameController.text, // Add your technician name here
-            hemoglobin: _hemoglobinController.text, // Add your hemoglobin here
-            bloodPressure:
-                _bloodPressureController.text, // Add your blood pressure here
+            place: _placeController.text,
+            doctorName: _doctorNameController.text,
+            technicianName: _technicianNameController.text,
+            hemoglobin: _hemoglobinController.text,
+            bloodPressure: _bloodPressureController.text,
             donationRejected: false,
-            rejectionReason: _rejectionReasonController
-                .text, // Add your rejection reason here
+            rejectionReason: _rejectionReasonController.text,
             bloodType: _selectedBloodType,
             donorName: _donorNameController.text,
             userId: _userId

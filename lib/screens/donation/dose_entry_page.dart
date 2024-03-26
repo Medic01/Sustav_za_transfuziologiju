@@ -17,7 +17,7 @@ class _DoseEntryPageState extends State<DoseEntryPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Accepted bloods'),
+        title: const Text('Accepted blood donations'),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -81,37 +81,31 @@ class _DoseEntryPageState extends State<DoseEntryPage> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         ListTile(
-                          title: Text(
-                              'blood_donation_location: ${data['blood_donation_location']}'),
+                          title: Text('Lokacija donacije: ${data['location']}'),
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                  'date_od_donation: ${data['date_od_donation']}'),
-                              Text(
-                                  'donor_blood_pressure ${data['donor_blood_pressure']}'),
-                              Text('hemoglobin ${data['hemoglobin']}'),
-                              Text('name_of_doctor ${data['name_of_doctor']}'),
-                              Text('blood_type ${data['blood_type']}'),
-                              Text('donor_name ${data['donor_name']}'),
-                              Text(
-                                'Doza obrađena: ${data['doza_obradjena']}',
+                              Text('Datum donacije: ${data['date']}'),
+                              Text('Krvni tlak davatelja: ${data['blood_pressure']}'),
+                              Text('Hemoglobin: ${data['hemoglobin']}'),
+                              Text('Ime doktora: ${data['doctor_name']}'),
+                              Text('Krvna grupa: ${data['blood_type']}'),
+                              Text('Ime davatelja: ${data['donor_name']}'),
+                              Text('Krv obrađena: ${data['dose_processed']}',
                                 style: TextStyle(
-                                    color: data['doza_obradjena'] == true
+                                    color: data['dose_processed'] == true
                                         ? Colors.green
                                         : Colors.black),
                               ),
-                              Text(
-                                'Doza iskorištena: ${data['doza_iskoristena']}',
+                              Text('Krv iskorištena: ${data['dose_used']}',
                                 style: TextStyle(
-                                    color: data['doza_iskoristena'] == true
+                                    color: data['dose_used'] == true
                                         ? Colors.green
                                         : Colors.black),
                               ),
-                              Text(
-                                'Količina donirane doze: ${data['kolicina_donirane_doze'] ?? 'N/A'}',
+                              Text('Količina donirana: ${data['donated_dose'] ?? 'N/A'}',
                                 style: TextStyle(
-                                    color: data['kolicina_donirane_doze'] == 100
+                                    color: data['donated_dose'] == 100
                                         ? Colors.red
                                         : Colors.green),
                               ),
@@ -127,12 +121,11 @@ class _DoseEntryPageState extends State<DoseEntryPage> {
                                     .collection('accepted')
                                     .doc(document.id)
                                     .update({
-                                  'doza_obradjena': true,
+                                  'dose_processed': true,
                                 }).then((value) {
                                   print('Doza je obrađena');
                                 }).catchError((error) {
-                                  print(
-                                      'Greška prilikom označavanja doze kao obrađene: $error');
+                                  print('Greška prilikom označavanja doze kao obrađene: $error');
                                 });
                               },
                               child: const Text('Obrađena'),
@@ -143,12 +136,11 @@ class _DoseEntryPageState extends State<DoseEntryPage> {
                                     .collection('accepted')
                                     .doc(document.id)
                                     .update({
-                                  'doza_iskoristena': true,
+                                  'dose_used': true,
                                 }).then((value) {
                                   print('Doza je iskorištena');
                                 }).catchError((error) {
-                                  print(
-                                      'Greška prilikom označavanja doze kao iskorištene: $error');
+                                  print('Greška prilikom označavanja doze kao iskorištene: $error');
                                 });
                               },
                               child: const Text('Iskorišteno'),
@@ -159,8 +151,7 @@ class _DoseEntryPageState extends State<DoseEntryPage> {
                                   context: context,
                                   builder: (BuildContext context) {
                                     return AlertDialog(
-                                      title: const Text(
-                                          'Unesite količinu donirane doze'),
+                                      title: const Text('Unesite količinu donirane doze'),
                                       content: TextField(
                                         controller: quantityController,
                                         keyboardType: TextInputType.number,
@@ -179,44 +170,35 @@ class _DoseEntryPageState extends State<DoseEntryPage> {
                                           onPressed: () {
                                             String quantity =
                                                 quantityController.text;
-                                            int existingQuantity = data[
-                                                    'kolicina_donirane_doze'] ??
+                                            int existingQuantity = data['donated_dose'] ??
                                                 0;
                                             if (quantity.isNotEmpty &&
-                                                int.tryParse(quantity) !=
-                                                    null &&
-                                                int.parse(quantity) >=
-                                                    existingQuantity &&
-                                                int.parse(quantity) <= 100) {
+                                                int.tryParse(quantity) != null
+                                                && int.parse(quantity) >= existingQuantity
+                                                && int.parse(quantity) <= 100) {
                                               FirebaseFirestore.instance
                                                   .collection('accepted')
                                                   .doc(document.id)
                                                   .update({
-                                                'kolicina_donirane_doze':
+                                                'donated_dose':
                                                     int.parse(quantity),
                                               }).then((value) {
-                                                print(
-                                                    'Količina donirane doze je unesena');
+                                                print('Količina donirane doze je unesena');
                                                 Navigator.pop(context);
                                               }).catchError((error) {
-                                                print(
-                                                    'Greška prilikom unosa količine donirane doze: $error');
+                                                print('Greška prilikom unosa količine donirane doze: $error');
                                               });
-                                            } else if (int.parse(quantity) <
-                                                existingQuantity) {
-                                              print(
-                                                  'Ne možete unijeti manju količinu od postojeće');
+                                            } else if (int.parse(quantity) < existingQuantity) {
+                                              print('Ne možete unijeti manju količinu od postojeće');
                                               ScaffoldMessenger.of(context)
                                                   .showSnackBar(const SnackBar(
-                                                content: Text(
-                                                    'Ne možete unijeti manju količinu od postojeće'),
+                                                content: Text('Ne možete unijeti manju količinu od postojeće'),
                                               ));
                                             } else {
                                               print('Neispravan unos količine');
                                               ScaffoldMessenger.of(context)
                                                   .showSnackBar(SnackBar(
-                                                content: Text(
-                                                    'Količina mora biti između $existingQuantity i 100'),
+                                                content: Text('Količina mora biti između $existingQuantity i 100'),
                                               ));
                                             }
                                           },

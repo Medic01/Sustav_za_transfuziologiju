@@ -27,19 +27,17 @@ class BloodDonationRecords extends StatelessWidget {
                   document.data() as Map<String, dynamic>;
               // Here you can format how you want to display the data from the document
               return ListTile(
-                title: Text(
-                    'blood_donation_location: ${data['blood_donation_location']}'),
+                title: Text('Mjesto doniranja: ${data['location']}'),
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('date_od_donation: ${data['date_od_donation']}'),
-                    Text(
-                        'donor_blood_pressure ${data['donor_blood_pressure']}'),
-                    Text('hemoglobin ${data['hemoglobin']}'),
-                    Text('name_of_doctor ${data['name_of_doctor']}'),
-                    Text('blood_type: ${data['blood_type']}'),
-                    Text('donor_name: ${data['donor_name']}'),
-                    Text('Tehnician Name: ${data['technicianName']}'),
+                    Text('Datum donacije: ${data['date']}'),
+                    Text('Tlak darivatelja ${data['blood_pressure']}'),
+                    Text('Hemoglobin ${data['hemoglobin']}'),
+                    Text('Ime doktora ${data['doctor_name']}'),
+                    Text('Krvna grupa darivatelja: ${data['blood_type']}'),
+                    Text('Ime darivatelja: ${data['donor_name']}'),
+                    Text('Ime tehničara: ${data['technician_name']}'),
                   ],
                 ),
                 trailing: Row(
@@ -47,41 +45,33 @@ class BloodDonationRecords extends StatelessWidget {
                   children: [
                     ElevatedButton(
                       onPressed: () {
-                        // Stvaranje referenci za dokumente
                         CollectionReference bloodDonationRef = FirebaseFirestore
                             .instance
                             .collection('blood_donation');
                         CollectionReference acceptedRef =
                             FirebaseFirestore.instance.collection('accepted');
-                        // Stvaranje novog dokumenta u kolekciji "accepted"
                         acceptedRef.add({
-                          'blood_donation_location':
-                              data['blood_donation_location'],
-                          'date_od_donation': data['date_od_donation'],
-                          'donor_blood_pressure': data['donor_blood_pressure'],
+                          'location': data['location'],
+                          'date': data['date'],
+                          'blood_pressure': data['blood_pressure'],
                           'hemoglobin': data['hemoglobin'],
-                          'name_of_doctor': data['name_of_doctor'],
+                          'doctor_name': data['doctor_name'],
                           'blood_type': data['blood_type'],
-                          'userId': data['userId'],
+                          'user_id': data['user_id'],
                           'donor_name': data['donor_name'],
                         }).then((value) {
-                          // Uklonite ili ažurirajte izvorni dokument u kolekciji "blood_donation"
                           bloodDonationRef
                               .doc(document.id)
-                              .delete(); // Ili .update() za ažuriranje statusa
+                              .delete();
 
-                          // Navigacija na stranicu DoseEntryPage
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
-                                    const DoseEntryPage()), // Pretpostavljajući da postoji DoseEntryPage widget
+                                    const DoseEntryPage()),
                           );
                         }).catchError((error) {
-                          // Obrada grešaka ako dođe do problema s dodavanjem u kolekciju "accepted"
-                          print(
-                              'Error adding document to accepted collection: $error');
-                        });
+                          print('Error adding document to accepted collection: $error');});
                       },
                       child: const Text('Accept'),
                     ),
@@ -91,44 +81,35 @@ class BloodDonationRecords extends StatelessWidget {
                         showDialog(
                           context: context,
                           builder: (BuildContext context) {
-                            String declineReason =
-                                ''; // Varijabla za pohranu razloga odbijanja
+                            String rejectionReason = '';
 
                             return AlertDialog(
-                              title: const Text('Enter Decline Reason'),
+                              title: const Text('Unesite razlog odbijanja: '),
                               content: TextField(
                                 onChanged: (value) {
-                                  declineReason =
-                                      value; // Ažuriranje razloga odbijanja kad korisnik unese nešto
+                                  rejectionReason = value;
                                 },
                                 decoration: const InputDecoration(
-                                  hintText: 'Enter reason here...',
+                                  hintText: 'Razlog...',
                                 ),
                               ),
                               actions: <Widget>[
                                 ElevatedButton(
                                   onPressed: () {
-                                    // Spremi odbijenu donaciju u Firebase zajedno s razlogom
                                     FirebaseFirestore.instance
-                                        .collection('declined_donations')
+                                        .collection('rejected')
                                         .add({
-                                      'blood_donation_location':
-                                          data['blood_donation_location'],
-                                      'date_od_donation':
-                                          data['date_od_donation'],
-                                      'donor_blood_pressure':
-                                          data['donor_blood_pressure'],
+                                      'location': data['location'],
+                                      'date_od_donation': data['date_od_donation'],
+                                      'blood_pressure': data['blood_pressure'],
                                       'hemoglobin': data['hemoglobin'],
-                                      'name_of_doctor': data['name_of_doctor'],
+                                      'doctor_name': data['doctor_name'],
                                       'blood_type': data['blood_type'],
-                                      'userId': data['userId'],
+                                      'user_id': data['user_id'],
                                       'donor_name': data['donor_name'],
-                                      'reason_for_decline':
-                                          declineReason, // Dodavanje razloga odbijanja
+                                      'reason_for_rejection': rejectionReason,
                                     }).then((value) {
-                                      print(
-                                          'Odbijena donacija dodana u kolekciju declined_donations');
-                                      // Uklonite dokument iz kolekcije "blood_donation"
+                                      print('Odbijena donacija dodana u kolekciju rejected');
                                       FirebaseFirestore.instance
                                           .collection('blood_donation')
                                           .doc(document.id)
@@ -136,15 +117,12 @@ class BloodDonationRecords extends StatelessWidget {
                                           .then((_) {
                                         print('Dokument uspješno obrisan');
                                       }).catchError((error) {
-                                        print(
-                                            'Greška pri brisanju dokumenta: $error');
+                                        print('Greška pri brisanju dokumenta: $error');
                                       });
 
-                                      Navigator.of(context)
-                                          .pop(); // Zatvaranje dijaloga nakon što korisnik pritisne gumb
+                                      Navigator.of(context).pop();
                                     }).catchError((error) {
-                                      print(
-                                          'Greška pri dodavanju odbijene donacije: $error');
+                                      print('Greška pri dodavanju odbijene donacije: $error');
                                     });
                                   },
                                   child: const Text('Submit'),

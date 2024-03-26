@@ -7,7 +7,7 @@ class Evidence extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Evidence'),
+        title: const Text('Evidencija'),
       ),
       body: const Center(
         child: Column(
