@@ -8,12 +8,12 @@ class Reservations extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Blood Donation Reservations'),
+        title: const Text('Zakažite datum donacije krvi:'),
       ),
       body: StreamBuilder(
 
         stream: FirebaseFirestore.instance
-            .collection('date_reservation_blood_donation')
+            .collection('donation_date')
             .snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
@@ -27,13 +27,13 @@ class Reservations extends StatelessWidget {
               Map<String, dynamic> data =
                   document.data() as Map<String, dynamic>;
               return ListTile(
-                title: Text('Name: ${data['name']}'),
+                title: Text('Name: ${data['donor_name']}'),
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text('Email: ${data['email']}'),
-                    Text('Preferred Date: ${data['date']}'),
-                    Text('Blood Type: ${data['blood_type']}'),
+                    Text('Datum doniranja: ${data['date']}'),
+                    Text('Krvna grupa: ${data['blood_type']}'),
                   ],
                 ),
                 trailing: Row(
@@ -46,16 +46,14 @@ class Reservations extends StatelessWidget {
                           MaterialPageRoute(
                             builder: (context) => BloodDonationForm(
                               date: data['date'],
-                              donorName: data['name'],
+                              donorName: data['donor_name'],
                               bloodType: data['blood_type'],
-                              userId: data['userId'],
+                              userId: data['user_id'],
                             ),
                           ),
                         ).then((_) {
-                          // Nakon što korisnik spremi podatke u formu i vrati se
-                          // u ovu komponentu, uklonite podatke iz baze podataka
                           FirebaseFirestore.instance
-                              .collection('date_reservation_blood_donation')
+                              .collection('donation_date')
                               .doc(document.id)
                               .delete()
                               .then((_) {
@@ -73,56 +71,46 @@ class Reservations extends StatelessWidget {
                         showDialog(
                           context: context,
                           builder: (BuildContext context) {
-                            String declineReason =
-                                ''; // Varijabla za pohranu razloga odbijanja
+                            String rejectionReason = '';
 
                             return AlertDialog(
-                              title: const Text('Enter Decline Reason'),
+                              title: const Text('Unesite razlog odbijanja: '),
                               content: TextField(
                                 onChanged: (value) {
-                                  declineReason =
-                                      value; // Ažuriranje razloga odbijanja kad korisnik unese nešto
+                                  rejectionReason = value;
                                 },
                                 decoration: const InputDecoration(
-                                  hintText: 'Enter reason here...',
+                                  hintText: 'Razlog obdijanja...',
                                 ),
                               ),
                               actions: <Widget>[
                                 ElevatedButton(
                                   onPressed: () {
-                                    // Spremi odbijenu donaciju u Firebase zajedno s razlogom
                                     FirebaseFirestore.instance
-                                        .collection('declined_donations')
+                                        .collection('rejected')
                                         .add({
-                                      'name': data['name'],
+                                      'donor_name': data['donor_name'],
                                       'email': data['email'],
                                       'date': data['date'],
                                       'blood_type': data['blood_type'],
-                                      'reason_for_decline':
-                                          declineReason, // Dodavanje razloga odbijanja
+                                      'reason_for_rejection': rejectionReason,
                                     }).then((value) {
-                                      print(
-                                          'Declined donation added to declined_donations collection');
-                                      // Nakon što uspješno dodate odbijenu donaciju,
-                                      // uklonite podatke iz baze podataka
+                                      print('Declined donation added to declined_donations collection');
                                       FirebaseFirestore.instance
                                           .collection(
-                                              'date_reservation_blood_donation')
+                                              'donation_date')
                                           .doc(document.id)
                                           .delete()
                                           .then((_) {
                                         print('Document successfully deleted');
                                       }).catchError((error) {
-                                        print(
-                                            'Error deleting document: $error');
+                                        print('Error deleting document: $error');
                                       });
                                     }).catchError((error) {
-                                      print(
-                                          'Error adding declined donation: $error');
+                                      print('Error adding declined donation: $error');
                                     });
 
-                                    Navigator.of(context)
-                                        .pop(); // Zatvaranje dijaloga nakon što korisnik pritisne gumb
+                                    Navigator.of(context).pop();
                                   },
                                   child: const Text('Submit'),
                                 ),

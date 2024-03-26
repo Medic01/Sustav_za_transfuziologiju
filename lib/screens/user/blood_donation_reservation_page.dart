@@ -23,8 +23,7 @@ class _BloodDonationReservationPageState
   String? _selectedBloodType;
   late MaskTextInputFormatter _dateMaskFormatter;
   String? _userId;
-  final _emailRegExp =
-      RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$'); // RegExp za provjeru e-pošte
+  final _emailRegExp = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
 
   SessionManager sessionManager = SessionManager();
 
@@ -44,15 +43,14 @@ class _BloodDonationReservationPageState
 
   void _submitForm() async {
     if (_formKey.currentState!.validate() && _selectedBloodType != null) {
-      // Save data to Firestore
       await FirebaseFirestore.instance
-          .collection('date_reservation_blood_donation')
+          .collection('donation_date')
           .add({
-        'name': _nameController.text,
+        'donor_name': _nameController.text,
         'email': _emailController.text,
         'date': _dateController.text,
-        'blood_type': _selectedBloodType, // Sprema se kao string
-        'userId': _userId
+        'blood_type': _selectedBloodType,
+        'user_id': _userId
       });
 
       // Show success dialog
@@ -65,7 +63,7 @@ class _BloodDonationReservationPageState
           actions: [
             TextButton(
               onPressed: () {
-                // Navigirajte na WelcomePage
+
                 Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(builder: (context) => const WelcomePage()),
                   (Route<dynamic> route) => false,
@@ -121,11 +119,11 @@ class _BloodDonationReservationPageState
                 TextFormField(
                   controller: _dateController,
                   decoration:
-                      const InputDecoration(labelText: 'Preferred Date'),
+                      const InputDecoration(labelText: 'Datum'),
                   inputFormatters: [_dateMaskFormatter],
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your preferred date';
+                      return 'Molimo unesite željeni datum: ';
                     }
                     return null;
                   },

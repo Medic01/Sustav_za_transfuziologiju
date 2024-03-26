@@ -92,7 +92,7 @@ class _LoginPageState extends State<LoginPage> {
                           final userData = userSnapshot.docs.first.data();
                           final storedPasswordHash = userData['password'];
 
-                          sessionManager.setUserId(userData['userId']);
+                          sessionManager.setUserId(userData['user_id']);
             
                           final passwordHash =
                               generateHash(_passwordController.text);
@@ -104,7 +104,7 @@ class _LoginPageState extends State<LoginPage> {
 
                             final role = userData['role'];
                             final isFirstLogin =
-                                userData['isFirstLogin'] ?? true;
+                                userData['is_first_login'] ?? true;
                             print(isFirstLogin);
 
                             if (role == 'ADMIN') {
@@ -143,7 +143,6 @@ class _LoginPageState extends State<LoginPage> {
                                           )),
                                 );
                               } else {
-                                // Prijavljivanje korisnika i prijenos podataka na UserHomePage
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(

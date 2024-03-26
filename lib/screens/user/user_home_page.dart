@@ -11,7 +11,7 @@ class UserHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final String userEmail = userData != null ? userData!['email'] : '';
-    final String userId = userData != null ? userData!['userId'] : '';
+    final String userId = userData != null ? userData!['user_id'] : '';
 
     return Scaffold(
       appBar: AppBar(
@@ -60,7 +60,7 @@ class UserHomePage extends StatelessWidget {
                 return StreamBuilder(
                   stream: FirebaseFirestore.instance
                       .collection('accepted')
-                      .where('userId', isEqualTo: userId)
+                      .where('user_id', isEqualTo: userId)
                       .snapshots(),
                   builder: (BuildContext context,
                       AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -124,7 +124,6 @@ class UserHomePage extends StatelessWidget {
             ),
             IconButton(
               onPressed: () {
-                // Navigacija na početnu stranicu aplikacije
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => const WelcomePage()),

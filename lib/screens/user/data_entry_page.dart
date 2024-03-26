@@ -18,8 +18,7 @@ class _DataEntryPageState extends State<DataEntryPage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _surnameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _uniqueCitizensIdController =
-      TextEditingController();
+  final TextEditingController _uniqueCitizensIdController = TextEditingController();
   final TextEditingController _dateOfBirthController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _cityController = TextEditingController();
@@ -65,13 +64,13 @@ class _DataEntryPageState extends State<DataEntryPage> {
           'surname': surname,
           'email': email,
           'unique_citizens_id': uniqueCitizensId,
-          'dateOfBirth': dateOfBirth,
+          'date_of_birth': dateOfBirth,
           'address': address,
           'city': city,
-          'phoneNumber': phoneNumber,
-          'bloodType': bloodType?.toString().split('.').last,
+          'phone_number': phoneNumber,
+          'blood_type': bloodType?.toString().split('.').last,
           'gender': gender,
-          'isFirstLogin': false,
+          'is_first_login': false,
         });
       }
 
@@ -114,19 +113,11 @@ class _DataEntryPageState extends State<DataEntryPage> {
             ),
             const SizedBox(height: 20.0),
             _buildTextField(labelText: 'Name', controller: _nameController),
-            _buildTextField(
-                labelText: 'Surname', controller: _surnameController),
-            _buildTextField(
-                labelText: 'Email',
-                controller: _emailController,
-                readOnly: true),
-            _buildTextField(
-                labelText: 'Unique Citizens ID',
-                controller: _uniqueCitizensIdController),
+            _buildTextField(labelText: 'Surname', controller: _surnameController),
+            _buildTextField(labelText: 'Email', controller: _emailController, readOnly: true),
+            _buildTextField(labelText: 'Unique Citizens ID', controller: _uniqueCitizensIdController),
             DatePickerWidget(controller: _dateOfBirthController),
-            _buildGenderDropdownField(
-                labelText: 'Gender',
-                value: _selectedGender,
+            _buildGenderDropdownField(labelText: 'Gender', value: _selectedGender,
                 onChanged: (value) {
                   setState(() {
                     _selectedGender = value!;
@@ -139,11 +130,9 @@ class _DataEntryPageState extends State<DataEntryPage> {
                     child: Text(gender),
                   );
                 }).toList()),
-            _buildTextField(
-                labelText: 'Address', controller: _addressController),
+            _buildTextField(labelText: 'Address', controller: _addressController),
             _buildTextField(labelText: 'City', controller: _cityController),
-            _buildTextField(
-                labelText: 'Phone Number', controller: _phoneNumberController),
+            _buildTextField(labelText: 'Phone Number', controller: _phoneNumberController),
             BloodTypeDropdownWidget(
               onChanged: (newValue) {
                 setState(() {
