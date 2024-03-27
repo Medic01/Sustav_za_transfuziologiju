@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sustav_za_transfuziologiju/models/user_data.dart';
 import 'package:sustav_za_transfuziologiju/screens/user/welcome_page.dart';
+import 'package:sustav_za_transfuziologiju/services/user_data_service.dart';
 import '../enums/blood_types.dart';
 import '../widgets/blood_type_dropdown_widget.dart';
 import '../widgets/date_picker_widget.dart';
@@ -19,8 +21,7 @@ class _DataEntryPageState extends State<DataEntryPage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _surnameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _uniqueCitizensIdController =
-      TextEditingController();
+  final TextEditingController _uniqueCitizensIdController = TextEditingController();
   final TextEditingController _dateOfBirthController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _cityController = TextEditingController();
@@ -49,9 +50,20 @@ class _DataEntryPageState extends State<DataEntryPage> {
     required BuildContext context,
   }) async {
     try {
-      FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-      // Spremi podatke lokalno prije nego što ih spremiš u Firestore
+      final userData = UserData(
+          name: name,
+          surname: surname,
+          email: email,
+          uniqueCitizensId: uniqueCitizensId,
+          dateOfBirth: dateOfBirth,
+          address: address,
+          city: city,
+          phoneNumber: phoneNumber,
+          gender: gender,
+          isFirstLogin: false,
+      );
+
       Future<void> saveDataLocally({
         required String name,
         required String surname,
@@ -80,32 +92,7 @@ class _DataEntryPageState extends State<DataEntryPage> {
         gender: gender,
       );
 
-      final userSnapshot = await firestore
-          .collection('users')
-          .where('email', isEqualTo: email)
-          .get();
-      print("User Snapshot: $userSnapshot");
-
-      if (userSnapshot.docs.isNotEmpty) {
-        final userId = userSnapshot.docs.first.id;
-        print("UserID: $userId");
-
-        await firestore.collection('users').doc(userId).update({
-          'name': name,
-          'surname': surname,
-          'email': email,
-          'unique_citizens_id': uniqueCitizensId,
-          'date_of_birth': dateOfBirth,
-          'address': address,
-          'city': city,
-          'phone_number': phoneNumber,
-          'blood_type': bloodType?.toString().split('.').last,
-          'gender': gender,
-          'is_first_login': false,
-        });
-      }
-
-      print('Data successfully saved to Firestore.');
+      await UserDataService().updateUser(userData);
 
       showDialog(
         context: context,
