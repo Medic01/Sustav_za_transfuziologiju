@@ -4,15 +4,24 @@ import 'package:sustav_za_transfuziologiju/main.dart';
 import 'package:sustav_za_transfuziologiju/screens/user/blood_donation_reservation_page.dart';
 import 'package:sustav_za_transfuziologiju/screens/user/welcome_page.dart';
 
-class UserHomePage extends StatelessWidget {
+class UserHomePage extends StatefulWidget {
   final Map<String, dynamic>? userData;
 
-  const UserHomePage({super.key, this.userData});
+  const UserHomePage({Key? key, this.userData}) : super(key: key);
+
+  @override
+  _UserHomePageState createState() => _UserHomePageState();
+}
+
+class _UserHomePageState extends State<UserHomePage> {
+  String _selectedList = 'accepted';
 
   @override
   Widget build(BuildContext context) {
-    final String userEmail = userData != null ? userData!['email'] : '';
-    final String userId = userData != null ? userData!['user_id'] : '';
+    final String userEmail =
+        widget.userData != null ? widget.userData!['email'] ?? '' : '';
+    final String userId =
+        widget.userData != null ? widget.userData!['user_id'] ?? '' : '';
 
     return Scaffold(
       appBar: AppBar(
@@ -24,7 +33,7 @@ class UserHomePage extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              'Welcome, ${userData != null ? userData!['name'] : 'Unknown'}!',
+              'Welcome, ${widget.userData != null ? widget.userData!['name'] ?? 'Unknown' : 'Unknown'}!',
               style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
           ),
@@ -35,12 +44,35 @@ class UserHomePage extends StatelessWidget {
               style: const TextStyle(fontSize: 16),
             ),
           ),
+          Center(
+            // Dodajemo Center widget ovdje
+            child: DropdownButton<String>(
+              value: _selectedList,
+              onChanged: (String? newValue) {
+                setState(() {
+                  _selectedList = newValue!;
+                });
+              },
+              items: <String>['accepted', 'rejected']
+                  .map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+            ),
+          ),
           Expanded(
             child: StreamBuilder(
-              stream: FirebaseFirestore.instance
-                  .collection('users')
-                  .where('email', isEqualTo: userEmail)
-                  .snapshots(),
+              stream: _selectedList == 'accepted'
+                  ? FirebaseFirestore.instance
+                      .collection('accepted')
+                      .where('user_id', isEqualTo: userId)
+                      .snapshots()
+                  : FirebaseFirestore.instance
+                      .collection('rejected')
+                      .where('userId', isEqualTo: userId)
+                      .snapshots(),
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.hasError) {
@@ -52,50 +84,25 @@ class UserHomePage extends StatelessWidget {
                 }
 
                 if (snapshot.data!.docs.isEmpty) {
-                  return const Center(child: Text('No user data found.'));
+                  return const Center(child: Text('No data found.'));
                 }
 
-                final userData =
-                    snapshot.data!.docs.first.data() as Map<String, dynamic>;
+                final dataList = snapshot.data!.docs
+                    .map((doc) => doc.data() as Map<String, dynamic>)
+                    .toList();
 
-                return StreamBuilder(
-                  stream: FirebaseFirestore.instance
-                      .collection('accepted')
-                      .where('user_id', isEqualTo: userId)
-                      .snapshots(),
-                  builder: (BuildContext context,
-                      AsyncSnapshot<QuerySnapshot> snapshot) {
-                    if (snapshot.hasError) {
-                      return Text('An error occurred: ${snapshot.error}');
-                    }
-
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-
-                    if (snapshot.data!.docs.isEmpty) {
-                      return const Center(
-                          child: Text('No accepted data found.'));
-                    }
-
-                    final acceptedData = snapshot.data!.docs
-                        .map((doc) => doc.data() as Map<String, dynamic>)
-                        .toList();
-
-                    return ListView.builder(
-                      itemCount: acceptedData.length,
-                      itemBuilder: (context, index) {
-                        final entry = acceptedData[index];
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: entry.entries
-                              .map((entry) => ListTile(
-                                    title: Text(entry.key),
-                                    subtitle: Text(entry.value.toString()),
-                                  ))
-                              .toList(),
-                        );
-                      },
+                return ListView.builder(
+                  itemCount: dataList.length,
+                  itemBuilder: (context, index) {
+                    final entry = dataList[index];
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: entry.entries
+                          .map((entry) => ListTile(
+                                title: Text(entry.key),
+                                subtitle: Text(entry.value.toString()),
+                              ))
+                          .toList(),
                     );
                   },
                 );

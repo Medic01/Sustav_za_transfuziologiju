@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sustav_za_transfuziologiju/screens/user/welcome_page.dart';
 import '../enums/blood_types.dart';
 import '../widgets/blood_type_dropdown_widget.dart';
@@ -18,7 +19,8 @@ class _DataEntryPageState extends State<DataEntryPage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _surnameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _uniqueCitizensIdController = TextEditingController();
+  final TextEditingController _uniqueCitizensIdController =
+      TextEditingController();
   final TextEditingController _dateOfBirthController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _cityController = TextEditingController();
@@ -48,6 +50,35 @@ class _DataEntryPageState extends State<DataEntryPage> {
   }) async {
     try {
       FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+      // Spremi podatke lokalno prije nego što ih spremiš u Firestore
+      Future<void> saveDataLocally({
+        required String name,
+        required String surname,
+        required String email,
+        required String uniqueCitizensId,
+        required String dateOfBirth,
+        required String address,
+        required String city,
+        required String phoneNumber,
+        BloodTypes? bloodType,
+        required String gender,
+      }) async {
+        // Function implementation goes here
+      }
+
+      await saveDataLocally(
+        name: name,
+        surname: surname,
+        email: email,
+        uniqueCitizensId: uniqueCitizensId,
+        dateOfBirth: dateOfBirth,
+        address: address,
+        city: city,
+        phoneNumber: phoneNumber,
+        bloodType: bloodType,
+        gender: gender,
+      );
 
       final userSnapshot = await firestore
           .collection('users')
@@ -113,11 +144,19 @@ class _DataEntryPageState extends State<DataEntryPage> {
             ),
             const SizedBox(height: 20.0),
             _buildTextField(labelText: 'Name', controller: _nameController),
-            _buildTextField(labelText: 'Surname', controller: _surnameController),
-            _buildTextField(labelText: 'Email', controller: _emailController, readOnly: true),
-            _buildTextField(labelText: 'Unique Citizens ID', controller: _uniqueCitizensIdController),
+            _buildTextField(
+                labelText: 'Surname', controller: _surnameController),
+            _buildTextField(
+                labelText: 'Email',
+                controller: _emailController,
+                readOnly: true),
+            _buildTextField(
+                labelText: 'Unique Citizens ID',
+                controller: _uniqueCitizensIdController),
             DatePickerWidget(controller: _dateOfBirthController),
-            _buildGenderDropdownField(labelText: 'Gender', value: _selectedGender,
+            _buildGenderDropdownField(
+                labelText: 'Gender',
+                value: _selectedGender,
                 onChanged: (value) {
                   setState(() {
                     _selectedGender = value!;
@@ -130,9 +169,11 @@ class _DataEntryPageState extends State<DataEntryPage> {
                     child: Text(gender),
                   );
                 }).toList()),
-            _buildTextField(labelText: 'Address', controller: _addressController),
+            _buildTextField(
+                labelText: 'Address', controller: _addressController),
             _buildTextField(labelText: 'City', controller: _cityController),
-            _buildTextField(labelText: 'Phone Number', controller: _phoneNumberController),
+            _buildTextField(
+                labelText: 'Phone Number', controller: _phoneNumberController),
             BloodTypeDropdownWidget(
               onChanged: (newValue) {
                 setState(() {

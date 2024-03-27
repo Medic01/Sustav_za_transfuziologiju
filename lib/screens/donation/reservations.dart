@@ -5,16 +5,13 @@ import 'package:sustav_za_transfuziologiju/screens/donation/blood_donation_form.
 class Reservations extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Zakažite datum donacije krvi:'),
       ),
       body: StreamBuilder(
-
-        stream: FirebaseFirestore.instance
-            .collection('donation_date')
-            .snapshots(),
+        stream:
+            FirebaseFirestore.instance.collection('donation_date').snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
             return Text('An error occurred: ${snapshot.error}');
@@ -86,6 +83,9 @@ class Reservations extends StatelessWidget {
                               actions: <Widget>[
                                 ElevatedButton(
                                   onPressed: () {
+                                    String userId =
+                                        data['user_id']; // Dohvaćanje userId-a
+
                                     FirebaseFirestore.instance
                                         .collection('rejected')
                                         .add({
@@ -94,20 +94,23 @@ class Reservations extends StatelessWidget {
                                       'date': data['date'],
                                       'blood_type': data['blood_type'],
                                       'reason_for_rejection': rejectionReason,
+                                      'userId': userId, // Spremanje userId-a
                                     }).then((value) {
-                                      print('Declined donation added to declined_donations collection');
+                                      print(
+                                          'Declined donation added to declined_donations collection');
                                       FirebaseFirestore.instance
-                                          .collection(
-                                              'donation_date')
+                                          .collection('donation_date')
                                           .doc(document.id)
                                           .delete()
                                           .then((_) {
                                         print('Document successfully deleted');
                                       }).catchError((error) {
-                                        print('Error deleting document: $error');
+                                        print(
+                                            'Error deleting document: $error');
                                       });
                                     }).catchError((error) {
-                                      print('Error adding declined donation: $error');
+                                      print(
+                                          'Error adding declined donation: $error');
                                     });
 
                                     Navigator.of(context).pop();
