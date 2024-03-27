@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_pw_validator/flutter_pw_validator.dart';
 import 'package:crypto/crypto.dart';
-import '../enums/user_role.dart';
+import 'package:sustav_za_transfuziologiju/services/user_data_service.dart';
 import 'dart:convert';
 import '../user/data_entry_page.dart';
 
@@ -213,17 +213,16 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         );
                         return;
                       }
-                      final userId = generateTimestampId();
-                      await FirebaseFirestore.instance
-                          .collection('users')
-                          .doc(userId)
-                          .set({
-                        'user_id': userId,
-                        'email': _usernameController.text,
-                        'password': passwordHash,
-                        'role': UserRole.USER.toString().split('.').last,
-                        'is_first_login': true,
-                      });
+
+                      try {
+                        await UserDataService().registerUser(
+                            email: _usernameController.text,
+                            password: _passwordController.text,
+                        );
+                      } catch (e) {
+                        print('Error $e has occured!');
+                      }
+
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text('Uspješno ste se registrirali!'),

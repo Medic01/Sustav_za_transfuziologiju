@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:sustav_za_transfuziologiju/screens/user/welcome_page.dart';
+import 'package:sustav_za_transfuziologiju/main.dart';
+import 'package:sustav_za_transfuziologiju/models/user_data.dart';
+import 'package:sustav_za_transfuziologiju/screens/user/user_home_page.dart';
+import 'package:sustav_za_transfuziologiju/services/user_data_service.dart';
 import '../enums/blood_types.dart';
 import '../widgets/blood_type_dropdown_widget.dart';
 import '../widgets/date_picker_widget.dart';
@@ -47,52 +49,63 @@ class _DataEntryPageState extends State<DataEntryPage> {
     required BuildContext context,
   }) async {
     try {
-      FirebaseFirestore firestore = FirebaseFirestore.instance;
+      final userData = UserData(
+        name: name,
+        surname: surname,
+        email: email,
+        uniqueCitizensId: uniqueCitizensId,
+        dateOfBirth: dateOfBirth,
+        address: address,
+        city: city,
+        phoneNumber: phoneNumber,
+        bloodType: bloodType,
+        gender: gender,
+        isFirstLogin: false,
+      );
 
-      final userSnapshot = await firestore
-          .collection('users')
-          .where('email', isEqualTo: email)
-          .get();
-      print("User Snapshot: $userSnapshot");
+      await UserDataService().updateUser(userData);
 
-      if (userSnapshot.docs.isNotEmpty) {
-        final userId = userSnapshot.docs.first.id;
-        print("UserID: $userId");
-
-        await firestore.collection('users').doc(userId).update({
-          'name': name,
-          'surname': surname,
-          'email': email,
-          'unique_citizens_id': uniqueCitizensId,
-          'date_of_birth': dateOfBirth,
-          'address': address,
-          'city': city,
-          'phone_number': phoneNumber,
-          'blood_type': bloodType?.toString().split('.').last,
-          'gender': gender,
-          'is_first_login': false,
-        });
-      }
-
-      print('Data successfully saved to Firestore.');
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => UserHomePage()),
+      );
 
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return const AlertDialog(
-            title: Text("Successfully saved"),
+          return AlertDialog(
+            title: const Text("Success"),
+            content: const Text("Data successfully saved to Firestore."),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('OK'),
+              ),
+            ],
           );
         },
       );
-
-      await Future.delayed(const Duration(seconds: 1));
-
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const WelcomePage()),
-      );
     } catch (error) {
       print('Error saving data: $error');
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text("Error"),
+            content: const Text("An error occurred while saving data."),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
     }
   }
 
