@@ -56,7 +56,7 @@ class _AdminWelcomePageState extends State<AdminWelcomePage> {
                           if (_selectedFilter == 'Accepted') {
                             String donorName = document['donor_name'];
                             String bloodType = document['blood_type'];
-                            int? donatedAmount = document['donated_dose'];
+                            //int? donatedAmount = document['donated_dose'];
 
                             return Card(
                               child: ListTile(
@@ -65,8 +65,8 @@ class _AdminWelcomePageState extends State<AdminWelcomePage> {
                                   children: [
                                     Text('Donor Name: $donorName'),
                                     Text('Blood Type: $bloodType'),
-                                    if (donatedAmount != null)
-                                      Text('Donated Amount: $donatedAmount'),
+                                    // if (donatedAmount != null)
+                                    //   Text('Donated Amount: $donatedAmount'),
                                   ],
                                 ),
                               ),

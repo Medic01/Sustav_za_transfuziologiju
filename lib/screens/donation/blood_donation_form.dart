@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:sustav_za_transfuziologiju/models/donation.dart';
+import 'package:sustav_za_transfuziologiju/screens/enums/blood_types.dart';
+import 'package:sustav_za_transfuziologiju/services/donation_service.dart';
 import '../widgets/date_picker_widget.dart';
-import '../enums/blood_types.dart';
 import '../widgets/blood_type_dropdown_widget.dart';
 import 'blood_donation_records.dart';
 
@@ -12,12 +13,13 @@ class BloodDonationForm extends StatefulWidget {
   final String bloodType;
   final String userId;
 
-  const BloodDonationForm({super.key, 
+  const BloodDonationForm({
+    Key? key,
     required this.date,
     required this.donorName,
     required this.bloodType,
-    required this.userId
-  });
+    required this.userId,
+  }) : super(key: key);
 
   @override
   _BloodDonationFormState createState() => _BloodDonationFormState();
@@ -26,16 +28,14 @@ class BloodDonationForm extends StatefulWidget {
 class _BloodDonationFormState extends State<BloodDonationForm> {
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _donorNameController = TextEditingController();
-  BloodTypes? _selectedBloodType;
   final TextEditingController _placeController = TextEditingController();
   final TextEditingController _doctorNameController = TextEditingController();
-  final TextEditingController _technicianNameController =
-      TextEditingController();
+  final TextEditingController _technicianNameController = TextEditingController();
   final TextEditingController _hemoglobinController = TextEditingController();
-  final TextEditingController _bloodPressureController =
-      TextEditingController();
-  final TextEditingController _rejectionReasonController =
-      TextEditingController();
+  final TextEditingController _bloodPressureController = TextEditingController();
+  final TextEditingController _rejectionReasonController = TextEditingController();
+  final DonationService _donationService = DonationService();
+  BloodTypes? _selectedBloodType;
   late String _userId;
 
   @override
@@ -45,42 +45,16 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
     _dateController.text = widget.date;
     _donorNameController.text = widget.donorName;
     _selectedBloodType = BloodTypes.values.firstWhere(
-      (element) => element.toString().split('.').last == widget.bloodType,
+          (element) => element.toString().split('.').last == widget.bloodType,
     );
   }
 
-  void saveDataToFirestore({
-    required String date,
-    required String place,
-    required String doctorName,
-    required String technicianName,
-    required String hemoglobin,
-    required String bloodPressure,
-    required bool donationRejected,
-    required String rejectionReason,
-    required BloodTypes? bloodType,
-    required String donorName,
-    required String userId,
-  }) async {
+  void saveDataToFirestore(Donation data) async {
     try {
-      FirebaseFirestore firestore = FirebaseFirestore.instance;
-
-      await firestore.collection('blood_donation').add({
-        'location': place,
-        'date': date,
-        'blood_pressure': bloodPressure,
-        'hemoglobin': hemoglobin,
-        'doctor_name': doctorName,
-        'technician_name': technicianName,
-        'blood_type': bloodType.toString().split('.').last,
-        'donor_name': donorName,
-        'user_id': userId,
-      });
-
-      print('Data successfully saved to Firestore.');
+      await _donationService.saveDonationData(data);
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const BloodDonationRecords()),
+        MaterialPageRoute(builder: (context) => BloodDonationRecords()),
       );
     } catch (error) {
       print('Error saving data: $error');
@@ -110,23 +84,23 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
             ),
             _buildTextField(
               labelText: 'Place',
-              controller: _placeController, // Add your controller here
+              controller: _placeController,
             ),
             _buildTextField(
               labelText: 'Doctors Name',
-              controller: _doctorNameController, // Add your controller here
+              controller: _doctorNameController,
             ),
             _buildTextField(
               labelText: 'Technicians Name',
-              controller: _technicianNameController, // Add your controller here
+              controller: _technicianNameController,
             ),
             _buildTextField(
               labelText: 'Hemoglobin (g/dL)',
-              controller: _hemoglobinController, // Add your controller here
+              controller: _hemoglobinController,
             ),
             _buildTextField(
               labelText: 'Blood Pressure',
-              controller: _bloodPressureController, // Add your controller here
+              controller: _bloodPressureController,
             ),
             BloodTypeDropdownWidget(
               onChanged: (BloodTypes? newValue) {
@@ -134,7 +108,7 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
                   _selectedBloodType = newValue;
                 });
               },
-              value: _selectedBloodType, // Set the initial value
+              value: _selectedBloodType,
             ),
             const SizedBox(height: 20.0),
             _buildSaveButton(context),
@@ -167,7 +141,7 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
       width: double.infinity,
       child: ElevatedButton(
         onPressed: () {
-          saveDataToFirestore(
+          Donation data = Donation(
             date: _dateController.text,
             place: _placeController.text,
             doctorName: _doctorNameController.text,
@@ -178,8 +152,9 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
             rejectionReason: _rejectionReasonController.text,
             bloodType: _selectedBloodType,
             donorName: _donorNameController.text,
-            userId: _userId
+            userId: _userId,
           );
+          saveDataToFirestore(data);
         },
         child: const Text('Save'),
       ),
