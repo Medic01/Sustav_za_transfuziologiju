@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sustav_za_transfuziologiju/models/user_data.dart';
+import 'package:sustav_za_transfuziologiju/screens/user/user_home_page.dart';
 import 'package:sustav_za_transfuziologiju/screens/user/welcome_page.dart';
-import 'package:sustav_za_transfuziologiju/services/user_data_service.dart';
 import '../enums/blood_types.dart';
 import '../widgets/blood_type_dropdown_widget.dart';
 import '../widgets/date_picker_widget.dart';
@@ -11,7 +10,7 @@ import '../widgets/date_picker_widget.dart';
 class DataEntryPage extends StatefulWidget {
   final String email;
 
-  const DataEntryPage({super.key, required this.email});
+  const DataEntryPage({Key? key, required this.email}) : super(key: key);
 
   @override
   _DataEntryPageState createState() => _DataEntryPageState();
@@ -21,7 +20,8 @@ class _DataEntryPageState extends State<DataEntryPage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _surnameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _uniqueCitizensIdController = TextEditingController();
+  final TextEditingController _uniqueCitizensIdController =
+      TextEditingController();
   final TextEditingController _dateOfBirthController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _cityController = TextEditingController();
@@ -36,7 +36,7 @@ class _DataEntryPageState extends State<DataEntryPage> {
     _emailController.text = widget.email;
   }
 
-  void saveDataToFirestore({
+  Future<void> saveDataToFirestore({
     required String name,
     required String surname,
     required String email,
@@ -50,20 +50,9 @@ class _DataEntryPageState extends State<DataEntryPage> {
     required BuildContext context,
   }) async {
     try {
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-      final userData = UserData(
-          name: name,
-          surname: surname,
-          email: email,
-          uniqueCitizensId: uniqueCitizensId,
-          dateOfBirth: dateOfBirth,
-          address: address,
-          city: city,
-          phoneNumber: phoneNumber,
-          gender: gender,
-          isFirstLogin: false,
-      );
-
+      // Spremi podatke lokalno prije nego što ih spremiš u Firestore
       Future<void> saveDataLocally({
         required String name,
         required String surname,
@@ -76,7 +65,16 @@ class _DataEntryPageState extends State<DataEntryPage> {
         BloodTypes? bloodType,
         required String gender,
       }) async {
-        // Function implementation goes here
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('name', name);
+        await prefs.setString('surname', surname);
+        await prefs.setString('email', email);
+        await prefs.setString('uniqueCitizensId', uniqueCitizensId);
+        await prefs.setString('dateOfBirth', dateOfBirth);
+        await prefs.setString('address', address);
+        await prefs.setString('city', city);
+        await prefs.setString('phoneNumber', phoneNumber);
+        await prefs.setString('gender', gender);
       }
 
       await saveDataLocally(
@@ -92,7 +90,32 @@ class _DataEntryPageState extends State<DataEntryPage> {
         gender: gender,
       );
 
-      await UserDataService().updateUser(userData);
+      final userSnapshot = await firestore
+          .collection('users')
+          .where('email', isEqualTo: email)
+          .get();
+      print("User Snapshot: $userSnapshot");
+
+      if (userSnapshot.docs.isNotEmpty) {
+        final userId = userSnapshot.docs.first.id;
+        print("UserID: $userId");
+
+        await firestore.collection('users').doc(userId).update({
+          'name': name,
+          'surname': surname,
+          'email': email,
+          'unique_citizens_id': uniqueCitizensId,
+          'date_of_birth': dateOfBirth,
+          'address': address,
+          'city': city,
+          'phone_number': phoneNumber,
+          'blood_type': bloodType?.toString().split('.').last,
+          'gender': gender,
+          'is_first_login': false,
+        });
+      }
+
+      print('Data successfully saved to Firestore.');
 
       showDialog(
         context: context,
@@ -218,23 +241,45 @@ class _DataEntryPageState extends State<DataEntryPage> {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
-        onPressed: () {
+        onPressed: () async {
+          await saveDataLocally(
+            name: _nameController.text,
+            email: _emailController.text,
+          );
+
+          // Retrieve locally saved user data
+          Map<String, String> _loggedInUserData = {
+            'name': _nameController.text,
+            'email': _emailController.text,
+          };
+
+          // Save data to Firestore
           saveDataToFirestore(
             name: _nameController.text,
             surname: _surnameController.text,
             email: _emailController.text,
             uniqueCitizensId: _uniqueCitizensIdController.text,
-            gender: _selectedGender,
             dateOfBirth: _dateOfBirthController.text,
             address: _addressController.text,
             city: _cityController.text,
             phoneNumber: _phoneNumberController.text,
             bloodType: _selectedBloodType,
+            gender: _selectedGender,
             context: context,
+          );
+
+          // Navigate to UserHomePage
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => UserHomePage(userData: _loggedInUserData),
+            ),
           );
         },
         child: const Text('Save'),
       ),
     );
   }
+
+  saveDataLocally({required String name, required String email}) {}
 }
