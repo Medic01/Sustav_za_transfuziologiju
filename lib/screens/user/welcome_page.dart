@@ -7,13 +7,13 @@ class WelcomePage extends StatefulWidget {
   const WelcomePage({super.key});
 
   @override
-  _WelcomePageState createState () => _WelcomePageState();
+  _WelcomePageState createState() => _WelcomePageState();
 }
 
 class _WelcomePageState extends State<WelcomePage> {
   int _selectedIndex = 0;
 
-  final List<Widget> _pages = <Widget> [
+  final List<Widget> _pages = <Widget>[
     const UserHomePage(),
     const BloodDonationReservationPage(),
   ];
@@ -27,8 +27,7 @@ class _WelcomePageState extends State<WelcomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body:_pages.elementAt(_selectedIndex),
-
+      body: _pages.elementAt(_selectedIndex),
       bottomNavigationBar: BottomAppBar(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -39,22 +38,20 @@ class _WelcomePageState extends State<WelcomePage> {
               },
               icon: const Icon(Icons.home),
             ),
-
             IconButton(
               onPressed: () {
                 _onItemTapped(1);
               },
               icon: const Icon(Icons.calendar_today),
             ),
-
             IconButton(
-                onPressed: () {
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => const HomePage()),
-                  );
-                },
-                icon: const Icon(Icons.logout_rounded),
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HomePage()),
+                );
+              },
+              icon: const Icon(Icons.logout_rounded),
             ),
           ],
         ),

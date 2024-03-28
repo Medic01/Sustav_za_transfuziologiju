@@ -62,9 +62,9 @@ class _DoseEntryPageState extends State<DoseEntryPage> {
       stream: selectedBloodType == 'All'
           ? FirebaseFirestore.instance.collection('accepted').snapshots()
           : FirebaseFirestore.instance
-          .collection('accepted')
-          .where('blood_type', isEqualTo: selectedBloodType)
-          .snapshots(),
+              .collection('accepted')
+              .where('blood_type', isEqualTo: selectedBloodType)
+              .snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasError) {
           return Text('An error occurred: ${snapshot.error}');

@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sustav_za_transfuziologiju/screens/user/user_home_page.dart';
 import 'package:sustav_za_transfuziologiju/screens/user/welcome_page.dart';
+import 'package:sustav_za_transfuziologiju/screens/utils/session_manager.dart';
 import '../enums/blood_types.dart';
 import '../widgets/blood_type_dropdown_widget.dart';
 import '../widgets/date_picker_widget.dart';
@@ -29,6 +30,7 @@ class _DataEntryPageState extends State<DataEntryPage> {
   BloodTypes? _selectedBloodType;
   String _selectedGender = 'Male';
   final List<String> _genderOptions = ['Male', 'Female'];
+  SessionManager sessionManager = SessionManager();
 
   @override
   void initState() {
@@ -98,6 +100,7 @@ class _DataEntryPageState extends State<DataEntryPage> {
 
       if (userSnapshot.docs.isNotEmpty) {
         final userId = userSnapshot.docs.first.id;
+        sessionManager.setUserId(userId);
         print("UserID: $userId");
 
         await firestore.collection('users').doc(userId).update({
