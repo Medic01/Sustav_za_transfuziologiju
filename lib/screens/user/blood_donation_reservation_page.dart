@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import 'package:sustav_za_transfuziologiju/screens/user/welcome_page.dart';
 import 'package:sustav_za_transfuziologiju/screens/utils/session_manager.dart';
+import 'package:sustav_za_transfuziologiju/services/donation_service.dart';
 import '../enums/blood_types.dart';
 import '../widgets/blood_type_dropdown_widget.dart';
 
@@ -20,6 +20,7 @@ class _BloodDonationReservationPageState
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _dateController = TextEditingController();
+  final DonationService _donationService = DonationService();
   String? _selectedBloodType;
   late MaskTextInputFormatter _dateMaskFormatter;
   String? _userId;
@@ -62,13 +63,13 @@ class _BloodDonationReservationPageState
 
   void _submitForm() async {
     if (_formKey.currentState!.validate() && _selectedBloodType != null) {
-      await FirebaseFirestore.instance.collection('donation_date').add({
-        'donor_name': _nameController.text,
-        'email': _emailController.text,
-        'date': _dateController.text,
-        'blood_type': _selectedBloodType,
-        'user_id': _userId
-      });
+      await _donationService.saveBloodDonationData(
+        donorName: _nameController.text,
+        email: _emailController.text,
+        date: _dateController.text,
+        bloodType: _selectedBloodType!,
+        userId: _userId!,
+      );
 
       // Clear form data and reset blood type dropdown
       _nameController.clear();
@@ -84,7 +85,7 @@ class _BloodDonationReservationPageState
         builder: (context) => AlertDialog(
           title: const Text('Success'),
           content:
-              const Text('Your blood donation reservation has been submitted.'),
+          const Text('Your blood donation reservation has been submitted.'),
           actions: [
             TextButton(
               onPressed: () {
@@ -158,8 +159,8 @@ class _BloodDonationReservationPageState
                   },
                   value: _selectedBloodType != null
                       ? BloodTypes.values.firstWhere((element) =>
-                          element.toString().split('.').last ==
-                          _selectedBloodType)
+                  element.toString().split('.').last ==
+                      _selectedBloodType)
                       : null,
                 ),
                 const SizedBox(height: 20),

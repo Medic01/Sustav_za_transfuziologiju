@@ -4,6 +4,28 @@ import 'package:sustav_za_transfuziologiju/models/donation.dart';
 class DonationService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
+  Future<void> saveBloodDonationData({
+    required String donorName,
+    required String email,
+    required String date,
+    required String bloodType,
+    required String userId,
+  }) async {
+    try {
+      await _db.collection('donation_date').add({
+        'donor_name': donorName,
+        'email': email,
+        'date': date,
+        'blood_type': bloodType,
+        'user_id': userId,
+      });
+      print('Blood donation data successfully saved to Firestore!');
+    } catch (e) {
+      print('Error while saving blood donation data: $e');
+      throw e;
+    }
+  }
+
   Future<void> saveDonationData(Donation data) async {
     try {
       await _db.collection('blood_donation').add({
@@ -42,9 +64,9 @@ class DonationService {
       });
 
       await bloodDonationRef.doc(documentId).delete();
-      } catch(e) {
-        print('Error $e has occured!');
-        throw e;
+    } catch(e) {
+      print('Error $e has occured!');
+      throw e;
     }
   }
 
@@ -135,7 +157,7 @@ class DonationService {
     }
 
     return collectionRef.snapshots().map((snapshot) =>
-          snapshot.docs.map((doc) => Donation.fromFirestore(doc)).toList());
+        snapshot.docs.map((doc) => Donation.fromFirestore(doc)).toList());
   }
 
   Future<void> markDoseProcessed(String donationId) async {

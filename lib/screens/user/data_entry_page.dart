@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sustav_za_transfuziologiju/models/user_data.dart';
 import 'package:sustav_za_transfuziologiju/screens/user/user_home_page.dart';
 import 'package:sustav_za_transfuziologiju/screens/user/welcome_page.dart';
 import 'package:sustav_za_transfuziologiju/screens/utils/session_manager.dart';
+import 'package:sustav_za_transfuziologiju/services/user_data_service.dart';
 import '../enums/blood_types.dart';
 import '../widgets/blood_type_dropdown_widget.dart';
 import '../widgets/date_picker_widget.dart';
@@ -21,12 +23,12 @@ class _DataEntryPageState extends State<DataEntryPage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _surnameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _uniqueCitizensIdController =
-      TextEditingController();
+  final TextEditingController _uniqueCitizensIdController = TextEditingController();
   final TextEditingController _dateOfBirthController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _cityController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
+  UserDataService _userDataService = UserDataService();
   BloodTypes? _selectedBloodType;
   String _selectedGender = 'Male';
   final List<String> _genderOptions = ['Male', 'Female'];
@@ -92,6 +94,20 @@ class _DataEntryPageState extends State<DataEntryPage> {
         gender: gender,
       );
 
+      UserData userData = UserData(
+        name: name,
+        surname: surname,
+        email: email,
+        uniqueCitizensId: uniqueCitizensId,
+        dateOfBirth: dateOfBirth,
+        address: address,
+        city: city,
+        phoneNumber: phoneNumber,
+        bloodType: bloodType,
+        gender: gender,
+        isFirstLogin: false,
+      );
+
       final userSnapshot = await firestore
           .collection('users')
           .where('email', isEqualTo: email)
@@ -103,19 +119,7 @@ class _DataEntryPageState extends State<DataEntryPage> {
         sessionManager.setUserId(userId);
         print("UserID: $userId");
 
-        await firestore.collection('users').doc(userId).update({
-          'name': name,
-          'surname': surname,
-          'email': email,
-          'unique_citizens_id': uniqueCitizensId,
-          'date_of_birth': dateOfBirth,
-          'address': address,
-          'city': city,
-          'phone_number': phoneNumber,
-          'blood_type': bloodType?.toString().split('.').last,
-          'gender': gender,
-          'is_first_login': false,
-        });
+        _userDataService.updateUser(userData);
       }
 
       print('Data successfully saved to Firestore.');
@@ -205,8 +209,8 @@ class _DataEntryPageState extends State<DataEntryPage> {
 
   Widget _buildTextField(
       {required String labelText,
-      required TextEditingController controller,
-      bool readOnly = false}) {
+        required TextEditingController controller,
+        bool readOnly = false}) {
     return Container(
       margin: const EdgeInsets.only(bottom: 10.0),
       child: TextFormField(
