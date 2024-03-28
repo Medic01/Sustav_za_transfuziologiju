@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import '../screens/enums/blood_types.dart';
 
 class Donation {
@@ -26,4 +28,22 @@ class Donation {
     required this.donationRejected,
     required this.rejectionReason,
   });
+
+  factory Donation.fromFirestore(DocumentSnapshot doc) {
+    Map <String, dynamic> data = doc.data() as Map<String, dynamic>;
+
+    return Donation(
+      date: data['date'],
+      donorName: data['donor_name'],
+      place: data['place'],
+      doctorName: data['doctor_name'],
+      technicianName: data['technician_name'],
+      hemoglobin: data['hemoglobin'],
+      bloodPressure: data['blood_pressure'],
+      bloodType: data['blood_type'] != null ? BloodTypes.values.firstWhere((e) => e.toString().split('.')[1] == data['blood_type']) : null,
+      userId: data['user_id'],
+      donationRejected: data['donation_rejected'] ?? false,
+      rejectionReason: data['rejection_reason'] ?? '',
+    );
+  }
 }

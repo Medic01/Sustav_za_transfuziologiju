@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sustav_za_transfuziologiju/screens/donation/blood_donation_form.dart';
+import 'package:sustav_za_transfuziologiju/services/donation_service.dart';
 
 class Reservations extends StatelessWidget {
+  final DonationService _donationService = DonationService();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -10,8 +13,7 @@ class Reservations extends StatelessWidget {
         title: const Text('Zakažite datum donacije krvi:'),
       ),
       body: StreamBuilder(
-        stream:
-            FirebaseFirestore.instance.collection('donation_date').snapshots(),
+        stream: FirebaseFirestore.instance.collection('donation_date').snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
             return Text('An error occurred: ${snapshot.error}');
@@ -21,8 +23,7 @@ class Reservations extends StatelessWidget {
           }
           return ListView(
             children: snapshot.data!.docs.map((DocumentSnapshot document) {
-              Map<String, dynamic> data =
-                  document.data() as Map<String, dynamic>;
+              Map<String, dynamic> data = document.data() as Map<String, dynamic>;
               return ListTile(
                 title: Text('Name: ${data['donor_name']}'),
                 subtitle: Column(
@@ -49,14 +50,10 @@ class Reservations extends StatelessWidget {
                             ),
                           ),
                         ).then((_) {
-                          FirebaseFirestore.instance
-                              .collection('donation_date')
-                              .doc(document.id)
-                              .delete()
-                              .then((_) {
-                            print('Document successfully deleted');
+                          _donationService.acceptDonationAfterReservation(document.id, data).then((_) {
+                            print('Document successfully accepted after reservation');
                           }).catchError((error) {
-                            print('Error deleting document: $error');
+                            print('Error accepting document after reservation: $error');
                           });
                         });
                       },
@@ -69,7 +66,6 @@ class Reservations extends StatelessWidget {
                           context: context,
                           builder: (BuildContext context) {
                             String rejectionReason = '';
-
                             return AlertDialog(
                               title: const Text('Unesite razlog odbijanja: '),
                               content: TextField(
@@ -77,40 +73,18 @@ class Reservations extends StatelessWidget {
                                   rejectionReason = value;
                                 },
                                 decoration: const InputDecoration(
-                                  hintText: 'Razlog obdijanja...',
+                                  hintText: 'Razlog odbijanja...',
                                 ),
                               ),
                               actions: <Widget>[
                                 ElevatedButton(
                                   onPressed: () {
-                                    String userId =
-                                        data['user_id']; // Dohvaćanje userId-a
+                                    String userId = data['user_id'];
 
-                                    FirebaseFirestore.instance
-                                        .collection('rejected')
-                                        .add({
-                                      'donor_name': data['donor_name'],
-                                      'email': data['email'],
-                                      'date': data['date'],
-                                      'blood_type': data['blood_type'],
-                                      'reason_for_rejection': rejectionReason,
-                                      'userId': userId, // Spremanje userId-a
-                                    }).then((value) {
-                                      print(
-                                          'Declined donation added to declined_donations collection');
-                                      FirebaseFirestore.instance
-                                          .collection('donation_date')
-                                          .doc(document.id)
-                                          .delete()
-                                          .then((_) {
-                                        print('Document successfully deleted');
-                                      }).catchError((error) {
-                                        print(
-                                            'Error deleting document: $error');
-                                      });
+                                    _donationService.rejectDonationAfterReservation(document.id, data, rejectionReason).then((_) {
+                                      print('Document successfully rejected after reservation');
                                     }).catchError((error) {
-                                      print(
-                                          'Error adding declined donation: $error');
+                                      print('Error rejecting document after reservation: $error');
                                     });
 
                                     Navigator.of(context).pop();
@@ -122,7 +96,7 @@ class Reservations extends StatelessWidget {
                           },
                         );
                       },
-                      child: const Text('Decline'),
+                      child: const Text('Reject'),
                     ),
                   ],
                 ),
