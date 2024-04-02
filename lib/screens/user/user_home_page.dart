@@ -71,7 +71,7 @@ class _UserHomePageState extends State<UserHomePage> {
                       .snapshots()
                   : FirebaseFirestore.instance
                       .collection('rejected')
-                      .where('userId', isEqualTo: userId)
+                      .where('user_id', isEqualTo: userId)
                       .snapshots(),
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot> snapshot) {
