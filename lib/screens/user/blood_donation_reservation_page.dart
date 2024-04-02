@@ -71,7 +71,6 @@ class _BloodDonationReservationPageState
         userId: _userId!,
       );
 
-      // Clear form data and reset blood type dropdown
       _nameController.clear();
       _emailController.clear();
       _dateController.clear();
@@ -79,7 +78,6 @@ class _BloodDonationReservationPageState
         _selectedBloodType = null;
       });
 
-      // Show success dialog
       showDialog(
         context: context,
         builder: (context) => AlertDialog(

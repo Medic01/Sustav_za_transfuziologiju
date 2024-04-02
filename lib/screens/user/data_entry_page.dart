@@ -56,7 +56,6 @@ class _DataEntryPageState extends State<DataEntryPage> {
     try {
       FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-      // Spremi podatke lokalno prije nego što ih spremiš u Firestore
       Future<void> saveDataLocally({
         required String name,
         required String surname,
@@ -254,13 +253,11 @@ class _DataEntryPageState extends State<DataEntryPage> {
             email: _emailController.text,
           );
 
-          // Retrieve locally saved user data
           Map<String, String> _loggedInUserData = {
             'name': _nameController.text,
             'email': _emailController.text,
           };
 
-          // Save data to Firestore
           saveDataToFirestore(
             name: _nameController.text,
             surname: _surnameController.text,
@@ -275,7 +272,6 @@ class _DataEntryPageState extends State<DataEntryPage> {
             context: context,
           );
 
-          // Navigate to UserHomePage
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(

@@ -45,7 +45,6 @@ class _UserHomePageState extends State<UserHomePage> {
             ),
           ),
           Center(
-            // Dodajemo Center widget ovdje
             child: DropdownButton<String>(
               value: _selectedList,
               onChanged: (String? newValue) {
@@ -117,7 +116,7 @@ class _UserHomePageState extends State<UserHomePage> {
           children: <Widget>[
             IconButton(
               onPressed: () {
-                // Navigacija na početnu stranicu korisnika
+
               },
               icon: const Icon(Icons.home),
             ),
