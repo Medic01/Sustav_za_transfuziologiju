@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sustav_za_transfuziologiju/models/user_data.dart';
+import 'package:sustav_za_transfuziologiju/screens/enums/gender.dart';
 import 'package:sustav_za_transfuziologiju/screens/user/user_home_page.dart';
 import 'package:sustav_za_transfuziologiju/screens/user/welcome_page.dart';
 import 'package:sustav_za_transfuziologiju/screens/utils/session_manager.dart';
@@ -30,8 +31,7 @@ class _DataEntryPageState extends State<DataEntryPage> {
   final TextEditingController _phoneNumberController = TextEditingController();
   UserDataService _userDataService = UserDataService();
   BloodTypes? _selectedBloodType;
-  String _selectedGender = 'Male';
-  final List<String> _genderOptions = ['Male', 'Female'];
+  Gender? _selectedGender;
   SessionManager sessionManager = SessionManager();
 
   @override
@@ -178,13 +178,7 @@ class _DataEntryPageState extends State<DataEntryPage> {
                     _selectedGender = value!;
                   });
                 },
-                items: _genderOptions
-                    .map<DropdownMenuItem<String>>((String gender) {
-                  return DropdownMenuItem<String>(
-                    value: gender,
-                    child: Text(gender),
-                  );
-                }).toList()),
+            ),
             _buildTextField(
                 labelText: 'Address', controller: _addressController),
             _buildTextField(labelText: 'City', controller: _cityController),
@@ -225,20 +219,24 @@ class _DataEntryPageState extends State<DataEntryPage> {
 
   Widget _buildGenderDropdownField({
     required String labelText,
-    required String value,
-    required ValueChanged<String?> onChanged,
-    required List<DropdownMenuItem<String>> items,
+    required Gender? value,
+    required ValueChanged<Gender?> onChanged,
   }) {
     return Container(
       margin: const EdgeInsets.only(top: 10.0, bottom: 10.0),
-      child: DropdownButtonFormField<String>(
+      child: DropdownButtonFormField<Gender>(
         decoration: InputDecoration(
           labelText: labelText,
           border: const OutlineInputBorder(),
         ),
         value: value,
         onChanged: onChanged,
-        items: items,
+        items: Gender.values.map((gender) {
+          return DropdownMenuItem<Gender>(
+            value: gender,
+            child: Text(gender.toString().split('.').last),
+          );
+        }).toList(),
       ),
     );
   }
@@ -248,6 +246,24 @@ class _DataEntryPageState extends State<DataEntryPage> {
       width: double.infinity,
       child: ElevatedButton(
         onPressed: () async {
+
+          if (_selectedBloodType == null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                  content: Text("Trebate odabrati krvnu grupu!"),
+              ),
+            );
+            return;
+          }
+          
+          if (_selectedGender == null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                  content: Text("Odaberite spol!"),
+              ),
+            );
+          }
+          
           await saveDataLocally(
             name: _nameController.text,
             email: _emailController.text,
@@ -268,7 +284,7 @@ class _DataEntryPageState extends State<DataEntryPage> {
             city: _cityController.text,
             phoneNumber: _phoneNumberController.text,
             bloodType: _selectedBloodType,
-            gender: _selectedGender,
+            gender: _selectedGender!.toString().split('.').last,
             context: context,
           );
 

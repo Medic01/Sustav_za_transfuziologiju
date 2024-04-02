@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_pw_validator/flutter_pw_validator.dart';
 import 'package:crypto/crypto.dart';
-import '../enums/user_role.dart';
+import 'package:sustav_za_transfuziologiju/screens/utils/email.validator.dart';
+import 'package:sustav_za_transfuziologiju/services/user_data_service.dart';
 import 'dart:convert';
 import '../user/data_entry_page.dart';
 
@@ -16,13 +17,14 @@ class RegistrationPage extends StatefulWidget {
 class _RegistrationPageState extends State<RegistrationPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
+  final FocusNode _passwordFocusNode = FocusNode();
+  final UserDataService _userDataService = UserDataService();
   bool _isPasswordValid = false;
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
   bool _isPasswordFocused = false;
-  final FocusNode _passwordFocusNode = FocusNode();
+
 
   @override
   void dispose() {
@@ -40,28 +42,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
     });
   }
 
-  String generateTimestampId() {
-    DateTime now = DateTime.now();
-    String timestampId = now.microsecondsSinceEpoch.toString();
-    return timestampId;
-  }
-
   @override
   Widget build(BuildContext context) {
-    String? validateEmail(String? value) {
-      const pattern = r"(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'"
-          r'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-'
-          r'\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*'
-          r'[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4]'
-          r'[0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9]'
-          r'[0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\'
-          r'x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])';
-      final regex = RegExp(pattern);
-      return value!.isEmpty || !regex.hasMatch(value)
-          ? 'Unesite ispravan email'
-          : null;
-    }
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Registracija'),
@@ -155,7 +137,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       onPressed: () {
                         setState(() {
                           _isConfirmPasswordVisible =
-                              !_isConfirmPasswordVisible;
+                          !_isConfirmPasswordVisible;
                         });
                       },
                       icon: Icon(
@@ -180,7 +162,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       );
                       return;
                     }
-                    if (validateEmail(_usernameController.text) != null) {
+                    if (EmailValidator.isValid(_usernameController.text) != true) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text('Unesite ispravan email!'),
@@ -213,17 +195,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         );
                         return;
                       }
-                      final userId = generateTimestampId();
-                      await FirebaseFirestore.instance
-                          .collection('users')
-                          .doc(userId)
-                          .set({
-                        'user_id': userId,
-                        'email': _usernameController.text,
-                        'password': passwordHash,
-                        'role': UserRole.USER.toString().split('.').last,
-                        'is_first_login': true,
-                      });
+                      await _userDataService.registerUser(
+                          email: _usernameController.text,
+                          password: _passwordController.text
+                      );
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text('Uspješno ste se registrirali!'),
