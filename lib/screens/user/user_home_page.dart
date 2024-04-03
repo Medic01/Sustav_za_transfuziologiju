@@ -45,7 +45,6 @@ class _UserHomePageState extends State<UserHomePage> {
             ),
           ),
           Center(
-            // Dodajemo Center widget ovdje
             child: DropdownButton<String>(
               value: _selectedList,
               onChanged: (String? newValue) {
@@ -71,7 +70,7 @@ class _UserHomePageState extends State<UserHomePage> {
                       .snapshots()
                   : FirebaseFirestore.instance
                       .collection('rejected')
-                      .where('userId', isEqualTo: userId)
+                      .where('user_id', isEqualTo: userId)
                       .snapshots(),
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -117,7 +116,7 @@ class _UserHomePageState extends State<UserHomePage> {
           children: <Widget>[
             IconButton(
               onPressed: () {
-                // Navigacija na početnu stranicu korisnika
+
               },
               icon: const Icon(Icons.home),
             ),

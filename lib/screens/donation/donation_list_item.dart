@@ -8,7 +8,7 @@ class DonationListItem extends StatelessWidget {
   final String documentId;
   final DonationService donationService;
   final TextEditingController quantityController;
-
+  
   const DonationListItem({
     required this.data,
     required this.documentId,
@@ -109,17 +109,12 @@ class DonationListItem extends StatelessWidget {
                     int.tryParse(quantity) != null &&
                     int.parse(quantity) >= existingQuantity &&
                     int.parse(quantity) <= 100) {
-                  FirebaseFirestore.instance
-                      .collection('accepted')
-                      .doc(documentId)
-                      .update({
-                    'donated_dose': int.parse(quantity),
-                  }).then((value) {
-                    print('Donated dose quantity updated');
-                    Navigator.pop(context);
-                  }).catchError((error) {
-                    print('Error occurred while updating donated dose quantity: $error');
-                  });
+                  
+                  donationService.updateDonatedDose(
+                      documentId,
+                      int.parse(quantity)
+                  );
+                  
                 } else if (int.parse(quantity) < existingQuantity) {
                   print('You cannot enter a quantity less than the existing one');
                   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(

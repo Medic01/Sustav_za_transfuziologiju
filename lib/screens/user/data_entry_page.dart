@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sustav_za_transfuziologiju/models/user_data.dart';
+import 'package:sustav_za_transfuziologiju/screens/enums/gender.dart';
 import 'package:sustav_za_transfuziologiju/screens/user/user_home_page.dart';
 import 'package:sustav_za_transfuziologiju/screens/user/welcome_page.dart';
 import 'package:sustav_za_transfuziologiju/screens/utils/session_manager.dart';
+import 'package:sustav_za_transfuziologiju/services/user_data_service.dart';
 import '../enums/blood_types.dart';
 import '../widgets/blood_type_dropdown_widget.dart';
 import '../widgets/date_picker_widget.dart';
@@ -21,15 +24,14 @@ class _DataEntryPageState extends State<DataEntryPage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _surnameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _uniqueCitizensIdController =
-      TextEditingController();
+  final TextEditingController _uniqueCitizensIdController = TextEditingController();
   final TextEditingController _dateOfBirthController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _cityController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
+  UserDataService _userDataService = UserDataService();
   BloodTypes? _selectedBloodType;
-  String _selectedGender = 'Male';
-  final List<String> _genderOptions = ['Male', 'Female'];
+  Gender? _selectedGender;
   SessionManager sessionManager = SessionManager();
 
   @override
@@ -54,7 +56,6 @@ class _DataEntryPageState extends State<DataEntryPage> {
     try {
       FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-      // Spremi podatke lokalno prije nego što ih spremiš u Firestore
       Future<void> saveDataLocally({
         required String name,
         required String surname,
@@ -92,6 +93,20 @@ class _DataEntryPageState extends State<DataEntryPage> {
         gender: gender,
       );
 
+      UserData userData = UserData(
+        name: name,
+        surname: surname,
+        email: email,
+        uniqueCitizensId: uniqueCitizensId,
+        dateOfBirth: dateOfBirth,
+        address: address,
+        city: city,
+        phoneNumber: phoneNumber,
+        bloodType: bloodType,
+        gender: gender,
+        isFirstLogin: false,
+      );
+
       final userSnapshot = await firestore
           .collection('users')
           .where('email', isEqualTo: email)
@@ -103,19 +118,7 @@ class _DataEntryPageState extends State<DataEntryPage> {
         sessionManager.setUserId(userId);
         print("UserID: $userId");
 
-        await firestore.collection('users').doc(userId).update({
-          'name': name,
-          'surname': surname,
-          'email': email,
-          'unique_citizens_id': uniqueCitizensId,
-          'date_of_birth': dateOfBirth,
-          'address': address,
-          'city': city,
-          'phone_number': phoneNumber,
-          'blood_type': bloodType?.toString().split('.').last,
-          'gender': gender,
-          'is_first_login': false,
-        });
+        _userDataService.updateUser(userData);
       }
 
       print('Data successfully saved to Firestore.');
@@ -175,13 +178,7 @@ class _DataEntryPageState extends State<DataEntryPage> {
                     _selectedGender = value!;
                   });
                 },
-                items: _genderOptions
-                    .map<DropdownMenuItem<String>>((String gender) {
-                  return DropdownMenuItem<String>(
-                    value: gender,
-                    child: Text(gender),
-                  );
-                }).toList()),
+            ),
             _buildTextField(
                 labelText: 'Address', controller: _addressController),
             _buildTextField(labelText: 'City', controller: _cityController),
@@ -205,8 +202,8 @@ class _DataEntryPageState extends State<DataEntryPage> {
 
   Widget _buildTextField(
       {required String labelText,
-      required TextEditingController controller,
-      bool readOnly = false}) {
+        required TextEditingController controller,
+        bool readOnly = false}) {
     return Container(
       margin: const EdgeInsets.only(bottom: 10.0),
       child: TextFormField(
@@ -222,20 +219,24 @@ class _DataEntryPageState extends State<DataEntryPage> {
 
   Widget _buildGenderDropdownField({
     required String labelText,
-    required String value,
-    required ValueChanged<String?> onChanged,
-    required List<DropdownMenuItem<String>> items,
+    required Gender? value,
+    required ValueChanged<Gender?> onChanged,
   }) {
     return Container(
       margin: const EdgeInsets.only(top: 10.0, bottom: 10.0),
-      child: DropdownButtonFormField<String>(
+      child: DropdownButtonFormField<Gender>(
         decoration: InputDecoration(
           labelText: labelText,
           border: const OutlineInputBorder(),
         ),
         value: value,
         onChanged: onChanged,
-        items: items,
+        items: Gender.values.map((gender) {
+          return DropdownMenuItem<Gender>(
+            value: gender,
+            child: Text(gender.toString().split('.').last),
+          );
+        }).toList(),
       ),
     );
   }
@@ -245,18 +246,34 @@ class _DataEntryPageState extends State<DataEntryPage> {
       width: double.infinity,
       child: ElevatedButton(
         onPressed: () async {
+
+          if (_selectedBloodType == null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                  content: Text("Trebate odabrati krvnu grupu!"),
+              ),
+            );
+            return;
+          }
+          
+          if (_selectedGender == null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                  content: Text("Odaberite spol!"),
+              ),
+            );
+          }
+          
           await saveDataLocally(
             name: _nameController.text,
             email: _emailController.text,
           );
 
-          // Retrieve locally saved user data
           Map<String, String> _loggedInUserData = {
             'name': _nameController.text,
             'email': _emailController.text,
           };
 
-          // Save data to Firestore
           saveDataToFirestore(
             name: _nameController.text,
             surname: _surnameController.text,
@@ -267,11 +284,10 @@ class _DataEntryPageState extends State<DataEntryPage> {
             city: _cityController.text,
             phoneNumber: _phoneNumberController.text,
             bloodType: _selectedBloodType,
-            gender: _selectedGender,
+            gender: _selectedGender!.toString().split('.').last,
             context: context,
           );
 
-          // Navigate to UserHomePage
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
