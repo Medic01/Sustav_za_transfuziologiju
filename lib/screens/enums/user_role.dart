@@ -1,4 +1,8 @@
 enum UserRole {
   USER,
-  ADMIN,
+  ADMIN;
+
+  String get name {
+    return toString().split('.').last;
+  }
 }

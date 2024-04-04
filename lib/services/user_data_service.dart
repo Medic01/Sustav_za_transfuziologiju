@@ -40,7 +40,7 @@ class UserDataService {
         'user_id': userId,
         'email': email,
         'password': passwordHash,
-        'role': UserRole.USER.toString().split('.').last,
+        'role': UserRole.USER.name,
         'is_first_login': true,
       });
 

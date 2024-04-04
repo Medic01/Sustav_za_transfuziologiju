@@ -107,7 +107,10 @@ class _LoginPageState extends State<LoginPage> {
                                 userData['is_first_login'] ?? true;
                             print(isFirstLogin);
 
-                            if (role == UserRole.ADMIN) {
+                            String str = UserRole.ADMIN.toString();
+                            print(str);
+
+                            if (role == UserRole.ADMIN.name) {
                               showDialog(
                                   context: context,
                                   builder: (BuildContext context) {
@@ -135,7 +138,7 @@ class _LoginPageState extends State<LoginPage> {
                                     builder: (context) => const AdminPage()
                                 ),
                               );
-                            } else if (role == UserRole.USER) {
+                            } else if (role == UserRole.USER.name) {
                               if (isFirstLogin) {
                                 Navigator.pushReplacement(
                                   context,
