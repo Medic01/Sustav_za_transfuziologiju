@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:sustav_za_transfuziologiju/screens/auth/google_oauth.dart';
 import 'package:sustav_za_transfuziologiju/screens/auth/login_page.dart';
 import 'package:sustav_za_transfuziologiju/screens/auth/registration_page.dart';
 import 'package:sustav_za_transfuziologiju/screens/utils/default_firebase_options.dart';
@@ -75,10 +76,21 @@ class HomePage extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const RegistrationPage()),
+                  MaterialPageRoute(
+                      builder: (context) => const RegistrationPage()),
                 );
               },
               child: const Text('Register'),
+            ),
+            const SizedBox(height: 10.0),
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const GoogleOauth()),
+                );
+              },
+              child: const Text('Oauth Login'),
             ),
           ],
         ),
