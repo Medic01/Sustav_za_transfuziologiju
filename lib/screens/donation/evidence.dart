@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Evidence extends StatelessWidget {
   const Evidence({super.key});
@@ -7,14 +8,14 @@ class Evidence extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Evidencija'),
+        title: Text(AppLocalizations.of(context)!.evidence),
       ),
-      body: const Center(
+      body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'Successfully saved',
+              AppLocalizations.of(context)!.successfullySaved,
               style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
             ),
           ],

@@ -6,6 +6,7 @@ import 'package:sustav_za_transfuziologiju/services/donation_service.dart';
 import '../widgets/date_picker_widget.dart';
 import '../widgets/blood_type_dropdown_widget.dart';
 import 'blood_donation_records.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class BloodDonationForm extends StatefulWidget {
   final String date;
@@ -65,41 +66,41 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Blood Donation Form'),
+        title: Text(AppLocalizations.of(context)!.donationForm),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            const Text(
-              'Fill in the blood donation control details:',
+            Text(
+              AppLocalizations.of(context)!.donorTxt,
               style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20.0),
             DatePickerWidget(controller: _dateController),
             _buildTextField(
-              labelText: 'Donor Name',
+              labelText: AppLocalizations.of(context)!.donorName,
               controller: _donorNameController,
             ),
             _buildTextField(
-              labelText: 'Place',
+              labelText: AppLocalizations.of(context)!.donationPlace,
               controller: _placeController,
             ),
             _buildTextField(
-              labelText: 'Doctors Name',
+              labelText: AppLocalizations.of(context)!.doctorName,
               controller: _doctorNameController,
             ),
             _buildTextField(
-              labelText: 'Technicians Name',
+              labelText: AppLocalizations.of(context)!.technicianName,
               controller: _technicianNameController,
             ),
             _buildTextField(
-              labelText: 'Hemoglobin (g/dL)',
+              labelText: AppLocalizations.of(context)!.hemoglobin,
               controller: _hemoglobinController,
             ),
             _buildTextField(
-              labelText: 'Blood Pressure',
+              labelText: AppLocalizations.of(context)!.bloodPressure,
               controller: _bloodPressureController,
             ),
             BloodTypeDropdownWidget(
@@ -156,7 +157,7 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
           );
           saveDataToFirestore(data);
         },
-        child: const Text('Save'),
+        child: Text(AppLocalizations.of(context)!.saveBtn),
       ),
     );
   }
