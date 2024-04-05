@@ -10,14 +10,15 @@
   "rejectBtn": "Odbij",
   "doseUsed": "Doza iskorištena",
   "quantity": "Količina",
-  "processed": "Obrađeno: ",
+  "processed": "Obrađeno ",
   "doseQuantity": "Količina iskorištena",
-  "date": "Datum",
   "rejection": "Unesite razlog odbijanja: ",
+  "date": "Datum",
   "@date": {
     "description": "Date of birth",
     "type": "String"
   },
+  "fillOutForm": "Molimo unesite Vaše podatke: ",
   "fillAllFieldsMessage": "Popunite sva polja!",
   "@fillAllFieldsMessage": {
     "description": "Error message - occurs if the user doesn't fill out registration form and tries to register"
@@ -28,6 +29,12 @@
     "description": "Refers to a field that indicates if the blood donation is used or not"
   },
   "nameText": "Ime",
+  "surnameTxt": "Prezime",
+  "uniqueCitizensIDText": "JMBG",
+  "genderTxt": "Spol",
+  "addressTxt": "Adresa",
+  "cityTxt": "Grad",
+  "phoneNumberTxt": "Broj telefona",
   "noData": "Nema podataka za prikaz",
   "@noData": {
     "description": "if there are no donations to show, this field occurs"
@@ -37,6 +44,7 @@
     "description": "Form used to fill out donation details, i.e. donor name, doctor and technician names, donation place, blood pressure and hemoglobin"
   },
   "chooseBloodType": "Odaberite krvnu grupu: ",
+  "chooseGender": "Odaberite spol: ",
   "setMinQuantity": "Količina donirane krvi ne moze biti manja od postojeće",
   "setMinMaxQuantity": "Količina donirane krvi mora biti manja od 100 i veća od ",
   "donationDate": "Datum darivanja:",
@@ -58,16 +66,19 @@
     "description": "Amount of donated blood donations that have been processed",
     "type": "int"
   },
-  "donationDateReservation": "Rezervirajte datum darivanja krvi:",
+  "donationDateReservation": "Rezervirajte datum darivanja krvi!",
   "doctorName": "Ime doktrora",
   "evidence": "Evidencija donirane krvi: ",
   "technicianName": "Ime tehničara",
   "donationRecords": "Povijest darivanja krvi",
-  "donorTxt": "Unesite detalje za donaciju krvi: ",
+  "donorTxt": "Molimo unesite detalje za donaciju krvi: ",
   "donorName": "Ime darivatelja: ",
-  "donationPlace": "Mjesto darivanja: ",
+  "fullNameLabel": "Ime i prezime",
+  "fullNameTxt": "Molimo unesite Vaše ime i prezime",
+  "donationLocation": "Mjesto darivanja: ",
   "donationForm": "Forma za doniranje krvi",
-  "enterDoseQuantity": "Unesite količinu donirane doze krvi: ",
+  "enterDoseQuantity": "Molimo unesite količinu donirane doze krvi: ",
+  "enterDonationDate": "Molimo unesite željeni datum: ",
   "successfullySaved": "Podaci su uspješno pohranjeni",
   "donationSuccessText": "Vaša donacija je uspješno zabilježena!",
   "reservationSuccessText": "Vaša rezervacija je uspješno zabilježena!",
@@ -82,7 +93,7 @@
   "passwordRepeat": "Ponovite lozinku",
   "validPasswordMessage": "Lozinka je ispravna!",
   "invalidPasswordMessage": "Lozinka nije ispravna!",
-  "emailErrorMessage": "Unesite ispravan email!",
+  "emailErrorMessage": "Molimo unesite ispravan email!",
   "passwordMismatchMessage": "Lozinke se ne podudaraju!",
   "userAlreadyExistsMessage": "Korisnik već postoji!",
   "loginTitle": "Prijava",
@@ -91,14 +102,13 @@
   "registrationButton": "Registrirajte se",
   "successfulSignup": "Uspješno ste se registrirali!",
   "usernameAlreadyInUse": "Korisničko ime već postoji",
-  "adminHomePageTitle": "Admin Početna Stranica",
+  "homePageTitle": "Početna Stranica",
   "acceptedFilter": "Prihvaćeno",
   "acceptedBloodDonations": "Prihvaćene donacije krvi",
-  "bloodDonationHeaderForm": "Popunite formu da rezervirate datum darivanja",
   "rejectedFilter": "Odbijeno",
   "bloodType": "Krvna grupa: ",
   "donatedAmount": "Količina donirane krvi",
-  "rejectionReason": "Razlog odbijanja...",
+  "rejectionReason": "Razlog odbijanja: ",
   "donationNotUsed": "N/A",
   "appTitle": "Sustav za transfuziologiju"
 }

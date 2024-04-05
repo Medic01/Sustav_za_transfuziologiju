@@ -84,7 +84,7 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
               controller: _donorNameController,
             ),
             _buildTextField(
-              labelText: AppLocalizations.of(context)!.donationPlace,
+              labelText: AppLocalizations.of(context)!.donationLocation,
               controller: _placeController,
             ),
             _buildTextField(

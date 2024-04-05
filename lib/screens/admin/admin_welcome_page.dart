@@ -14,7 +14,7 @@ class _AdminWelcomePageState extends State<AdminWelcomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.adminHomePageTitle),
+        title: Text(AppLocalizations.of(context)!.homePageTitle),
       ),
       body: Center(
         child: Column(

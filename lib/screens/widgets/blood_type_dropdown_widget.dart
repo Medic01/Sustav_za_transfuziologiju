@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../enums/blood_types.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class BloodTypeDropdownWidget extends StatefulWidget{
   final ValueChanged<BloodTypes?> onChanged;
@@ -25,9 +26,9 @@ class _BloodTypeDropdownWidgetState extends State<BloodTypeDropdownWidget> {
     return Container(
       margin: const EdgeInsets.only(top: 10.0),
       child: DropdownButtonFormField<BloodTypes>(
-        decoration: const InputDecoration(
-          labelText: 'Blood Type',
-          border: OutlineInputBorder(),
+        decoration: InputDecoration(
+          labelText: AppLocalizations.of(context)!.bloodType,
+          border: const OutlineInputBorder(),
         ),
         value: _selectedBloodType,
         onChanged: (BloodTypes? newValue) {

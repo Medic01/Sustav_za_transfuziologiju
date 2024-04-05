@@ -22,7 +22,7 @@ class DonationListItem extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         ListTile(
-          title: Text('${AppLocalizations.of(context)!.donationPlace} ${data['location']}'),
+          title: Text('${AppLocalizations.of(context)!.donationLocation} ${data['location']}'),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
