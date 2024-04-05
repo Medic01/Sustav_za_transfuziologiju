@@ -20,7 +20,7 @@ class _AdminWelcomePageState extends State<AdminWelcomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            SizedBox(height: 20.0),
+            const SizedBox(height: 20.0),
             DropdownButton<String>(
               value: _selectedFilter,
               onChanged: (String? newValue) {
@@ -35,7 +35,7 @@ class _AdminWelcomePageState extends State<AdminWelcomePage> {
                 );
               }).toList(),
             ),
-            SizedBox(height: 20.0),
+            const SizedBox(height: 20.0),
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
                 stream: _selectedFilter == 'Accepted'
@@ -43,12 +43,12 @@ class _AdminWelcomePageState extends State<AdminWelcomePage> {
                     : FirebaseFirestore.instance.collection('rejected').snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
+                    return Text('${AppLocalizations.of(context)!.genericErrMsg} ${snapshot.error}');
                   }
 
                   switch (snapshot.connectionState) {
                     case ConnectionState.waiting:
-                      return CircularProgressIndicator();
+                      return const CircularProgressIndicator();
                     default:
                       return ListView.builder(
                         itemCount: snapshot.data!.docs.length,
