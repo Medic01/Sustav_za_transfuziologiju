@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class DatePickerWidget extends StatefulWidget {
   final TextEditingController controller;
@@ -40,9 +41,9 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
       child: AbsorbPointer(
         child: TextField(
           controller: widget.controller,
-          decoration: const InputDecoration(
-            labelText: 'Date',
-            border: OutlineInputBorder(),
+          decoration: InputDecoration(
+            labelText: AppLocalizations.of(context)!.date,
+            border: const OutlineInputBorder(),
           ),
         ),
       ),
