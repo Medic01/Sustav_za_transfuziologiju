@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_pw_validator/flutter_pw_validator.dart';
-import 'package:crypto/crypto.dart';
 import 'package:sustav_za_transfuziologiju/screens/utils/email.validator.dart';
 import 'package:sustav_za_transfuziologiju/services/user_data_service.dart';
-import 'dart:convert';
 import '../user/data_entry_page.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -178,6 +176,14 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         ),
                       );
                       return;
+                    }
+
+                    if (!_isPasswordValid) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(AppLocalizations.of(context)!.invalidPasswordMessage),
+                        ),
+                      );
                     }
 
                     try {
