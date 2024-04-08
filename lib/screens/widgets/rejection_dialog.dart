@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class RejectionDialog extends StatelessWidget {
   @override
@@ -7,13 +8,13 @@ class RejectionDialog extends StatelessWidget {
     String rejectionReason = '';
 
     return AlertDialog(
-      title: const Text('Unesite razlog odbijanja: '),
+      title: Text(AppLocalizations.of(context)!.rejection),
       content: TextField(
         onChanged: (value) {
           rejectionReason = value;
         },
-        decoration: const InputDecoration(
-          hintText: 'Razlog...',
+        decoration: InputDecoration(
+          hintText: AppLocalizations.of(context)!.rejectionReason,
         ),
       ),
       actions: <Widget>[
@@ -21,7 +22,7 @@ class RejectionDialog extends StatelessWidget {
           onPressed: () {
             Navigator.of(context).pop(rejectionReason.trim());
           },
-          child: const Text('Submit'),
+          child: Text(AppLocalizations.of(context)!.submitBtn),
         ),
       ],
     );
