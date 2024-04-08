@@ -15,18 +15,18 @@
   "rejection": "Unesite razlog odbijanja: ",
   "date": "Datum",
   "@date": {
-    "description": "Date of birth",
+    "description": "Datum rođenja",
     "type": "String"
   },
   "fillOutForm": "Molimo unesite Vaše podatke: ",
   "fillAllFieldsMessage": "Popunite sva polja!",
   "@fillAllFieldsMessage": {
-    "description": "Error message - occurs if the user doesn't fill out registration form and tries to register"
+    "description": "Greška - tekst koji se ispiše kada korisnik u potpunosti ne popuni formu"
   },
   "emailTxt": "Email",
   "used": "Iskorišteno",
   "@used": {
-    "description": "Refers to a field that indicates if the blood donation is used or not"
+    "description": "Odnosi se na to je li donirana doza krvi iskorištena ili nije"
   },
   "nameText": "Ime",
   "surnameTxt": "Prezime",
@@ -37,11 +37,11 @@
   "phoneNumberTxt": "Broj telefona",
   "noData": "Nema podataka za prikaz",
   "@noData": {
-    "description": "if there are no donations to show, this field occurs"
+    "description": "Tekst koji se pojavi ako nema podataka o donacijama za prikaz"
   },
   "donationDetails": "Detalji donacije: ",
   "@donationDetails": {
-    "description": "Form used to fill out donation details, i.e. donor name, doctor and technician names, donation place, blood pressure and hemoglobin"
+    "description": "Forma koja se popunjava pri donaciji krvi: hemoglobin, tlak, krvna grupa, imena doktora i tehničara..."
   },
   "chooseBloodType": "Odaberite krvnu grupu: ",
   "chooseGender": "Odaberite spol: ",
@@ -50,24 +50,24 @@
   "donationDate": "Datum darivanja:",
   "emailReminder": "Unesite Vaš email!",
   "@emailReminder": {
-    "description": "If the user forgets to enter his/hers email and tries to login this err msg will pop up"
+    "description": "Ako korisnik zaboravi unijeti email i pokuša se prijaviti pojavi se sljedeća greška"
   },
   "hemoglobin": "Hemoglobin (g/dL)",
   "@hemoglobin": {
-    "description": "Levels of hemoglobin in a donated dose"
+    "description": "Razina hemoglobina u doniranoj krvi"
   },
   "passwordReminder": "Unesite Vašu lozinku",
   "@passwordReminder":{
-    "description": "If the user forgets to enter his/hers password and tries to login this err msg will pop up"
+    "description": "Ako korisnik zaboravi unijeti šifru i pokuša se prijaviti pojavi se sljedeća greška"
   },
   "bloodPressure": "Tlak",
   "doseProcessed": "Količina obrađene doze: ",
   "@doseProcessed": {
-    "description": "Amount of donated blood donations that have been processed",
+    "description": "Količina donirane krvi koja je procesirana",
     "type": "int"
   },
   "donationDateReservation": "Rezervirajte datum darivanja krvi!",
-  "doctorName": "Ime doktrora",
+  "doctorName": "Ime doktora",
   "evidence": "Evidencija donirane krvi: ",
   "technicianName": "Ime tehničara",
   "donationRecords": "Povijest darivanja krvi",
