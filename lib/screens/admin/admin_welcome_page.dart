@@ -19,7 +19,7 @@ class _AdminWelcomePageState extends State<AdminWelcomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            SizedBox(height: 20.0),
+            const SizedBox(height: 20.0),
             DropdownButton<String>(
               value: _selectedFilter,
               onChanged: (String? newValue) {
@@ -47,7 +47,7 @@ class _AdminWelcomePageState extends State<AdminWelcomePage> {
 
                   switch (snapshot.connectionState) {
                     case ConnectionState.waiting:
-                      return CircularProgressIndicator();
+                      return const CircularProgressIndicator();
                     default:
                       return ListView.builder(
                         itemCount: snapshot.data!.docs.length,
@@ -65,8 +65,6 @@ class _AdminWelcomePageState extends State<AdminWelcomePage> {
                                   children: [
                                     Text('Donor Name: $donorName'),
                                     Text('Blood Type: $bloodType'),
-                                    // if (donatedAmount != null)
-                                    //   Text('Donated Amount: $donatedAmount'),
                                   ],
                                 ),
                               ),

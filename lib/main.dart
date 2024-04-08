@@ -4,27 +4,37 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:sustav_za_transfuziologiju/screens/auth/login_page.dart';
 import 'package:sustav_za_transfuziologiju/screens/auth/registration_page.dart';
 import 'package:sustav_za_transfuziologiju/screens/utils/default_firebase_options.dart';
+import 'package:logging/logging.dart';
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // Load environment variables
+  setupLogging();
   try {
     await dotenv.load();
   } catch (e) {
-    print('Error loading .env file: $e');
+    Logger.root.severe('Error loading .env file: $e');
   }
-  // Initialize Firebase
+
   try {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
   } catch (e) {
-    print('Error initializing Firebase: $e');
-    // Handle initialization error
+    Logger.root.severe('Error initializing Firebase: $e');
+
     return;
   }
   runApp(const MyApp());
 }
+
+void setupLogging() {
+  Logger.root.level = Level.ALL;
+  Logger.root.onRecord.listen((record) {
+    print('${record.level.name}: ${record.time}: ${record.message}');
+  });
+}
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -47,6 +57,8 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Logger logger = Logger("HomePage");
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Welcome to Health Institute'),
@@ -63,6 +75,7 @@ class HomePage extends StatelessWidget {
             const SizedBox(height: 20.0),
             ElevatedButton(
               onPressed: () {
+                logger.info("Registration button pressed!");
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const LoginPage()),

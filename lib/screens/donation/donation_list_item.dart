@@ -1,6 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
 import 'package:sustav_za_transfuziologiju/services/donation_service.dart';
 
 class DonationListItem extends StatelessWidget {
@@ -8,8 +8,8 @@ class DonationListItem extends StatelessWidget {
   final String documentId;
   final DonationService donationService;
   final TextEditingController quantityController;
-  
-  const DonationListItem({
+
+  DonationListItem({
     required this.data,
     required this.documentId,
     required this.donationService,
@@ -81,6 +81,8 @@ class DonationListItem extends StatelessWidget {
     );
   }
 
+  final Logger logger = Logger("DonationListItem");
+
   void showQuantityDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -109,19 +111,19 @@ class DonationListItem extends StatelessWidget {
                     int.tryParse(quantity) != null &&
                     int.parse(quantity) >= existingQuantity &&
                     int.parse(quantity) <= 100) {
-                  
+
                   donationService.updateDonatedDose(
                       documentId,
                       int.parse(quantity)
                   );
-                  
+
                 } else if (int.parse(quantity) < existingQuantity) {
-                  print('You cannot enter a quantity less than the existing one');
+                  logger.warning('You cannot enter a quantity less than the existing one');
                   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                     content: Text('You cannot enter a quantity less than the existing one'),
                   ));
                 } else {
-                  print('Invalid quantity input');
+                  logger.warning('Invalid quantity input');
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                     content: Text('Quantity must be between $existingQuantity and 100'),
                   ));

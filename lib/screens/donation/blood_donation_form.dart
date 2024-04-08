@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:logging/logging.dart';
 import 'package:sustav_za_transfuziologiju/models/donation.dart';
 import 'package:sustav_za_transfuziologiju/screens/enums/blood_types.dart';
 import 'package:sustav_za_transfuziologiju/services/donation_service.dart';
@@ -35,6 +36,7 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
   final TextEditingController _bloodPressureController = TextEditingController();
   final TextEditingController _rejectionReasonController = TextEditingController();
   final DonationService _donationService = DonationService();
+  final Logger logger = Logger("BloodDonationForm");
   BloodTypes? _selectedBloodType;
   late String _userId;
 
@@ -57,7 +59,7 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
         MaterialPageRoute(builder: (context) => BloodDonationRecords()),
       );
     } catch (error) {
-      print('Error saving data: $error');
+      logger.severe('Error saving data: $error');
     }
   }
 
