@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class DonationTile extends StatelessWidget {
   final Map<String, dynamic> data;
@@ -15,17 +16,17 @@ class DonationTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text('Mjesto doniranja: ${data['location']}'),
+      title: Text('${AppLocalizations.of(context)!.donationLocation} ${data['location']}'),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Datum donacije: ${data['date']}'),
-          Text('Tlak darivatelja ${data['blood_pressure']}'),
-          Text('Hemoglobin ${data['hemoglobin']}'),
-          Text('Ime doktora ${data['doctor_name']}'),
-          Text('Krvna grupa darivatelja: ${data['blood_type']}'),
-          Text('Ime darivatelja: ${data['donor_name']}'),
-          Text('Ime tehničara: ${data['technician_name']}'),
+          Text('${AppLocalizations.of(context)!.donationDate} ${data['date']}'),
+          Text('${AppLocalizations.of(context)!.bloodPressure} ${data['blood_pressure']}'),
+          Text('${AppLocalizations.of(context)!.hemoglobin} ${data['hemoglobin']}'),
+          Text('${AppLocalizations.of(context)!.doctorName} ${data['doctor_name']}'),
+          Text('${AppLocalizations.of(context)!.bloodType} ${data['blood_type']}'),
+          Text('${AppLocalizations.of(context)!.donorName} ${data['donor_name']}'),
+          Text('${AppLocalizations.of(context)!.technicianName} ${data['technician_name']}'),
         ],
       ),
       trailing: Row(
@@ -33,12 +34,12 @@ class DonationTile extends StatelessWidget {
         children: [
           ElevatedButton(
             onPressed: onAccept,
-            child: const Text('Accept'),
+            child: Text(AppLocalizations.of(context)!.acceptBtn),
           ),
           const SizedBox(width: 8),
           ElevatedButton(
             onPressed: onReject,
-            child: const Text('Decline'),
+            child: Text(AppLocalizations.of(context)!.rejectBtn),
           ),
         ],
       ),

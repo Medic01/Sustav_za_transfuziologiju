@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sustav_za_transfuziologiju/screens/enums/blood_types.dart';
 import 'package:sustav_za_transfuziologiju/services/donation_service.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'donation_list_item.dart';
 
@@ -21,7 +22,7 @@ class _DoseEntryPageState extends State<DoseEntryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Accepted blood donations'),
+        title: Text(AppLocalizations.of(context)!.acceptedBloodDonations),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -38,9 +39,9 @@ class _DoseEntryPageState extends State<DoseEntryPage> {
 
   Widget buildDropdownButtonFormField() {
     return DropdownButtonFormField<String>(
-      decoration: const InputDecoration(
-        labelText: 'Choose blood type',
-        border: OutlineInputBorder(),
+      decoration: InputDecoration(
+        labelText: AppLocalizations.of(context)!.chooseBloodType,
+        border: const OutlineInputBorder(),
       ),
       value: selectedBloodType,
       onChanged: (String? newValue) {
@@ -67,7 +68,7 @@ class _DoseEntryPageState extends State<DoseEntryPage> {
               .snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasError) {
-          return Text('An error occurred: ${snapshot.error}');
+          return Text('${AppLocalizations.of(context)!.genericErrMsg} ${snapshot.error}');
         }
 
         if (snapshot.connectionState == ConnectionState.waiting) {
