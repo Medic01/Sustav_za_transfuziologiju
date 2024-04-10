@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sustav_za_transfuziologiju/main.dart';
 import 'package:sustav_za_transfuziologiju/screens/user/blood_donation_reservation_page.dart';
-import 'package:sustav_za_transfuziologiju/screens/user/welcome_page.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class UserHomePage extends StatefulWidget {
   final Map<String, dynamic>? userData;
@@ -25,7 +25,7 @@ class _UserHomePageState extends State<UserHomePage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('User Home'),
+        title: Text(AppLocalizations.of(context)!.homePageTitle),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -33,14 +33,14 @@ class _UserHomePageState extends State<UserHomePage> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              'Welcome, ${widget.userData != null ? widget.userData!['name'] ?? 'Unknown' : 'Unknown'}!',
+              '${AppLocalizations.of(context)!.welcome} , ${widget.userData != null ? widget.userData!['name'] ?? 'Unknown' : 'Unknown'}!',
               style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              'Email: $userEmail',
+              '${AppLocalizations.of(context)!.emailTxt} $userEmail',
               style: const TextStyle(fontSize: 16),
             ),
           ),
@@ -75,7 +75,7 @@ class _UserHomePageState extends State<UserHomePage> {
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.hasError) {
-                  return Text('An error occurred: ${snapshot.error}');
+                  return Text('${AppLocalizations.of(context)!.genericErrMsg} ${snapshot.error}');
                 }
 
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -83,7 +83,7 @@ class _UserHomePageState extends State<UserHomePage> {
                 }
 
                 if (snapshot.data!.docs.isEmpty) {
-                  return const Center(child: Text('No data found.'));
+                  return Center(child: Text(AppLocalizations.of(context)!.noData));
                 }
 
                 final dataList = snapshot.data!.docs

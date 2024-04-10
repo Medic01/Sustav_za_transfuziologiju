@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_pw_validator/flutter_pw_validator.dart';
 import 'package:crypto/crypto.dart';
+import 'package:logging/logging.dart';
 import 'package:sustav_za_transfuziologiju/screens/utils/email.validator.dart';
 import 'package:sustav_za_transfuziologiju/services/user_data_service.dart';
 import 'dart:convert';
 import '../user/data_entry_page.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class RegistrationPage extends StatefulWidget {
   const RegistrationPage({super.key});
@@ -20,6 +22,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
   final TextEditingController _confirmPasswordController = TextEditingController();
   final FocusNode _passwordFocusNode = FocusNode();
   final UserDataService _userDataService = UserDataService();
+  final Logger logger = Logger("RegistrationPage");
   bool _isPasswordValid = false;
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
@@ -46,7 +49,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Registracija'),
+        title: Text(AppLocalizations.of(context)!.registrationTitle),
       ),
       body: SingleChildScrollView(
         child: Center(
@@ -57,8 +60,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
               children: <Widget>[
                 TextField(
                   controller: _usernameController,
-                  decoration: const InputDecoration(
-                    labelText: 'Korisničko ime (Email)',
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.usernameLabel,
                   ),
                 ),
                 const SizedBox(height: 20.0),
@@ -66,7 +69,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   focusNode: _passwordFocusNode,
                   controller: _passwordController,
                   decoration: InputDecoration(
-                    labelText: 'Lozinka',
+                    labelText: AppLocalizations.of(context)!.passwordLabel,
                     suffixIcon: IconButton(
                       onPressed: () {
                         setState(() {
@@ -109,8 +112,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
                           _isPasswordValid = true;
                         });
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Lozinka je valjana!'),
+                          SnackBar(
+                            content: Text(AppLocalizations.of(context)!.validPasswordMessage),
                           ),
                         );
                       }
@@ -121,8 +124,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
                           _isPasswordValid = false;
                         });
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Lozinka nije valjana!'),
+                          SnackBar(
+                            content: Text(AppLocalizations.of(context)!.invalidPasswordMessage),
                           ),
                         );
                       }
@@ -132,12 +135,11 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 TextField(
                   controller: _confirmPasswordController,
                   decoration: InputDecoration(
-                    labelText: 'Ponovite lozinku',
+                    labelText: AppLocalizations.of(context)!.passwordLabel,
                     suffixIcon: IconButton(
                       onPressed: () {
                         setState(() {
-                          _isConfirmPasswordVisible =
-                          !_isConfirmPasswordVisible;
+                          _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
                         });
                       },
                       icon: Icon(
@@ -156,16 +158,16 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         _passwordController.text.isEmpty ||
                         _confirmPasswordController.text.isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Popunite sva polja!'),
+                        SnackBar(
+                          content: Text(AppLocalizations.of(context)!.fillAllFieldsMessage),
                         ),
                       );
                       return;
                     }
                     if (EmailValidator.isValid(_usernameController.text) != true) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Unesite ispravan email!'),
+                        SnackBar(
+                          content: Text(AppLocalizations.of(context)!.emailErrorMessage),
                         ),
                       );
                       return;
@@ -173,15 +175,13 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     if (_passwordController.text !=
                         _confirmPasswordController.text) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Lozinke se ne podudaraju!'),
+                        SnackBar(
+                          content: Text(AppLocalizations.of(context)!.passwordMismatchMessage),
                         ),
                       );
                       return;
                     }
-                    final passwordHash = sha256
-                        .convert(utf8.encode(_passwordController.text))
-                        .toString();
+
                     try {
                       final existingUser = await FirebaseFirestore.instance
                           .collection('users')
@@ -189,8 +189,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
                           .get();
                       if (existingUser.docs.isNotEmpty) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Korisničko ime već postoji!'),
+                          SnackBar(
+                            content: Text(AppLocalizations.of(context)!.usernameAlreadyInUse),
                           ),
                         );
                         return;
@@ -200,8 +200,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
                           password: _passwordController.text
                       );
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Uspješno ste se registrirali!'),
+                        SnackBar(
+                          content: Text(AppLocalizations.of(context)!.successfulSignup),
                           duration: Duration(seconds: 2),
                         ),
                       );
@@ -213,10 +213,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         ),
                       );
                     } catch (e) {
-                      print("Greška prilikom registracije $e");
+                      logger.severe("Greška prilikom registracije $e");
                     }
                   },
-                  child: const Text('Registrirajte se'),
+                  child: Text(AppLocalizations.of(context)!.registrationButton),
                 ),
               ],
             ),

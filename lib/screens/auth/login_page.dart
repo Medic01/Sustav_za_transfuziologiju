@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crypto/crypto.dart';
+import 'package:logging/logging.dart';
 import 'dart:convert';
 import 'package:sustav_za_transfuziologiju/screens/admin/admin_page.dart';
 import 'package:sustav_za_transfuziologiju/screens/enums/user_role.dart';
@@ -9,6 +9,7 @@ import 'package:sustav_za_transfuziologiju/screens/user/data_entry_page.dart';
 import 'package:sustav_za_transfuziologiju/screens/user/welcome_page.dart';
 import 'package:sustav_za_transfuziologiju/screens/user/user_home_page.dart';
 import 'package:sustav_za_transfuziologiju/screens/utils/session_manager.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -20,6 +21,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final Logger logger = Logger("LoginPage");
   SessionManager sessionManager = SessionManager();
 
   bool _isPasswordVisible = false;
@@ -28,11 +30,11 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     final formKey = GlobalKey<FormState>();
-    final auth = FirebaseAuth.instance;
+
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Login'),
+        title: Text(AppLocalizations.of(context)!.loginTitle),
       ),
       body: Center(
         child: Padding(
@@ -44,12 +46,12 @@ class _LoginPageState extends State<LoginPage> {
               children: <Widget>[
                 TextFormField(
                   controller: _emailController,
-                  decoration: const InputDecoration(
-                    labelText: 'Korisničko ime (Email)',
+                  decoration: InputDecoration(
+                      labelText: AppLocalizations.of(context)!.usernameLabel,
                   ),
                   validator: (value) {
                     if (value?.isEmpty ?? true) {
-                      return 'Unesite vaš email';
+                      return AppLocalizations.of(context)!.emailReminder;
                     }
                     return null;
                   },
@@ -73,7 +75,7 @@ class _LoginPageState extends State<LoginPage> {
                   obscureText: !_isPasswordVisible,
                   validator: (value) {
                     if (value?.isEmpty ?? true) {
-                      return 'Unesite vašu lozinku';
+                      return AppLocalizations.of(context)!.passwordReminder;
                     }
                     return null;
                   },
@@ -105,14 +107,15 @@ class _LoginPageState extends State<LoginPage> {
                             final role = userData['role'];
                             final isFirstLogin =
                                 userData['is_first_login'] ?? true;
-                            print(isFirstLogin);
+
+                            logger.info(isFirstLogin);
 
                             if (role == UserRole.ADMIN.name) {
                               showDialog(
                                   context: context,
                                   builder: (BuildContext context) {
                                     return AlertDialog(
-                                      title: const Text('Welcome ADMIN!'),
+                                      title: Text(AppLocalizations.of(context)!.welcome),
                                       actions: [
                                         TextButton(
                                           onPressed: () {
@@ -124,7 +127,7 @@ class _LoginPageState extends State<LoginPage> {
                                               ),
                                             );
                                           },
-                                          child: const Text('OK'),
+                                          child: Text(AppLocalizations.of(context)!.ok),
                                         ),
                                       ],
                                     );
@@ -149,8 +152,7 @@ class _LoginPageState extends State<LoginPage> {
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => UserHomePage(
-                                          userData: _loggedInUserData)
+                                      builder: (context) => UserHomePage(userData: _loggedInUserData)
                                   ),
                                 );
                               }
@@ -160,22 +162,22 @@ class _LoginPageState extends State<LoginPage> {
                         }
 
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Incorrect email or password.'),
-                            duration: Duration(seconds: 2),
+                          SnackBar(
+                            content: Text(AppLocalizations.of(context)!.invalidCredentialsMessage),
+                            duration: const Duration(seconds: 2),
                           ),
                         );
                       } catch (e) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text('Login failed: $e'),
+                            content: Text('${AppLocalizations.of(context)!.unsuccessfulLoginMessage} $e'),
                             duration: const Duration(seconds: 2),
                           ),
                         );
                       }
                     }
                   },
-                  child: const Text('Login'),
+                  child: Text(AppLocalizations.of(context)!.loginButton),
                 ),
               ],
             ),

@@ -1,22 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:logging/logging.dart';
 import 'package:sustav_za_transfuziologiju/screens/donation/blood_donation_form.dart';
 import 'package:sustav_za_transfuziologiju/services/donation_service.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Reservations extends StatelessWidget {
   final DonationService _donationService = DonationService();
+  final Logger logger = Logger("Reservations");
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Zakažite datum donacije krvi:'),
+        title: Text(AppLocalizations.of(context)!.donationDateReservation),
       ),
       body: StreamBuilder(
         stream: FirebaseFirestore.instance.collection('donation_date').snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
-            return Text('An error occurred: ${snapshot.error}');
+            return Text('${AppLocalizations.of(context)!.genericErrMsg} ${snapshot.error}');
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const CircularProgressIndicator();
@@ -25,13 +28,13 @@ class Reservations extends StatelessWidget {
             children: snapshot.data!.docs.map((DocumentSnapshot document) {
               Map<String, dynamic> data = document.data() as Map<String, dynamic>;
               return ListTile(
-                title: Text('Name: ${data['donor_name']}'),
+                title: Text('${AppLocalizations.of(context)!.donorName} ${data['donor_name']}'),
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Email: ${data['email']}'),
-                    Text('Datum doniranja: ${data['date']}'),
-                    Text('Krvna grupa: ${data['blood_type']}'),
+                    Text('${AppLocalizations.of(context)!.emailTxt} ${data['email']}'),
+                    Text('${AppLocalizations.of(context)!.donationDate} ${data['date']}'),
+                    Text('${AppLocalizations.of(context)!.bloodType} ${data['blood_type']}'),
                   ],
                 ),
                 trailing: Row(
@@ -51,9 +54,9 @@ class Reservations extends StatelessWidget {
                           ),
                         ).then((_) {
                           _donationService.acceptDonationAfterReservation(document.id, data).then((_) {
-                            print('Document successfully accepted after reservation');
+                            logger.info('Document successfully accepted after reservation');
                           }).catchError((error) {
-                            print('Error accepting document after reservation: $error');
+                            logger.severe('Error accepting document after reservation: $error');
                           });
                         });
                       },
@@ -67,13 +70,13 @@ class Reservations extends StatelessWidget {
                           builder: (BuildContext context) {
                             String rejectionReason = '';
                             return AlertDialog(
-                              title: const Text('Unesite razlog odbijanja: '),
+                              title: Text(AppLocalizations.of(context)!.rejection),
                               content: TextField(
                                 onChanged: (value) {
                                   rejectionReason = value;
                                 },
-                                decoration: const InputDecoration(
-                                  hintText: 'Razlog odbijanja...',
+                                decoration: InputDecoration(
+                                  hintText: AppLocalizations.of(context)!.rejectionReason,
                                 ),
                               ),
                               actions: <Widget>[
@@ -82,21 +85,21 @@ class Reservations extends StatelessWidget {
                                     String userId = data['user_id'];
 
                                     _donationService.rejectDonationAfterReservation(document.id, data, rejectionReason).then((_) {
-                                      print('Document successfully rejected after reservation');
+                                      logger.info('Document successfully rejected after reservation');
                                     }).catchError((error) {
-                                      print('Error rejecting document after reservation: $error');
+                                      logger.severe('Error rejecting document after reservation: $error');
                                     });
 
                                     Navigator.of(context).pop();
                                   },
-                                  child: const Text('Submit'),
+                                  child: Text(AppLocalizations.of(context)!.submitBtn),
                                 ),
                               ],
                             );
                           },
                         );
                       },
-                      child: const Text('Reject'),
+                      child: Text(AppLocalizations.of(context)!.rejectBtn),
                     ),
                   ],
                 ),

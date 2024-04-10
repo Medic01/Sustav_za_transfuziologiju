@@ -1,6 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:sustav_za_transfuziologiju/services/donation_service.dart';
 
 class DonationListItem extends StatelessWidget {
@@ -8,8 +9,8 @@ class DonationListItem extends StatelessWidget {
   final String documentId;
   final DonationService donationService;
   final TextEditingController quantityController;
-  
-  const DonationListItem({
+
+  DonationListItem({
     required this.data,
     required this.documentId,
     required this.donationService,
@@ -22,30 +23,30 @@ class DonationListItem extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         ListTile(
-          title: Text('Donation location: ${data['location']}'),
+          title: Text('${AppLocalizations.of(context)!.donationLocation} ${data['location']}'),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Donation date: ${data['date']}'),
-              Text('Donor blood pressure: ${data['blood_pressure']}'),
-              Text('Hemoglobin: ${data['hemoglobin']}'),
-              Text('Doctor name: ${data['doctor_name']}'),
-              Text('Blood type: ${data['blood_type']}'),
-              Text('Donor name: ${data['donor_name']}'),
+              Text('${AppLocalizations.of(context)!.donationDate} ${data['date']}'),
+              Text('${AppLocalizations.of(context)!.bloodPressure} ${data['blood_pressure']}'),
+              Text('${AppLocalizations.of(context)!.hemoglobin} ${data['hemoglobin']}'),
+              Text('${AppLocalizations.of(context)!.doctorName} ${data['doctor_name']}'),
+              Text('${AppLocalizations.of(context)!.bloodType} ${data['blood_type']}'),
+              Text('${AppLocalizations.of(context)!.donorName} ${data['donor_name']}'),
               Text(
-                'Blood processed: ${data['dose_processed']}',
+                '${AppLocalizations.of(context)!.doseProcessed} ${data['dose_processed']}',
                 style: TextStyle(
                   color: data['dose_processed'] == true ? Colors.green : Colors.black,
                 ),
               ),
               Text(
-                'Blood used: ${data['dose_used']}',
+                '${AppLocalizations.of(context)!.doseUsed} ${data['dose_used']}',
                 style: TextStyle(
                   color: data['dose_used'] == true ? Colors.green : Colors.black,
                 ),
               ),
               Text(
-                'Donated dose quantity: ${data['donated_dose'] ?? 'N/A'}',
+                '${AppLocalizations.of(context)!.donatedAmount} ${data['donated_dose'] ?? 'N/A'}',
                 style: TextStyle(
                   color: data['donated_dose'] == 100 ? Colors.red : Colors.green,
                 ),
@@ -60,19 +61,19 @@ class DonationListItem extends StatelessWidget {
               onPressed: () {
                 donationService.markDoseProcessed(documentId);
               },
-              child: const Text('Processed'),
+              child: Text(AppLocalizations.of(context)!.processed),
             ),
             ElevatedButton(
               onPressed: () {
                 donationService.markDoseUsed(documentId);
               },
-              child: const Text('Used'),
+              child: Text(AppLocalizations.of(context)!.used),
             ),
             ElevatedButton(
               onPressed: () {
                 showQuantityDialog(context);
               },
-              child: const Text('Quantity'),
+              child: Text(AppLocalizations.of(context)!.quantity),
             ),
           ],
         ),
@@ -81,17 +82,19 @@ class DonationListItem extends StatelessWidget {
     );
   }
 
+  final Logger logger = Logger("DonationListItem");
+
   void showQuantityDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Enter donated dose quantity'),
+          title: Text(AppLocalizations.of(context)!.enterDoseQuantity),
           content: TextField(
             controller: quantityController,
             keyboardType: TextInputType.number,
-            decoration: const InputDecoration(
-              labelText: 'Quantity',
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context)!.quantity,
             ),
           ),
           actions: [
@@ -99,7 +102,7 @@ class DonationListItem extends StatelessWidget {
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: const Text('Cancel'),
+              child: Text(AppLocalizations.of(context)!.cancel),
             ),
             ElevatedButton(
               onPressed: () {
@@ -109,25 +112,25 @@ class DonationListItem extends StatelessWidget {
                     int.tryParse(quantity) != null &&
                     int.parse(quantity) >= existingQuantity &&
                     int.parse(quantity) <= 100) {
-                  
+
                   donationService.updateDonatedDose(
                       documentId,
                       int.parse(quantity)
                   );
-                  
+
                 } else if (int.parse(quantity) < existingQuantity) {
-                  print('You cannot enter a quantity less than the existing one');
+                  logger.warning('You cannot enter a quantity less than the existing one');
                   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                     content: Text('You cannot enter a quantity less than the existing one'),
                   ));
                 } else {
-                  print('Invalid quantity input');
+                  logger.warning('Invalid quantity input');
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text('Quantity must be between $existingQuantity and 100'),
+                    content: Text(AppLocalizations.of(context)!.setMinMaxQuantity),
                   ));
                 }
               },
-              child: const Text('Confirm'),
+              child: Text(AppLocalizations.of(context)!.confirm),
             ),
           ],
         );

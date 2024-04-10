@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:logging/logging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sustav_za_transfuziologiju/models/user_data.dart';
 import 'package:sustav_za_transfuziologiju/screens/enums/gender.dart';
@@ -10,6 +11,7 @@ import 'package:sustav_za_transfuziologiju/services/user_data_service.dart';
 import '../enums/blood_types.dart';
 import '../widgets/blood_type_dropdown_widget.dart';
 import '../widgets/date_picker_widget.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class DataEntryPage extends StatefulWidget {
   final String email;
@@ -29,6 +31,7 @@ class _DataEntryPageState extends State<DataEntryPage> {
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _cityController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
+  final Logger logger = Logger("DataEntryPage");
   UserDataService _userDataService = UserDataService();
   BloodTypes? _selectedBloodType;
   Gender? _selectedGender;
@@ -111,23 +114,23 @@ class _DataEntryPageState extends State<DataEntryPage> {
           .collection('users')
           .where('email', isEqualTo: email)
           .get();
-      print("User Snapshot: $userSnapshot");
+
 
       if (userSnapshot.docs.isNotEmpty) {
         final userId = userSnapshot.docs.first.id;
         sessionManager.setUserId(userId);
-        print("UserID: $userId");
+
 
         _userDataService.updateUser(userData);
       }
 
-      print('Data successfully saved to Firestore.');
+      logger.info('Data successfully saved to Firestore.');
 
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return const AlertDialog(
-            title: Text("Successfully saved"),
+          return AlertDialog(
+            title: Text(AppLocalizations.of(context)!.successfullySaved),
           );
         },
       );
@@ -139,7 +142,7 @@ class _DataEntryPageState extends State<DataEntryPage> {
         MaterialPageRoute(builder: (context) => const WelcomePage()),
       );
     } catch (error) {
-      print('Error saving data: $error');
+      logger.severe('Error saving data: $error');
     }
   }
 
@@ -147,31 +150,31 @@ class _DataEntryPageState extends State<DataEntryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Home Page'),
+        title: Text(AppLocalizations.of(context)!.homePageTitle),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            const Text(
-              'Fill in your details:',
-              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+            Text(
+              AppLocalizations.of(context)!.fillOutForm,
+              style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20.0),
-            _buildTextField(labelText: 'Name', controller: _nameController),
+            _buildTextField(labelText: AppLocalizations.of(context)!.nameText, controller: _nameController),
             _buildTextField(
-                labelText: 'Surname', controller: _surnameController),
+                labelText: AppLocalizations.of(context)!.surnameTxt, controller: _surnameController),
             _buildTextField(
-                labelText: 'Email',
+                labelText: AppLocalizations.of(context)!.emailTxt,
                 controller: _emailController,
                 readOnly: true),
             _buildTextField(
-                labelText: 'Unique Citizens ID',
+                labelText: AppLocalizations.of(context)!.uniqueCitizensIDText,
                 controller: _uniqueCitizensIdController),
             DatePickerWidget(controller: _dateOfBirthController),
             _buildGenderDropdownField(
-                labelText: 'Gender',
+                labelText: AppLocalizations.of(context)!.genderTxt,
                 value: _selectedGender,
                 onChanged: (value) {
                   setState(() {
@@ -180,10 +183,10 @@ class _DataEntryPageState extends State<DataEntryPage> {
                 },
             ),
             _buildTextField(
-                labelText: 'Address', controller: _addressController),
-            _buildTextField(labelText: 'City', controller: _cityController),
+                labelText: AppLocalizations.of(context)!.addressTxt, controller: _addressController),
+            _buildTextField(labelText: AppLocalizations.of(context)!.cityTxt, controller: _cityController),
             _buildTextField(
-                labelText: 'Phone Number', controller: _phoneNumberController),
+                labelText: AppLocalizations.of(context)!.phoneNumberTxt, controller: _phoneNumberController),
             BloodTypeDropdownWidget(
               onChanged: (newValue) {
                 setState(() {
@@ -249,8 +252,8 @@ class _DataEntryPageState extends State<DataEntryPage> {
 
           if (_selectedBloodType == null) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                  content: Text("Trebate odabrati krvnu grupu!"),
+              SnackBar(
+                  content: Text(AppLocalizations.of(context)!.chooseBloodType),
               ),
             );
             return;
@@ -258,8 +261,8 @@ class _DataEntryPageState extends State<DataEntryPage> {
           
           if (_selectedGender == null) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                  content: Text("Odaberite spol!"),
+              SnackBar(
+                  content: Text(AppLocalizations.of(context)!.chooseGender),
               ),
             );
           }
@@ -295,7 +298,7 @@ class _DataEntryPageState extends State<DataEntryPage> {
             ),
           );
         },
-        child: const Text('Save'),
+        child: Text(AppLocalizations.of(context)!.saveBtn),
       ),
     );
   }
