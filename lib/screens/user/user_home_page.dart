@@ -1,16 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sustav_za_transfuziologiju/main.dart';
-import 'package:sustav_za_transfuziologiju/screens/auth/auth_service.dart';
 import 'package:sustav_za_transfuziologiju/screens/user/blood_donation_reservation_page.dart';
-import 'package:sustav_za_transfuziologiju/screens/user/welcome_page.dart';
-import 'package:sustav_za_transfuziologiju/screens/auth/google_oauth.dart';
-import 'package:sustav_za_transfuziologiju/screens/utils/session_manager.dart';
-import 'package:universal_io/io.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class UserHomePage extends StatefulWidget {
   final Map<String, dynamic>? userData;
@@ -26,21 +18,14 @@ class _UserHomePageState extends State<UserHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final String userName =
-        widget.userData != null ? widget.userData!['name'] ?? 'Unknown' : '';
     final String userEmail =
         widget.userData != null ? widget.userData!['email'] ?? '' : '';
     final String userId =
         widget.userData != null ? widget.userData!['user_id'] ?? '' : '';
-    final GoogleSignIn _googleSignIn = GoogleSignIn();
-    final AuthService _authService = AuthService();
-    SessionManager sessionManager = SessionManager();
-
-    bool _isLoggedIn = false;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('User Home'),
+        title: Text(AppLocalizations.of(context)!.homePageTitle),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -48,14 +33,14 @@ class _UserHomePageState extends State<UserHomePage> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              'Welcome, $userName!',
+              '${AppLocalizations.of(context)!.welcome} , ${widget.userData != null ? widget.userData!['name'] ?? 'Unknown' : 'Unknown'}!',
               style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              'Email: $userEmail',
+              '${AppLocalizations.of(context)!.emailTxt} $userEmail',
               style: const TextStyle(fontSize: 16),
             ),
           ),
@@ -90,7 +75,7 @@ class _UserHomePageState extends State<UserHomePage> {
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.hasError) {
-                  return Text('An error occurred: ${snapshot.error}');
+                  return Text('${AppLocalizations.of(context)!.genericErrMsg} ${snapshot.error}');
                 }
 
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -98,7 +83,7 @@ class _UserHomePageState extends State<UserHomePage> {
                 }
 
                 if (snapshot.data!.docs.isEmpty) {
-                  return const Center(child: Text('No data found.'));
+                  return Center(child: Text(AppLocalizations.of(context)!.noData));
                 }
 
                 final dataList = snapshot.data!.docs
@@ -130,7 +115,9 @@ class _UserHomePageState extends State<UserHomePage> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+
+              },
               icon: const Icon(Icons.home),
             ),
             IconButton(
@@ -145,26 +132,7 @@ class _UserHomePageState extends State<UserHomePage> {
               icon: const Icon(Icons.calendar_today),
             ),
             IconButton(
-              onPressed: () async {
-                try {
-                  await _googleSignIn.signOut();
-
-                  print("1");
-                  await FirebaseAuth.instance.signOut();
-                  print("2");
-                  await _googleSignIn.disconnect();
-                  print("3");
-                  final prefs = await SharedPreferences.getInstance();
-                  await prefs.clear();
-                  print("4");
-                  await sessionManager.clear();
-
-                  setState(() {
-                    _isLoggedIn = false;
-                  });
-                } catch (error) {
-                  print('Error signing out: $error');
-                }
+              onPressed: () {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => const HomePage()),

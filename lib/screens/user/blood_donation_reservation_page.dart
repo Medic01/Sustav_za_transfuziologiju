@@ -5,6 +5,7 @@ import 'package:sustav_za_transfuziologiju/screens/utils/session_manager.dart';
 import 'package:sustav_za_transfuziologiju/services/donation_service.dart';
 import '../enums/blood_types.dart';
 import '../widgets/blood_type_dropdown_widget.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class BloodDonationReservationPage extends StatefulWidget {
   const BloodDonationReservationPage({super.key});
@@ -81,16 +82,15 @@ class _BloodDonationReservationPageState
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text('Success'),
+          title: Text(AppLocalizations.of(context)!.success),
           content:
-          const Text('Your blood donation reservation has been submitted.'),
+          Text(AppLocalizations.of(context)!.reservationSuccessText),
           actions: [
             TextButton(
               onPressed: () {
-                // Zatvaranje dijaloga
                 Navigator.of(context).pop();
               },
-              child: const Text('OK'),
+              child: Text(AppLocalizations.of(context)!.ok),
             ),
           ],
         ),
@@ -102,7 +102,7 @@ class _BloodDonationReservationPageState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Blood Donation Reservation'),
+        title: Text(AppLocalizations.of(context)!.donationDateReservation),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -114,10 +114,10 @@ class _BloodDonationReservationPageState
               children: [
                 TextFormField(
                   controller: _nameController,
-                  decoration: const InputDecoration(labelText: 'Full Name'),
+                  decoration: InputDecoration(labelText: AppLocalizations.of(context)!.fullNameLabel),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your full name';
+                      return AppLocalizations.of(context)!.fullNameTxt;
                     }
                     return null;
                   },
@@ -125,13 +125,13 @@ class _BloodDonationReservationPageState
                 const SizedBox(height: 20),
                 TextFormField(
                   controller: _emailController,
-                  decoration: const InputDecoration(labelText: 'Email'),
+                  decoration: InputDecoration(labelText: AppLocalizations.of(context)!.emailTxt),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your email';
+                      return AppLocalizations.of(context)!.emailReminder;
                     }
                     if (!_emailRegExp.hasMatch(value)) {
-                      return 'Please enter a valid email address';
+                      return AppLocalizations.of(context)!.emailErrorMessage;
                     }
                     return null;
                   },
@@ -139,11 +139,11 @@ class _BloodDonationReservationPageState
                 const SizedBox(height: 20),
                 TextFormField(
                   controller: _dateController,
-                  decoration: const InputDecoration(labelText: 'Datum'),
+                  decoration: InputDecoration(labelText: AppLocalizations.of(context)!.date),
                   inputFormatters: [_dateMaskFormatter],
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Molimo unesite željeni datum: ';
+                      return AppLocalizations.of(context)!.enterDonationDate;
                     }
                     return null;
                   },
@@ -164,7 +164,7 @@ class _BloodDonationReservationPageState
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: _submitForm,
-                  child: const Text('Submit'),
+                  child: Text(AppLocalizations.of(context)!.submitBtn),
                 ),
               ],
             ),

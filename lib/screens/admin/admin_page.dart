@@ -30,6 +30,7 @@ class _AdminPageState extends State<AdminPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: _pages[_selectedIndex],
+
       bottomNavigationBar: BottomAppBar(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -40,6 +41,7 @@ class _AdminPageState extends State<AdminPage> {
                 _onTappedItem(0);
               },
             ),
+
             IconButton(
               icon: const Icon(Icons.list),
               onPressed: () {
@@ -57,7 +59,7 @@ class _AdminPageState extends State<AdminPage> {
               onPressed: () {
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => const MyApp()),
+                  MaterialPageRoute(builder: (context) => const HomePage()),
                 );
               },
             ),

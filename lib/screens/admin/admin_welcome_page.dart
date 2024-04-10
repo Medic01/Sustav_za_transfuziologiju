@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AdminWelcomePage extends StatefulWidget {
   @override
@@ -13,13 +14,13 @@ class _AdminWelcomePageState extends State<AdminWelcomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Admin Početna Stranica'),
+        title: Text(AppLocalizations.of(context)!.homePageTitle),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            SizedBox(height: 20.0),
+            const SizedBox(height: 20.0),
             DropdownButton<String>(
               value: _selectedFilter,
               onChanged: (String? newValue) {
@@ -34,7 +35,7 @@ class _AdminWelcomePageState extends State<AdminWelcomePage> {
                 );
               }).toList(),
             ),
-            SizedBox(height: 20.0),
+            const SizedBox(height: 20.0),
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
                 stream: _selectedFilter == 'Accepted'
@@ -42,12 +43,12 @@ class _AdminWelcomePageState extends State<AdminWelcomePage> {
                     : FirebaseFirestore.instance.collection('rejected').snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
+                    return Text('${AppLocalizations.of(context)!.genericErrMsg} ${snapshot.error}');
                   }
 
                   switch (snapshot.connectionState) {
                     case ConnectionState.waiting:
-                      return CircularProgressIndicator();
+                      return const CircularProgressIndicator();
                     default:
                       return ListView.builder(
                         itemCount: snapshot.data!.docs.length,
@@ -63,10 +64,8 @@ class _AdminWelcomePageState extends State<AdminWelcomePage> {
                                 title: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text('Donor Name: $donorName'),
-                                    Text('Blood Type: $bloodType'),
-                                    // if (donatedAmount != null)
-                                    //   Text('Donated Amount: $donatedAmount'),
+                                    Text('${AppLocalizations.of(context)!.donorName} $donorName'),
+                                    Text('${AppLocalizations.of(context)!.bloodType} $bloodType'),
                                   ],
                                 ),
                               ),
@@ -81,9 +80,9 @@ class _AdminWelcomePageState extends State<AdminWelcomePage> {
                                 title: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text('Name: $name'),
-                                    Text('Blood Type: $bloodType'),
-                                    Text('Rejection Reason: $rejectionReason'),
+                                    Text('${AppLocalizations.of(context)!.donorName} $name'),
+                                    Text('${AppLocalizations.of(context)!.bloodType} $bloodType'),
+                                    Text('${AppLocalizations.of(context)!.rejectionReason} $rejectionReason'),
                                   ],
                                 ),
                               ),

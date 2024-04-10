@@ -10,6 +10,7 @@ import 'package:sustav_za_transfuziologiju/services/user_data_service.dart';
 import '../enums/blood_types.dart';
 import '../widgets/blood_type_dropdown_widget.dart';
 import '../widgets/date_picker_widget.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class DataEntryPage extends StatefulWidget {
   final String email;
@@ -24,8 +25,7 @@ class _DataEntryPageState extends State<DataEntryPage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _surnameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _uniqueCitizensIdController =
-      TextEditingController();
+  final TextEditingController _uniqueCitizensIdController = TextEditingController();
   final TextEditingController _dateOfBirthController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _cityController = TextEditingController();
@@ -127,8 +127,8 @@ class _DataEntryPageState extends State<DataEntryPage> {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return const AlertDialog(
-            title: Text("Successfully saved"),
+          return AlertDialog(
+            title: Text(AppLocalizations.of(context)!.successfullySaved),
           );
         },
       );
@@ -148,43 +148,43 @@ class _DataEntryPageState extends State<DataEntryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Home Page'),
+        title: Text(AppLocalizations.of(context)!.homePageTitle),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            const Text(
-              'Fill in your details:',
-              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+            Text(
+              AppLocalizations.of(context)!.fillOutForm,
+              style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20.0),
-            _buildTextField(labelText: 'Name', controller: _nameController),
+            _buildTextField(labelText: AppLocalizations.of(context)!.nameText, controller: _nameController),
             _buildTextField(
-                labelText: 'Surname', controller: _surnameController),
+                labelText: AppLocalizations.of(context)!.surnameTxt, controller: _surnameController),
             _buildTextField(
-                labelText: 'Email',
+                labelText: AppLocalizations.of(context)!.emailTxt,
                 controller: _emailController,
                 readOnly: true),
             _buildTextField(
-                labelText: 'Unique Citizens ID',
+                labelText: AppLocalizations.of(context)!.uniqueCitizensIDText,
                 controller: _uniqueCitizensIdController),
             DatePickerWidget(controller: _dateOfBirthController),
             _buildGenderDropdownField(
-              labelText: 'Gender',
-              value: _selectedGender,
-              onChanged: (value) {
-                setState(() {
-                  _selectedGender = value!;
-                });
-              },
+                labelText: AppLocalizations.of(context)!.genderTxt,
+                value: _selectedGender,
+                onChanged: (value) {
+                  setState(() {
+                    _selectedGender = value!;
+                  });
+                },
             ),
             _buildTextField(
-                labelText: 'Address', controller: _addressController),
-            _buildTextField(labelText: 'City', controller: _cityController),
+                labelText: AppLocalizations.of(context)!.addressTxt, controller: _addressController),
+            _buildTextField(labelText: AppLocalizations.of(context)!.cityTxt, controller: _cityController),
             _buildTextField(
-                labelText: 'Phone Number', controller: _phoneNumberController),
+                labelText: AppLocalizations.of(context)!.phoneNumberTxt, controller: _phoneNumberController),
             BloodTypeDropdownWidget(
               onChanged: (newValue) {
                 setState(() {
@@ -203,8 +203,8 @@ class _DataEntryPageState extends State<DataEntryPage> {
 
   Widget _buildTextField(
       {required String labelText,
-      required TextEditingController controller,
-      bool readOnly = false}) {
+        required TextEditingController controller,
+        bool readOnly = false}) {
     return Container(
       margin: const EdgeInsets.only(bottom: 10.0),
       child: TextFormField(
@@ -247,23 +247,24 @@ class _DataEntryPageState extends State<DataEntryPage> {
       width: double.infinity,
       child: ElevatedButton(
         onPressed: () async {
+
           if (_selectedBloodType == null) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text("Trebate odabrati krvnu grupu!"),
+              SnackBar(
+                  content: Text(AppLocalizations.of(context)!.chooseBloodType),
               ),
             );
             return;
           }
-
+          
           if (_selectedGender == null) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text("Odaberite spol!"),
+              SnackBar(
+                  content: Text(AppLocalizations.of(context)!.chooseGender),
               ),
             );
           }
-
+          
           await saveDataLocally(
             name: _nameController.text,
             email: _emailController.text,
@@ -295,7 +296,7 @@ class _DataEntryPageState extends State<DataEntryPage> {
             ),
           );
         },
-        child: const Text('Save'),
+        child: Text(AppLocalizations.of(context)!.saveBtn),
       ),
     );
   }

@@ -1,12 +1,10 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:http/http.dart' as http;
 import 'package:sustav_za_transfuziologiju/screens/auth/auth_service.dart';
-import 'package:sustav_za_transfuziologiju/screens/user/data_entry_page.dart';
-import 'package:sustav_za_transfuziologiju/screens/user/user_home_page.dart';
-import 'package:sustav_za_transfuziologiju/screens/utils/session_manager.dart';
+import 'package:window_to_front/window_to_front.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class GoogleOauth extends StatefulWidget {
   const GoogleOauth({Key? key}) : super(key: key);
@@ -20,8 +18,7 @@ class _GoogleOauthState extends State<GoogleOauth> {
   bool _isLoggedIn = false;
   late GoogleSignInAccount _userObj;
   final AuthService _authService = AuthService();
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  SessionManager sessionManager = SessionManager();
+  final AuthManager _authManager = AuthManager();
 
   @override
   Widget build(BuildContext context) {
@@ -77,50 +74,6 @@ class _GoogleOauthState extends State<GoogleOauth> {
           _isLoggedIn = true;
           _userObj = googleUser;
         });
-
-        final QuerySnapshot querySnapshot = await _firestore
-            .collection('users')
-            .where('userId', isEqualTo: _userObj.id)
-            .get();
-        if (querySnapshot.docs.isNotEmpty) {
-          final userData = querySnapshot.docs.first.data();
-          final isFirstLogin =
-              (userData as Map<String, dynamic>)['is_first_login'] ?? true;
-
-          if (isFirstLogin) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => DataEntryPage(
-                  email: _userObj.email,
-                ),
-              ),
-            );
-          } else {
-            sessionManager.setUserId(_userObj.id);
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => UserHomePage(userData: {
-                  'name': _userObj.displayName,
-                  'email': _userObj.email,
-                  'user_id': _userObj.id,
-                }),
-              ),
-            );
-          }
-        } else {
-          await _saveUserDataToFirestore(_userObj);
-
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => DataEntryPage(
-                email: _userObj.email,
-              ),
-            ),
-          );
-        }
       }
     } catch (error) {
       print('Error signing in with Google: $error');
@@ -130,29 +83,18 @@ class _GoogleOauthState extends State<GoogleOauth> {
   Future<void> _handleGoogleSignOut() async {
     try {
       await _googleSignIn.signOut();
-
-      await _authService.signOut();
-
       setState(() {
         _isLoggedIn = false;
       });
+      String? token;
+      final user = _authService.getCurrentUser();
+      if (user != null) {
+        final idToken = await user.getIdToken();
+        token = idToken;
+      }
+      await _authManager.signOutFromGoogle(token!);
     } catch (error) {
-      print('Error signing out: $error');
-    }
-  }
-
-  Future<void> _saveUserDataToFirestore(GoogleSignInAccount user) async {
-    try {
-      await _firestore.collection('users').doc(user.id).set({
-        'displayName': user.displayName,
-        'email': user.email,
-        'userId': user.id,
-      });
-      sessionManager.setUserId(user.id);
-
-      print('User data saved to Firestore');
-    } catch (error) {
-      print('Error saving user data to Firestore: $error');
+      print('Error signing out with Google: $error');
     }
   }
 }

@@ -5,23 +5,22 @@ import 'package:sustav_za_transfuziologiju/screens/auth/google_oauth.dart';
 import 'package:sustav_za_transfuziologiju/screens/auth/login_page.dart';
 import 'package:sustav_za_transfuziologiju/screens/auth/registration_page.dart';
 import 'package:sustav_za_transfuziologiju/screens/utils/default_firebase_options.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // Load environment variables
   try {
     await dotenv.load();
   } catch (e) {
     print('Error loading .env file: $e');
   }
-  // Initialize Firebase
+
   try {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
   } catch (e) {
     print('Error initializing Firebase: $e');
-    // Handle initialization error
     return;
   }
   runApp(const MyApp());
@@ -33,7 +32,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Health Institute',
+      title: AppLocalizations.of(context)?.appTitle ?? 'Donirajte krv :)',
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -50,16 +51,16 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Welcome to Health Institute'),
+        title: Text(AppLocalizations.of(context)!.appTitle),
         automaticallyImplyLeading: false,
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'Welcome!',
-              style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+            Text(
+              AppLocalizations.of(context)!.welcome,
+              style: const TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20.0),
             ElevatedButton(
@@ -69,7 +70,7 @@ class HomePage extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => const LoginPage()),
                 );
               },
-              child: const Text('Log In'),
+              child: Text(AppLocalizations.of(context)!.loginButton),
             ),
             const SizedBox(height: 10.0),
             TextButton(
@@ -80,7 +81,7 @@ class HomePage extends StatelessWidget {
                       builder: (context) => const RegistrationPage()),
                 );
               },
-              child: const Text('Register'),
+              child: Text(AppLocalizations.of(context)!.registrationButton),
             ),
             const SizedBox(height: 10.0),
             TextButton(
