@@ -1,8 +1,16 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sustav_za_transfuziologiju/main.dart';
+import 'package:sustav_za_transfuziologiju/screens/auth/auth_service.dart';
 import 'package:sustav_za_transfuziologiju/screens/user/blood_donation_reservation_page.dart';
 import 'package:sustav_za_transfuziologiju/screens/user/welcome_page.dart';
+import 'package:sustav_za_transfuziologiju/screens/auth/google_oauth.dart';
+import 'package:sustav_za_transfuziologiju/screens/utils/session_manager.dart';
+import 'package:universal_io/io.dart';
 
 class UserHomePage extends StatefulWidget {
   final Map<String, dynamic>? userData;
@@ -18,10 +26,17 @@ class _UserHomePageState extends State<UserHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final String userName =
+        widget.userData != null ? widget.userData!['name'] ?? 'Unknown' : '';
     final String userEmail =
         widget.userData != null ? widget.userData!['email'] ?? '' : '';
     final String userId =
         widget.userData != null ? widget.userData!['user_id'] ?? '' : '';
+    final GoogleSignIn _googleSignIn = GoogleSignIn();
+    final AuthService _authService = AuthService();
+    SessionManager sessionManager = SessionManager();
+
+    bool _isLoggedIn = false;
 
     return Scaffold(
       appBar: AppBar(
@@ -33,7 +48,7 @@ class _UserHomePageState extends State<UserHomePage> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              'Welcome, ${widget.userData != null ? widget.userData!['name'] ?? 'Unknown' : 'Unknown'}!',
+              'Welcome, $userName!',
               style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
           ),
@@ -115,9 +130,7 @@ class _UserHomePageState extends State<UserHomePage> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
             IconButton(
-              onPressed: () {
-
-              },
+              onPressed: () {},
               icon: const Icon(Icons.home),
             ),
             IconButton(
@@ -132,7 +145,26 @@ class _UserHomePageState extends State<UserHomePage> {
               icon: const Icon(Icons.calendar_today),
             ),
             IconButton(
-              onPressed: () {
+              onPressed: () async {
+                try {
+                  await _googleSignIn.signOut();
+
+                  print("1");
+                  await FirebaseAuth.instance.signOut();
+                  print("2");
+                  await _googleSignIn.disconnect();
+                  print("3");
+                  final prefs = await SharedPreferences.getInstance();
+                  await prefs.clear();
+                  print("4");
+                  await sessionManager.clear();
+
+                  setState(() {
+                    _isLoggedIn = false;
+                  });
+                } catch (error) {
+                  print('Error signing out: $error');
+                }
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => const HomePage()),

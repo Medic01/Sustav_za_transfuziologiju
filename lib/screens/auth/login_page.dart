@@ -120,8 +120,7 @@ class _LoginPageState extends State<LoginPage> {
                                               context,
                                               MaterialPageRoute(
                                                   builder: (context) =>
-                                                      const WelcomePage()
-                                              ),
+                                                      const WelcomePage()),
                                             );
                                           },
                                           child: const Text('OK'),
@@ -132,8 +131,7 @@ class _LoginPageState extends State<LoginPage> {
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => const AdminPage()
-                                ),
+                                    builder: (context) => const AdminPage()),
                               );
                             } else if (role == UserRole.USER.name) {
                               if (isFirstLogin) {
@@ -142,16 +140,14 @@ class _LoginPageState extends State<LoginPage> {
                                   MaterialPageRoute(
                                       builder: (context) => DataEntryPage(
                                             email: _emailController.text,
-                                          )
-                                  ),
+                                          )),
                                 );
                               } else {
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => UserHomePage(
-                                          userData: _loggedInUserData)
-                                  ),
+                                          userData: _loggedInUserData)),
                                 );
                               }
                             }

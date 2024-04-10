@@ -30,12 +30,10 @@ class UserDataService {
     required String email,
     required String password,
   }) async {
-
     final userId = generateTimeStampId();
     final passwordHash = sha256.convert(utf8.encode(password)).toString();
 
     try {
-
       await FirebaseFirestore.instance.collection('users').doc(userId).set({
         'user_id': userId,
         'email': email,
@@ -43,11 +41,9 @@ class UserDataService {
         'role': UserRole.USER.name,
         'is_first_login': true,
       });
-
     } catch (e) {
       print("An error $e has occured!");
     }
-
   }
 
   String generateTimeStampId() {

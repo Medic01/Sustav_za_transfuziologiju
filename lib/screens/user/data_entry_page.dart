@@ -24,7 +24,8 @@ class _DataEntryPageState extends State<DataEntryPage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _surnameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _uniqueCitizensIdController = TextEditingController();
+  final TextEditingController _uniqueCitizensIdController =
+      TextEditingController();
   final TextEditingController _dateOfBirthController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _cityController = TextEditingController();
@@ -171,13 +172,13 @@ class _DataEntryPageState extends State<DataEntryPage> {
                 controller: _uniqueCitizensIdController),
             DatePickerWidget(controller: _dateOfBirthController),
             _buildGenderDropdownField(
-                labelText: 'Gender',
-                value: _selectedGender,
-                onChanged: (value) {
-                  setState(() {
-                    _selectedGender = value!;
-                  });
-                },
+              labelText: 'Gender',
+              value: _selectedGender,
+              onChanged: (value) {
+                setState(() {
+                  _selectedGender = value!;
+                });
+              },
             ),
             _buildTextField(
                 labelText: 'Address', controller: _addressController),
@@ -202,8 +203,8 @@ class _DataEntryPageState extends State<DataEntryPage> {
 
   Widget _buildTextField(
       {required String labelText,
-        required TextEditingController controller,
-        bool readOnly = false}) {
+      required TextEditingController controller,
+      bool readOnly = false}) {
     return Container(
       margin: const EdgeInsets.only(bottom: 10.0),
       child: TextFormField(
@@ -246,24 +247,23 @@ class _DataEntryPageState extends State<DataEntryPage> {
       width: double.infinity,
       child: ElevatedButton(
         onPressed: () async {
-
           if (_selectedBloodType == null) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
-                  content: Text("Trebate odabrati krvnu grupu!"),
+                content: Text("Trebate odabrati krvnu grupu!"),
               ),
             );
             return;
           }
-          
+
           if (_selectedGender == null) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
-                  content: Text("Odaberite spol!"),
+                content: Text("Odaberite spol!"),
               ),
             );
           }
-          
+
           await saveDataLocally(
             name: _nameController.text,
             email: _emailController.text,

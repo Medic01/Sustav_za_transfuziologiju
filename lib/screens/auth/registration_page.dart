@@ -17,14 +17,14 @@ class RegistrationPage extends StatefulWidget {
 class _RegistrationPageState extends State<RegistrationPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
   final FocusNode _passwordFocusNode = FocusNode();
   final UserDataService _userDataService = UserDataService();
   bool _isPasswordValid = false;
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
   bool _isPasswordFocused = false;
-
 
   @override
   void dispose() {
@@ -137,7 +137,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       onPressed: () {
                         setState(() {
                           _isConfirmPasswordVisible =
-                          !_isConfirmPasswordVisible;
+                              !_isConfirmPasswordVisible;
                         });
                       },
                       icon: Icon(
@@ -162,7 +162,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       );
                       return;
                     }
-                    if (EmailValidator.isValid(_usernameController.text) != true) {
+                    if (EmailValidator.isValid(_usernameController.text) !=
+                        true) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text('Unesite ispravan email!'),
@@ -197,8 +198,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       }
                       await _userDataService.registerUser(
                           email: _usernameController.text,
-                          password: _passwordController.text
-                      );
+                          password: _passwordController.text);
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text('Uspješno ste se registrirali!'),

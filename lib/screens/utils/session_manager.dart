@@ -11,6 +11,11 @@ class SessionManager {
     preferences.setString(userIdKey, userId);
   }
 
+  Future<void> clear() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+  }
+
   Future<String?> getUserId() async {
     preferences = await SharedPreferences.getInstance();
 
