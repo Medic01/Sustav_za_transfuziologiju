@@ -75,7 +75,8 @@ class _UserHomePageState extends State<UserHomePage> {
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.hasError) {
-                  return Text('${AppLocalizations.of(context)!.genericErrMsg} ${snapshot.error}');
+                  return Text(
+                      '${AppLocalizations.of(context)!.genericErrMsg} ${snapshot.error}');
                 }
 
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -83,7 +84,8 @@ class _UserHomePageState extends State<UserHomePage> {
                 }
 
                 if (snapshot.data!.docs.isEmpty) {
-                  return Center(child: Text(AppLocalizations.of(context)!.noData));
+                  return Center(
+                      child: Text(AppLocalizations.of(context)!.noData));
                 }
 
                 final dataList = snapshot.data!.docs
@@ -115,9 +117,7 @@ class _UserHomePageState extends State<UserHomePage> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
             IconButton(
-              onPressed: () {
-
-              },
+              onPressed: () {},
               icon: const Icon(Icons.home),
             ),
             IconButton(
