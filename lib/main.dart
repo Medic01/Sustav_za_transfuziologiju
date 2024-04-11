@@ -60,7 +60,8 @@ class HomePage extends StatelessWidget {
           children: <Widget>[
             Text(
               AppLocalizations.of(context)!.welcome,
-              style: const TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+              style:
+                  const TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20.0),
             ElevatedButton(
@@ -83,7 +84,6 @@ class HomePage extends StatelessWidget {
               },
               child: Text(AppLocalizations.of(context)!.registrationButton),
             ),
-            const SizedBox(height: 10.0),
             TextButton(
               onPressed: () {
                 Navigator.push(
