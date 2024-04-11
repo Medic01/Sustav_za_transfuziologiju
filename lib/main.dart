@@ -60,8 +60,7 @@ class HomePage extends StatelessWidget {
           children: <Widget>[
             Text(
               AppLocalizations.of(context)!.welcome,
-              style:
-                  const TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold)
             ),
             const SizedBox(height: 20.0),
             ElevatedButton(
