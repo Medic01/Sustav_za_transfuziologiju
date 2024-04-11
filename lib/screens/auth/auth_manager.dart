@@ -12,7 +12,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 class AuthManager {
   HttpServer? redirectServer;
 
-  // Constants for Google OAuth
   static const String googleAuthApi =
       "https://accounts.google.com/o/oauth2/v2/auth";
   static const String googleTokenApi = "https://oauth2.googleapis.com/token";
@@ -20,14 +19,11 @@ class AuthManager {
   static const String redirectURL = 'http://localhost:';
 
   Future<oauth2.Credentials> login() async {
-    // Close any existing server
     await redirectServer?.close();
 
-    // Start a new server
     redirectServer = await HttpServer.bind('localhost', 0);
     final redirectUrl = redirectURL + redirectServer!.port.toString();
 
-    // Obtain OAuth2 client
     oauth2.Client authenticatedHttpClient =
         await _getOauthClient(Uri.parse(redirectUrl));
     return authenticatedHttpClient.credentials;
@@ -35,11 +31,11 @@ class AuthManager {
 
   Future<oauth2.Client> _getOauthClient(Uri redirectUrl) async {
     var grant = oauth2.AuthorizationCodeGrant(
-      dotenv.env['Oauth_ClientId']!, // Google client ID
+      dotenv.env['Oauth_ClientId']!,
       Uri.parse(googleAuthApi),
       Uri.parse(googleTokenApi),
       httpClient: JsonAcceptingHttpClient(),
-      secret: dotenv.env['Oauth_SecretId'], // secret
+      secret: dotenv.env['Oauth_SecretId'],
     );
 
     var authorizationUrl =

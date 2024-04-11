@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sustav_za_transfuziologiju/screens/auth/auth_service.dart';
 import 'package:sustav_za_transfuziologiju/screens/user/data_entry_page.dart';
 import 'package:sustav_za_transfuziologiju/screens/user/user_home_page.dart';
@@ -78,8 +79,6 @@ class _GoogleOauthState extends State<GoogleOauth> {
           _userObj = googleUser;
         });
 
-        // Spremanje podataka korisnika u Firestore
-        // Provjera je li korisnik prvi put prijavljen
         final QuerySnapshot querySnapshot = await _firestore
             .collection('users')
             .where('userId', isEqualTo: _userObj.id)
@@ -90,17 +89,15 @@ class _GoogleOauthState extends State<GoogleOauth> {
               (userData as Map<String, dynamic>)['is_first_login'] ?? true;
 
           if (isFirstLogin) {
-            // Ako je korisnik prvi put prijavljen, preusmjeri na DataEntryPage
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                 builder: (context) => DataEntryPage(
-                  email: _userObj.email, // Prenosimo email na DataEntryPage
+                  email: _userObj.email,
                 ),
               ),
             );
           } else {
-            // Ako nije prvi put prijavljen, preusmjeri na UserHomePage
             sessionManager.setUserId(_userObj.id);
             Navigator.pushReplacement(
               context,
@@ -114,15 +111,13 @@ class _GoogleOauthState extends State<GoogleOauth> {
             );
           }
         } else {
-          // Ako korisnik ne postoji u Firestoreu, to znači da je ovo njegova prva prijava
-          // Preusmjeri na DataEntryPage
           await _saveUserDataToFirestore(_userObj);
 
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
               builder: (context) => DataEntryPage(
-                email: _userObj.email, // Prenosimo email na DataEntryPage
+                email: _userObj.email,
               ),
             ),
           );
@@ -135,10 +130,12 @@ class _GoogleOauthState extends State<GoogleOauth> {
 
   Future<void> _handleGoogleSignOut() async {
     try {
-      // Odjava korisnika iz Googlea
       await _googleSignIn.signOut();
-      // Odjava korisnika iz Firebase Authenticationa
+
       await _authService.signOut();
+
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.clear();
 
       setState(() {
         _isLoggedIn = false;
