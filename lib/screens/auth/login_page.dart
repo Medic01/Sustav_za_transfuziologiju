@@ -29,7 +29,6 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     final formKey = GlobalKey<FormState>();
 
-
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.loginTitle),
@@ -45,7 +44,7 @@ class _LoginPageState extends State<LoginPage> {
                 TextFormField(
                   controller: _emailController,
                   decoration: InputDecoration(
-                      labelText: AppLocalizations.of(context)!.usernameLabel,
+                    labelText: AppLocalizations.of(context)!.usernameLabel,
                   ),
                   validator: (value) {
                     if (value?.isEmpty ?? true) {
@@ -106,13 +105,13 @@ class _LoginPageState extends State<LoginPage> {
                             final isFirstLogin =
                                 userData['is_first_login'] ?? true;
 
-
                             if (role == UserRole.ADMIN.name) {
                               showDialog(
                                   context: context,
                                   builder: (BuildContext context) {
                                     return AlertDialog(
-                                      title: Text(AppLocalizations.of(context)!.welcome),
+                                      title: Text(AppLocalizations.of(context)!
+                                          .welcome),
                                       actions: [
                                         TextButton(
                                           onPressed: () {
@@ -120,11 +119,11 @@ class _LoginPageState extends State<LoginPage> {
                                               context,
                                               MaterialPageRoute(
                                                   builder: (context) =>
-                                                      const WelcomePage()
-                                              ),
+                                                      const WelcomePage()),
                                             );
                                           },
-                                          child: Text(AppLocalizations.of(context)!.ok),
+                                          child: Text(
+                                              AppLocalizations.of(context)!.ok),
                                         ),
                                       ],
                                     );
@@ -132,8 +131,7 @@ class _LoginPageState extends State<LoginPage> {
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => const AdminPage()
-                                ),
+                                    builder: (context) => const AdminPage()),
                               );
                             } else if (role == UserRole.USER.name) {
                               if (isFirstLogin) {
@@ -142,15 +140,14 @@ class _LoginPageState extends State<LoginPage> {
                                   MaterialPageRoute(
                                       builder: (context) => DataEntryPage(
                                             email: _emailController.text,
-                                          )
-                                  ),
+                                          )),
                                 );
                               } else {
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => UserHomePage(userData: _loggedInUserData)
-                                  ),
+                                      builder: (context) => UserHomePage(
+                                          userData: _loggedInUserData)),
                                 );
                               }
                             }
@@ -160,14 +157,16 @@ class _LoginPageState extends State<LoginPage> {
 
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text(AppLocalizations.of(context)!.invalidCredentialsMessage),
+                            content: Text(AppLocalizations.of(context)!
+                                .invalidCredentialsMessage),
                             duration: const Duration(seconds: 2),
                           ),
                         );
                       } catch (e) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text('${AppLocalizations.of(context)!.unsuccessfulLoginMessage} $e'),
+                            content: Text(
+                                '${AppLocalizations.of(context)!.unsuccessfulLoginMessage} $e'),
                             duration: const Duration(seconds: 2),
                           ),
                         );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:sustav_za_transfuziologiju/services/databse_helper.dart';
 
 class AdminWelcomePage extends StatefulWidget {
   @override
@@ -9,6 +10,7 @@ class AdminWelcomePage extends StatefulWidget {
 
 class _AdminWelcomePageState extends State<AdminWelcomePage> {
   String _selectedFilter = 'Accepted';
+  final DatabaseHelper _dbHelper = DatabaseHelper();
 
   @override
   Widget build(BuildContext context) {
@@ -39,11 +41,12 @@ class _AdminWelcomePageState extends State<AdminWelcomePage> {
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
                 stream: _selectedFilter == 'Accepted'
-                    ? FirebaseFirestore.instance.collection('accepted').snapshots()
-                    : FirebaseFirestore.instance.collection('rejected').snapshots(),
+                    ? _dbHelper.getAccepted()
+                    : _dbHelper.getRejected(),
                 builder: (context, snapshot) {
                   if (snapshot.hasError) {
-                    return Text('${AppLocalizations.of(context)!.genericErrMsg} ${snapshot.error}');
+                    return Text(
+                        '${AppLocalizations.of(context)!.genericErrMsg} ${snapshot.error}');
                   }
 
                   switch (snapshot.connectionState) {
@@ -53,7 +56,8 @@ class _AdminWelcomePageState extends State<AdminWelcomePage> {
                       return ListView.builder(
                         itemCount: snapshot.data!.docs.length,
                         itemBuilder: (context, index) {
-                          DocumentSnapshot document = snapshot.data!.docs[index];
+                          DocumentSnapshot document =
+                              snapshot.data!.docs[index];
                           if (_selectedFilter == 'Accepted') {
                             String donorName = document['donor_name'];
                             String bloodType = document['blood_type'];
@@ -64,8 +68,10 @@ class _AdminWelcomePageState extends State<AdminWelcomePage> {
                                 title: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text('${AppLocalizations.of(context)!.donorName} $donorName'),
-                                    Text('${AppLocalizations.of(context)!.bloodType} $bloodType'),
+                                    Text(
+                                        '${AppLocalizations.of(context)!.donorName} $donorName'),
+                                    Text(
+                                        '${AppLocalizations.of(context)!.bloodType} $bloodType'),
                                   ],
                                 ),
                               ),
@@ -73,16 +79,20 @@ class _AdminWelcomePageState extends State<AdminWelcomePage> {
                           } else {
                             String name = document['donor_name'];
                             String bloodType = document['blood_type'];
-                            String rejectionReason = document['reason_for_rejection'];
+                            String rejectionReason =
+                                document['reason_for_rejection'];
 
                             return Card(
                               child: ListTile(
                                 title: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text('${AppLocalizations.of(context)!.donorName} $name'),
-                                    Text('${AppLocalizations.of(context)!.bloodType} $bloodType'),
-                                    Text('${AppLocalizations.of(context)!.rejectionReason} $rejectionReason'),
+                                    Text(
+                                        '${AppLocalizations.of(context)!.donorName} $name'),
+                                    Text(
+                                        '${AppLocalizations.of(context)!.bloodType} $bloodType'),
+                                    Text(
+                                        '${AppLocalizations.of(context)!.rejectionReason} $rejectionReason'),
                                   ],
                                 ),
                               ),

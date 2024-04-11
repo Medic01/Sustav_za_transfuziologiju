@@ -6,6 +6,7 @@ import 'package:sustav_za_transfuziologiju/screens/auth/auth_service.dart';
 import 'package:sustav_za_transfuziologiju/screens/user/data_entry_page.dart';
 import 'package:sustav_za_transfuziologiju/screens/user/user_home_page.dart';
 import 'package:sustav_za_transfuziologiju/screens/utils/session_manager.dart';
+import 'package:sustav_za_transfuziologiju/services/databse_helper.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -22,6 +23,7 @@ class _GoogleOauthState extends State<GoogleOauth> {
   late GoogleSignInAccount _userObj;
   final AuthService _authService = AuthService();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final DatabaseHelper _databaseHelper = DatabaseHelper();
   SessionManager sessionManager = SessionManager();
 
   @override
@@ -79,10 +81,8 @@ class _GoogleOauthState extends State<GoogleOauth> {
           _userObj = googleUser;
         });
 
-        final QuerySnapshot querySnapshot = await _firestore
-            .collection('users')
-            .where('userId', isEqualTo: _userObj.id)
-            .get();
+        final QuerySnapshot querySnapshot =
+            await _databaseHelper.getUserById(_userObj.id);
         if (querySnapshot.docs.isNotEmpty) {
           final userData = querySnapshot.docs.first.data();
           final isFirstLogin =
@@ -147,11 +147,7 @@ class _GoogleOauthState extends State<GoogleOauth> {
 
   Future<void> _saveUserDataToFirestore(GoogleSignInAccount user) async {
     try {
-      await _firestore.collection('users').doc(user.id).set({
-        'displayName': user.displayName,
-        'email': user.email,
-        'userId': user.id,
-      });
+      await _databaseHelper.saveUserToFirestore(user);
       sessionManager.setUserId(user.id);
 
       print('User data saved to Firestore');

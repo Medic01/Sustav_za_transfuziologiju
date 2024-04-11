@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_pw_validator/flutter_pw_validator.dart';
-import 'package:crypto/crypto.dart';
 import 'package:sustav_za_transfuziologiju/screens/utils/email.validator.dart';
+import 'package:sustav_za_transfuziologiju/services/databse_helper.dart';
 import 'package:sustav_za_transfuziologiju/services/user_data_service.dart';
-import 'dart:convert';
 import '../user/data_entry_page.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -18,14 +17,15 @@ class RegistrationPage extends StatefulWidget {
 class _RegistrationPageState extends State<RegistrationPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
   final FocusNode _passwordFocusNode = FocusNode();
   final UserDataService _userDataService = UserDataService();
+  final DatabaseHelper _dbHelper = DatabaseHelper();
   bool _isPasswordValid = false;
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
   bool _isPasswordFocused = false;
-
 
   @override
   void dispose() {
@@ -111,7 +111,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         });
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text(AppLocalizations.of(context)!.validPasswordMessage),
+                            content: Text(AppLocalizations.of(context)!
+                                .validPasswordMessage),
                           ),
                         );
                       }
@@ -123,7 +124,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         });
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text(AppLocalizations.of(context)!.invalidPasswordMessage),
+                            content: Text(AppLocalizations.of(context)!
+                                .invalidPasswordMessage),
                           ),
                         );
                       }
@@ -137,7 +139,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     suffixIcon: IconButton(
                       onPressed: () {
                         setState(() {
-                          _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
+                          _isConfirmPasswordVisible =
+                              !_isConfirmPasswordVisible;
                         });
                       },
                       icon: Icon(
@@ -157,15 +160,18 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         _confirmPasswordController.text.isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text(AppLocalizations.of(context)!.fillAllFieldsMessage),
+                          content: Text(AppLocalizations.of(context)!
+                              .fillAllFieldsMessage),
                         ),
                       );
                       return;
                     }
-                    if (EmailValidator.isValid(_usernameController.text) != true) {
+                    if (EmailValidator.isValid(_usernameController.text) !=
+                        true) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text(AppLocalizations.of(context)!.emailErrorMessage),
+                          content: Text(
+                              AppLocalizations.of(context)!.emailErrorMessage),
                         ),
                       );
                       return;
@@ -174,32 +180,31 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         _confirmPasswordController.text) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text(AppLocalizations.of(context)!.passwordMismatchMessage),
+                          content: Text(AppLocalizations.of(context)!
+                              .passwordMismatchMessage),
                         ),
                       );
                       return;
                     }
 
                     try {
-                      final existingUser = await FirebaseFirestore.instance
-                          .collection('users')
-                          .where('email', isEqualTo: _usernameController.text)
-                          .get();
-                      if (existingUser.docs.isNotEmpty) {
+                      if (await _dbHelper
+                          .doesUserExist(_usernameController.text)) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text(AppLocalizations.of(context)!.usernameAlreadyInUse),
+                            content: Text(AppLocalizations.of(context)!
+                                .usernameAlreadyInUse),
                           ),
                         );
                         return;
                       }
                       await _userDataService.registerUser(
                           email: _usernameController.text,
-                          password: _passwordController.text
-                      );
+                          password: _passwordController.text);
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text(AppLocalizations.of(context)!.successfulSignup),
+                          content: Text(
+                              AppLocalizations.of(context)!.successfulSignup),
                           duration: Duration(seconds: 2),
                         ),
                       );
