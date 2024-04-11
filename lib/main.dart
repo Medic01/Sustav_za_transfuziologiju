@@ -91,7 +91,7 @@ class HomePage extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => const GoogleOauth()),
                 );
               },
-              child: const Text('Oauth Login'),
+              child: Text(AppLocalizations.of(context)!.oauth),
             ),
           ],
         ),
