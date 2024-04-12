@@ -30,6 +30,10 @@ class DonationTile extends StatelessWidget {
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
+          ElevatedButton(
+            onPressed: onAccept,
+            child: Text(AppLocalizations.of(context)!.acceptBtn),
+          ),
           const SizedBox(width: 8),
           ElevatedButton(
             onPressed: onReject,

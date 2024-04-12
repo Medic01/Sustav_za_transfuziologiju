@@ -10,7 +10,6 @@ import 'package:logging/logging.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  setupLogging();
   try {
     await dotenv.load();
   } catch (e) {
@@ -23,9 +22,6 @@ Future<void> main() async {
     );
   } catch (e) {
     Logger.root.severe('Error initializing Firebase: $e');
-
-
-
     return;
   }
   runApp(const MyApp());

@@ -123,6 +123,7 @@ class DonationListItem extends StatelessWidget {
                   logger.warning('You cannot enter a quantity less than the existing one');
                   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                     content: Text('You cannot enter a quantity less than the existing one'),
+
                   ));
                 } else {
                   logger.warning('Invalid quantity input');

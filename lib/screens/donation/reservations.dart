@@ -22,13 +22,12 @@ class Reservations extends StatelessWidget {
             .snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
-            return Text(
-                '${AppLocalizations.of(context)!.genericErrMsg} ${snapshot
-                    .error}');
+            return Text('${AppLocalizations.of(context)!.genericErrMsg} ${snapshot.error}');
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const CircularProgressIndicator();
           }
+
           return ListView.builder(
             itemCount: snapshot.data!.docs.length,
             itemBuilder: (BuildContext context, int index) {
@@ -67,7 +66,6 @@ class Reservations extends StatelessWidget {
                   ),
                 );
               } else {
-                // Return an empty container if the status is not PENDING
                 return Container();
               }
             },

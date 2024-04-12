@@ -108,8 +108,6 @@ class _LoginPageState extends State<LoginPage> {
                             final isFirstLogin =
                                 userData['is_first_login'] ?? true;
 
-                            logger.info(isFirstLogin);
-
 
                             if (role == UserRole.ADMIN.name) {
                               showDialog(

@@ -71,6 +71,7 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
             Text(
               AppLocalizations.of(context)!.donorTxt,
               style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+
             ),
             const SizedBox(height: 20.0),
             DatePickerWidget(controller: _dateController),

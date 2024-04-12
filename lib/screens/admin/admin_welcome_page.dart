@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import 'package:sustav_za_transfuziologiju/screens/enums/donation_status.dart';
+
 
 class AdminWelcomePage extends StatefulWidget {
   @override
@@ -70,7 +72,6 @@ class _AdminWelcomePageState extends State<AdminWelcomePage> {
                                   children: [
                                     Text('${AppLocalizations.of(context)!.donorName} $donorName'),
                                     Text('${AppLocalizations.of(context)!.bloodType} $bloodType'),
-
                                   ],
                                 ),
                               ),

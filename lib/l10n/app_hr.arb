@@ -66,6 +66,7 @@
     "description": "Količina donirane krvi koja je procesirana",
     "type": "int"
   },
+
   "reservationsTitle": "Prijave za doniranje krvi:",
   "donationDateReservation": "Rezervirajte datum darivanja krvi!",
   "doctorName": "Ime doktora",
