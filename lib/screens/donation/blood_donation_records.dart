@@ -34,9 +34,6 @@ class BloodDonationRecords extends StatelessWidget {
 
               return DonationTile(
                 data: data,
-                onAccept: () async {
-                  await _acceptDonation(context, document.id, data);
-                },
                 onReject: () async {
                   await _rejectDonation(context, document.id, data);
                 },
@@ -48,10 +45,6 @@ class BloodDonationRecords extends StatelessWidget {
     );
   }
 
-  Future<void> _acceptDonation(BuildContext context, String documentId, Map<String, dynamic> data) async {
-    await donationService.acceptDonation(documentId, data);
-    Navigator.push(context, MaterialPageRoute(builder: (context) => const DoseEntryPage()));
-  }
 
   Future<void> _rejectDonation(BuildContext context, String documentId, Map<String, dynamic> data) async {
     String? rejectionReason = await showDialog<String>(
@@ -60,7 +53,7 @@ class BloodDonationRecords extends StatelessWidget {
     );
 
     if (rejectionReason != null && rejectionReason.isNotEmpty) {
-      await donationService.rejectDonation(documentId, data, rejectionReason);
+      await donationService.rejectDonation(documentId, rejectionReason);
       Navigator.of(context).pop();
     }
   }

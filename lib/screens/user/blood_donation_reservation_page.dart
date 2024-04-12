@@ -64,7 +64,7 @@ class _BloodDonationReservationPageState
 
   void _submitForm() async {
     if (_formKey.currentState!.validate() && _selectedBloodType != null) {
-      await _donationService.saveBloodDonationData(
+      await _donationService.bookBloodDonationAppointment(
         donorName: _nameController.text,
         email: _emailController.text,
         date: _dateController.text,

@@ -16,7 +16,7 @@ class Evidence extends StatelessWidget {
           children: <Widget>[
             Text(
               AppLocalizations.of(context)!.successfullySaved,
-              style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
             ),
           ],
         ),

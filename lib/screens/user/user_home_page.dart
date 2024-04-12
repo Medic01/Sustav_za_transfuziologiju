@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sustav_za_transfuziologiju/main.dart';
+import 'package:sustav_za_transfuziologiju/screens/enums/donation_status.dart';
 import 'package:sustav_za_transfuziologiju/screens/user/blood_donation_reservation_page.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -14,14 +15,14 @@ class UserHomePage extends StatefulWidget {
 }
 
 class _UserHomePageState extends State<UserHomePage> {
-  String _selectedList = 'accepted';
+  DonationStatus _selectedStatus = DonationStatus.ACCEPTED;
 
   @override
   Widget build(BuildContext context) {
     final String userEmail =
-        widget.userData != null ? widget.userData!['email'] ?? '' : '';
+    widget.userData != null ? widget.userData!['email'] ?? '' : '';
     final String userId =
-        widget.userData != null ? widget.userData!['user_id'] ?? '' : '';
+    widget.userData != null ? widget.userData!['user_id'] ?? '' : '';
 
     return Scaffold(
       appBar: AppBar(
@@ -45,33 +46,31 @@ class _UserHomePageState extends State<UserHomePage> {
             ),
           ),
           Center(
-            child: DropdownButton<String>(
-              value: _selectedList,
-              onChanged: (String? newValue) {
+            child: DropdownButton<DonationStatus>(
+              value: _selectedStatus,
+              onChanged: (DonationStatus? newValue) {
                 setState(() {
-                  _selectedList = newValue!;
+                  _selectedStatus = newValue!;
                 });
               },
-              items: <String>['accepted', 'rejected']
-                  .map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
+              items: <DonationStatus>[
+                DonationStatus.ACCEPTED,
+                DonationStatus.REJECTED
+              ].map<DropdownMenuItem<DonationStatus>>((DonationStatus value) {
+                return DropdownMenuItem<DonationStatus>(
                   value: value,
-                  child: Text(value),
+                  child: Text(value.toString().split('.').last),
                 );
               }).toList(),
             ),
           ),
           Expanded(
             child: StreamBuilder(
-              stream: _selectedList == 'accepted'
-                  ? FirebaseFirestore.instance
-                      .collection('accepted')
-                      .where('user_id', isEqualTo: userId)
-                      .snapshots()
-                  : FirebaseFirestore.instance
-                      .collection('rejected')
-                      .where('user_id', isEqualTo: userId)
-                      .snapshots(),
+              stream: FirebaseFirestore.instance
+                  .collection('blood_donation')
+                  .where('status', isEqualTo: _selectedStatus.toString().split('.').last.toUpperCase())
+                  .where('user_id', isEqualTo: userId)
+                  .snapshots(),
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.hasError) {
@@ -98,9 +97,9 @@ class _UserHomePageState extends State<UserHomePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: entry.entries
                           .map((entry) => ListTile(
-                                title: Text(entry.key),
-                                subtitle: Text(entry.value.toString()),
-                              ))
+                        title: Text(entry.key),
+                        subtitle: Text(entry.value.toString()),
+                      ))
                           .toList(),
                     );
                   },
@@ -126,7 +125,7 @@ class _UserHomePageState extends State<UserHomePage> {
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
-                          const BloodDonationReservationPage()),
+                      const BloodDonationReservationPage()),
                 );
               },
               icon: const Icon(Icons.calendar_today),

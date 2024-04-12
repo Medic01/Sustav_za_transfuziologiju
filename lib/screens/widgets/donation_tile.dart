@@ -3,13 +3,11 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class DonationTile extends StatelessWidget {
   final Map<String, dynamic> data;
-  final VoidCallback? onAccept;
   final VoidCallback? onReject;
 
   const DonationTile({
     Key? key,
     required this.data,
-    this.onAccept,
     this.onReject,
   }) : super(key: key);
 
@@ -32,10 +30,6 @@ class DonationTile extends StatelessWidget {
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          ElevatedButton(
-            onPressed: onAccept,
-            child: Text(AppLocalizations.of(context)!.acceptBtn),
-          ),
           const SizedBox(width: 8),
           ElevatedButton(
             onPressed: onReject,
