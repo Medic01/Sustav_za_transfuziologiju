@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crypto/crypto.dart';
+import 'package:logging/logging.dart';
 import 'dart:convert';
 import 'package:sustav_za_transfuziologiju/screens/admin/admin_page.dart';
 import 'package:sustav_za_transfuziologiju/screens/enums/user_role.dart';
@@ -20,6 +21,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final Logger logger = Logger("LoginPage");
   SessionManager sessionManager = SessionManager();
 
   bool _isPasswordVisible = false;
@@ -106,6 +108,7 @@ class _LoginPageState extends State<LoginPage> {
                             final isFirstLogin =
                                 userData['is_first_login'] ?? true;
 
+                            logger.info(isFirstLogin);
 
                             if (role == UserRole.ADMIN.name) {
                               showDialog(
