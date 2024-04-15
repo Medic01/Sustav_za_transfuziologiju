@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_pw_validator/flutter_pw_validator.dart';
+import 'package:logging/logging.dart';
 import 'package:sustav_za_transfuziologiju/screens/utils/email.validator.dart';
 import 'package:sustav_za_transfuziologiju/services/user_data_service.dart';
 import '../user/data_entry_page.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class RegistrationPage extends StatefulWidget {
-  const RegistrationPage({super.key});
+  const RegistrationPage({Key? key}) : super(key: key);
 
   @override
   _RegistrationPageState createState() => _RegistrationPageState();
@@ -19,6 +20,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
   final TextEditingController _confirmPasswordController = TextEditingController();
   final FocusNode _passwordFocusNode = FocusNode();
   final UserDataService _userDataService = UserDataService();
+  final Logger logger = Logger("RegistrationPage");
   bool _isPasswordValid = false;
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
@@ -150,8 +152,11 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 const SizedBox(height: 20.0),
                 ElevatedButton(
                   onPressed: () async {
-                    if (_usernameController.text.isEmpty ||
-                        _passwordController.text.isEmpty ||
+                    final String username = _usernameController.text.trim();
+                    final String password = _passwordController.text.trim();
+
+                    if (username.isEmpty ||
+                        password.isEmpty ||
                         _confirmPasswordController.text.isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
@@ -160,7 +165,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       );
                       return;
                     }
-                    if (EmailValidator.isValid(_usernameController.text) != true) {
+                    if (!EmailValidator.isValid(username)) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(AppLocalizations.of(context)!.emailErrorMessage),
@@ -168,8 +173,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       );
                       return;
                     }
-                    if (_passwordController.text !=
-                        _confirmPasswordController.text) {
+                    if (password != _confirmPasswordController.text) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(AppLocalizations.of(context)!.passwordMismatchMessage),
@@ -184,12 +188,23 @@ class _RegistrationPageState extends State<RegistrationPage> {
                           content: Text(AppLocalizations.of(context)!.invalidPasswordMessage),
                         ),
                       );
+                      return;
+                    }
+
+                    final bool isComplexPassword = _checkPasswordComplexity(password);
+                    if (!isComplexPassword) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(AppLocalizations.of(context)!.registrationError),
+                        ),
+                      );
+                      return;
                     }
 
                     try {
                       final existingUser = await FirebaseFirestore.instance
                           .collection('users')
-                          .where('email', isEqualTo: _usernameController.text)
+                          .where('email', isEqualTo: username)
                           .get();
                       if (existingUser.docs.isNotEmpty) {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -200,8 +215,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         return;
                       }
                       await _userDataService.registerUser(
-                          email: _usernameController.text,
-                          password: _passwordController.text
+                        email: username,
+                        password: password,
                       );
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
@@ -213,11 +228,11 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         context,
                         MaterialPageRoute(
                           builder: (context) =>
-                              DataEntryPage(email: _usernameController.text),
+                              DataEntryPage(email: username),
                         ),
                       );
                     } catch (e) {
-                      print("Greška prilikom registracije $e");
+                      logger.severe("Error during registration: $e");
                     }
                   },
                   child: Text(AppLocalizations.of(context)!.registrationButton),
@@ -228,5 +243,15 @@ class _RegistrationPageState extends State<RegistrationPage> {
         ),
       ),
     );
+  }
+
+  bool _checkPasswordComplexity(String password) {
+    if (password.length < 6) return false;
+    RegExp upperCaseRegex = RegExp(r'[A-Z]');
+    final RegExp numericRegex = RegExp(r'[0-9]');
+    final RegExp specialCharRegex = RegExp(r'[!@#%^&*(),.?":{}|<>]');
+    return upperCaseRegex.hasMatch(password) &&
+        numericRegex.hasMatch(password) &&
+        specialCharRegex.hasMatch(password);
   }
 }
