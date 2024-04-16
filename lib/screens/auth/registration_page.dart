@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_pw_validator/flutter_pw_validator.dart';
-import 'package:crypto/crypto.dart';
 import 'package:logging/logging.dart';
 import 'package:sustav_za_transfuziologiju/screens/utils/email.validator.dart';
 import 'package:sustav_za_transfuziologiju/services/user_data_service.dart';
@@ -22,11 +21,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
   final FocusNode _passwordFocusNode = FocusNode();
   final UserDataService _userDataService = UserDataService();
   final Logger logger = Logger("RegistrationPage");
-  bool _isPasswordValid = false;
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
   bool _isPasswordFocused = false;
-
+  bool _isPasswordValid = false;
 
   @override
   void dispose() {
@@ -88,11 +86,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       _isPasswordFocused = true;
                     });
                   },
-                  onChanged: (_) {
-                    setState(() {
-                      _isPasswordValid = false;
-                    });
-                  },
                 ),
                 const SizedBox(height: 20.0),
                 if (_isPasswordFocused)
@@ -106,28 +99,26 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     width: 200,
                     height: 100,
                     onSuccess: () {
-                      if (!_isPasswordValid) {
-                        setState(() {
-                          _isPasswordValid = true;
-                        });
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(AppLocalizations.of(context)!.validPasswordMessage),
-                          ),
-                        );
-                      }
+                      setState(() {
+                        _isPasswordValid = true;
+                      });
+                      ScaffoldMessenger.of(context).removeCurrentSnackBar();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(AppLocalizations.of(context)!.validPasswordMessage),
+                        ),
+                      );
                     },
                     onFail: () {
-                      if (_isPasswordValid) {
-                        setState(() {
-                          _isPasswordValid = false;
-                        });
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(AppLocalizations.of(context)!.invalidPasswordMessage),
-                          ),
-                        );
-                      }
+                      setState(() {
+                        _isPasswordValid = false;
+                      });
+                      ScaffoldMessenger.of(context).removeCurrentSnackBar();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(AppLocalizations.of(context)!.invalidPasswordMessage),
+                        ),
+                      );
                     },
                   ),
                 const SizedBox(height: 20.0),
@@ -155,10 +146,11 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   onPressed: () async {
                     final String username = _usernameController.text.trim();
                     final String password = _passwordController.text.trim();
+                    final String confirmPassword = _confirmPasswordController.text.trim();
 
                     if (username.isEmpty ||
                         password.isEmpty ||
-                        _confirmPasswordController.text.isEmpty) {
+                        confirmPassword.isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(AppLocalizations.of(context)!.fillAllFieldsMessage),
@@ -174,7 +166,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       );
                       return;
                     }
-                    if (password != _confirmPasswordController.text) {
+                    if (password != confirmPassword) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(AppLocalizations.of(context)!.passwordMismatchMessage),
@@ -182,7 +174,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       );
                       return;
                     }
-
                     if (!_isPasswordValid) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
@@ -191,17 +182,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       );
                       return;
                     }
-
-                    final bool isComplexPassword = _checkPasswordComplexity(password);
-                    if (!isComplexPassword) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(AppLocalizations.of(context)!.registrationError),
-                        ),
-                      );
-                      return;
-                    }
-
                     try {
                       final existingUser = await FirebaseFirestore.instance
                           .collection('users')
@@ -222,14 +202,13 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(AppLocalizations.of(context)!.successfulSignup),
-                          duration: Duration(seconds: 2),
+                          duration: const Duration(seconds: 2),
                         ),
                       );
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>
-                              DataEntryPage(email: username),
+                          builder: (context) => DataEntryPage(email: username),
                         ),
                       );
                     } catch (e) {
@@ -244,15 +223,5 @@ class _RegistrationPageState extends State<RegistrationPage> {
         ),
       ),
     );
-  }
-
-  bool _checkPasswordComplexity(String password) {
-    if (password.length < 6) return false;
-    RegExp upperCaseRegex = RegExp(r'[A-Z]');
-    final RegExp numericRegex = RegExp(r'[0-9]');
-    final RegExp specialCharRegex = RegExp(r'[!@#%^&*(),.?":{}|<>]');
-    return upperCaseRegex.hasMatch(password) &&
-        numericRegex.hasMatch(password) &&
-        specialCharRegex.hasMatch(password);
   }
 }
