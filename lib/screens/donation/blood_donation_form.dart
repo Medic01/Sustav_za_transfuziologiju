@@ -6,7 +6,6 @@ import 'package:sustav_za_transfuziologiju/screens/enums/blood_types.dart';
 import 'package:sustav_za_transfuziologiju/services/donation_service.dart';
 import '../widgets/date_picker_widget.dart';
 import '../widgets/blood_type_dropdown_widget.dart';
-import 'blood_donation_records.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class BloodDonationForm extends StatefulWidget {
@@ -14,6 +13,8 @@ class BloodDonationForm extends StatefulWidget {
   final String donorName;
   final String bloodType;
   final String userId;
+  final String documentId;
+  final Function(String, String, String, String, String) onAccept;
 
   const BloodDonationForm({
     Key? key,
@@ -21,6 +22,8 @@ class BloodDonationForm extends StatefulWidget {
     required this.donorName,
     required this.bloodType,
     required this.userId,
+    required this.documentId,
+    required this.onAccept,
   }) : super(key: key);
 
   @override
@@ -32,15 +35,12 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
   final TextEditingController _donorNameController = TextEditingController();
   final TextEditingController _placeController = TextEditingController();
   final TextEditingController _doctorNameController = TextEditingController();
-  final TextEditingController _technicianNameController =
-      TextEditingController();
+  final TextEditingController _technicianNameController = TextEditingController();
   final TextEditingController _hemoglobinController = TextEditingController();
-  final TextEditingController _bloodPressureController =
-      TextEditingController();
-  final TextEditingController _rejectionReasonController =
-      TextEditingController();
-  final Logger logger = Logger('BloodDonationForm');
+  final TextEditingController _bloodPressureController = TextEditingController();
+  final TextEditingController _rejectionReasonController = TextEditingController();
   final DonationService _donationService = DonationService();
+  final Logger logger = Logger("BloodDonationForm");
   BloodTypes? _selectedBloodType;
   late String _userId;
 
@@ -55,17 +55,6 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
     );
   }
 
-  void saveDataToFirestore(Donation data) async {
-    try {
-      await _donationService.saveDonationData(data);
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => BloodDonationRecords()),
-      );
-    } catch (error) {
-      logger.severe('Error saving data: $error');
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +69,7 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
           children: <Widget>[
             Text(
               AppLocalizations.of(context)!.donorTxt,
-              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20.0),
             DatePickerWidget(controller: _dateController),
@@ -146,7 +135,7 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
-        onPressed: () {
+        onPressed: () async {
           Donation data = Donation(
             date: _dateController.text,
             place: _placeController.text,
@@ -160,7 +149,23 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
             donorName: _donorNameController.text,
             userId: _userId,
           );
-          saveDataToFirestore(data);
+          try {
+            await _donationService.updateReservationAndAccept(
+                documentId: widget.documentId,
+                location: data.place,
+                hemoglobin: data.hemoglobin,
+                bloodPressure: data.bloodPressure,
+                doctorName: data.doctorName,
+                technicianName: data.technicianName
+            );
+
+            Navigator.pop(context);
+          } catch (e) {
+            logger.severe("Error while trying to update and accept donations!");
+            SnackBar(
+              content: Text(AppLocalizations.of(context)!.genericErrMsg),
+            );
+          }
         },
         child: Text(AppLocalizations.of(context)!.saveBtn),
       ),

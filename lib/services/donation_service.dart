@@ -1,12 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:logging/logging.dart';
-import 'package:sustav_za_transfuziologiju/models/donation.dart';
+import 'package:sustav_za_transfuziologiju/screens/enums/donation_status.dart';
 
 class DonationService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
-  final Logger logger = Logger('DonationService');
-
-  Future<void> saveBloodDonationData({
+  final Logger logger = Logger("DonationService");
+  Future<void> bookBloodDonationAppointment({
     required String donorName,
     required String email,
     required String date,
@@ -14,46 +13,50 @@ class DonationService {
     required String userId,
   }) async {
     try {
-      await _db.collection('donation_date').add({
+      await _db.collection('blood_donation').add({
         'donor_name': donorName,
         'email': email,
         'date': date,
         'blood_type': bloodType,
         'user_id': userId,
+        'status': DonationStatus.PENDING.toString().split('.').last,
       });
-      logger.info('Blood donation data successfully saved to Firestore!');
+      logger.info('Appointment for blood donation made');
     } catch (e) {
-      logger.severe('Error while saving blood donation data: $e');
+      logger.severe('Error while trying to make a blood donation appointment: $e');
       throw e;
     }
   }
 
-  Future<void> saveDonationData(Donation data) async {
+  Future<void> updateReservationAndAccept({
+    required String documentId,
+    required String location,
+    required String hemoglobin,
+    required String bloodPressure,
+    required String doctorName,
+    required String technicianName,
+  }) async {
+
     try {
-      await _db.collection('blood_donation').add({
-        'location': data.place,
-        'date': data.date,
-        'blood_pressure': data.bloodPressure,
-        'hemoglobin': data.hemoglobin,
-        'doctor_name': data.doctorName,
-        'technician_name': data.technicianName,
-        'blood_type': data.bloodType != null
-            ? data.bloodType.toString().split('.').last
-            : null,
-        'donor_name': data.donorName,
-        'user_id': data.userId,
+      await _db.collection('blood_donation').doc(documentId).update({
+        'location': location,
+        'hemoglobin': hemoglobin,
+        'blood_pressure': bloodPressure,
+        'doctor_name': doctorName,
+        'technician_name': technicianName,
+        'status': DonationStatus.ACCEPTED.toString().split('.').last,
       });
 
-      logger.info('Data successfuly saved to firestore!');
+      logger.info('Donation updated and accepted successfully!');
     } catch (e) {
-      logger.severe("Error $e while saving data!");
-      throw e;
+      logger.severe('Error while updating and accepting donation: $e');
+      rethrow;
     }
   }
 
-  Future<void> acceptDonation(
-      String documentId, Map<String, dynamic> data) async {
-    try {
+
+  Future<void> acceptDonation(String documentId, Map<String, dynamic> data) async {
+    try{
       CollectionReference bloodDonationRef = _db.collection('blood_donation');
       CollectionReference acceptedRef = _db.collection('accepted');
 
@@ -69,122 +72,43 @@ class DonationService {
       });
 
       await bloodDonationRef.doc(documentId).delete();
-    } catch (e) {
+    } catch(e) {
       logger.severe('Error $e has occured!');
       throw e;
     }
   }
 
-  Future<void> rejectDonation(String documentId, Map<String, dynamic> data,
-      String rejectionReason) async {
+  Future<void> rejectDonation(String documentId, String rejectionReason) async {
+    print(documentId);
     try {
-      CollectionReference donationRef = _db.collection('blood_donation');
-      CollectionReference rejectedRef = _db.collection('rejected');
-
-      await rejectedRef.add({
-        'location': data['location'],
-        'date': data['date'],
-        'blood_pressure': data['blood_pressure'],
-        'hemoglobin': data['hemoglobin'],
-        'doctor_name': data['doctor_name'],
-        'blood_type': data['blood_type'],
-        'user_id': data['user_id'],
-        'donor_name': data['donor_name'],
-        'reason_for_rejection': rejectionReason,
+      await _db.collection('blood_donation').doc(documentId).update({
+        'status': DonationStatus.REJECTED.toString().split('.').last,
+        'rejection_reason': rejectionReason,
       });
 
-      await donationRef.doc(documentId).update({
-        'donation_rejected': true,
-        'reason_for_rejection': rejectionReason,
-      });
+      logger.info('Donation rejected!');
     } catch (e) {
-      logger.severe('Error $e has occurred!');
-      throw e;
+      logger.severe('Error while rejecting donation: $e');
+      rethrow;
     }
   }
 
-  Future<void> acceptDonationAfterReservation(
-      String documentId, Map<String, dynamic> data) async {
-    try {
-      CollectionReference donationRef = _db.collection('donation_date');
-      CollectionReference acceptedRef = _db.collection('accepted');
-
-      await acceptedRef.add({
-        'location': data['location'],
-        'date': data['date'],
-        'blood_pressure': data['blood_pressure'],
-        'hemoglobin': data['hemoglobin'],
-        'doctor_name': data['doctor_name'],
-        'blood_type': data['blood_type'],
-        'user_id': data['user_id'],
-        'donor_name': data['donor_name'],
-      });
-
-      await donationRef.doc(documentId).delete();
-    } catch (e) {
-      logger.severe('Error $e has occured!');
-      throw e;
-    }
-  }
-
-  Future<void> rejectDonationAfterReservation(String documentId,
-      Map<String, dynamic> data, String rejectionReason) async {
-    try {
-      CollectionReference donationRef = _db.collection('donation_date');
-      CollectionReference rejectedRef = _db.collection('rejected');
-
-      await rejectedRef.add({
-        'location': data['location'],
-        'date': data['date'],
-        'blood_pressure': data['blood_pressure'],
-        'hemoglobin': data['hemoglobin'],
-        'doctor_name': data['doctor_name'],
-        'blood_type': data['blood_type'],
-        'user_id': data['user_id'],
-        'donor_name': data['donor_name'],
-        'reason_for_rejection': rejectionReason,
-      });
-
-      await donationRef.doc(documentId).update({
-        'donation_rejected': true,
-        'reason_for_rejection': rejectionReason,
-      });
-
-      await donationRef.doc(documentId).delete();
-    } catch (e) {
-      logger.severe('Error $e has occurred!');
-      throw e;
-    }
-  }
-
-  Stream<List<Donation>> getAcceptedDonations(String? selectedBloodType) {
-    Query collectionRef = _db.collection('accepted');
-
-    if (selectedBloodType != null && selectedBloodType != 'All') {
-      collectionRef =
-          collectionRef.where('blood_type', isEqualTo: selectedBloodType);
-    }
-
-    return collectionRef.snapshots().map((snapshot) =>
-        snapshot.docs.map((doc) => Donation.fromFirestore(doc)).toList());
-  }
 
   Future<void> markDoseProcessed(String donationId) async {
     try {
-      await _db.collection('accepted').doc(donationId).update({
+      await _db.collection('blood_donation').doc(donationId).update({
         'dose_processed': true,
       });
 
       logger.info("Dose marked as processed!");
     } catch (e) {
-      logger
-          .severe("Error occurred while trying to mark dose as processed: $e");
+      logger.severe("Error occurred while trying to mark dose as processed: $e");
     }
   }
 
   Future<void> markDoseUsed(String donationId) async {
     try {
-      await _db.collection('accepted').doc(donationId).update({
+      await _db.collection('blood_donation').doc(donationId).update({
         'dose_used': true,
       });
       logger.info('Dose marked as used');
@@ -196,7 +120,7 @@ class DonationService {
 
   Future<void> updateDonatedDose(String donationId, int newQuantity) async {
     try {
-      await _db.collection('accepted').doc(donationId).update({
+      await _db.collection('blood_donation').doc(donationId).update({
         'donated_dose': newQuantity,
       });
       logger.info('Donated dose quantity updated');
