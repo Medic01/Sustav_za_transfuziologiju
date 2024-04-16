@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:logging/logging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sustav_za_transfuziologiju/main.dart';
 import 'package:sustav_za_transfuziologiju/screens/user/blood_donation_reservation_page.dart';
@@ -26,6 +27,7 @@ class _UserHomePageState extends State<UserHomePage> {
         widget.userData != null ? widget.userData!['user_id'] ?? '' : '';
     final GoogleSignIn _googleSignIn = GoogleSignIn();
     bool _isLoggedIn = false;
+    final Logger logger = Logger('UserHomePage');
 
     return Scaffold(
       appBar: AppBar(
@@ -149,7 +151,7 @@ class _UserHomePageState extends State<UserHomePage> {
                     _isLoggedIn = false;
                   });
                 } catch (error) {
-                  print(
+                  logger.severe(
                       '${AppLocalizations.of(context)!.oauthErrorSignOut} $error');
                 }
                 Navigator.pushReplacement(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:logging/logging.dart';
 import 'package:sustav_za_transfuziologiju/models/donation.dart';
 import 'package:sustav_za_transfuziologiju/screens/enums/blood_types.dart';
 import 'package:sustav_za_transfuziologiju/services/donation_service.dart';
@@ -31,10 +32,14 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
   final TextEditingController _donorNameController = TextEditingController();
   final TextEditingController _placeController = TextEditingController();
   final TextEditingController _doctorNameController = TextEditingController();
-  final TextEditingController _technicianNameController = TextEditingController();
+  final TextEditingController _technicianNameController =
+      TextEditingController();
   final TextEditingController _hemoglobinController = TextEditingController();
-  final TextEditingController _bloodPressureController = TextEditingController();
-  final TextEditingController _rejectionReasonController = TextEditingController();
+  final TextEditingController _bloodPressureController =
+      TextEditingController();
+  final TextEditingController _rejectionReasonController =
+      TextEditingController();
+  final Logger logger = Logger('BloodDonationForm');
   final DonationService _donationService = DonationService();
   BloodTypes? _selectedBloodType;
   late String _userId;
@@ -46,7 +51,7 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
     _dateController.text = widget.date;
     _donorNameController.text = widget.donorName;
     _selectedBloodType = BloodTypes.values.firstWhere(
-          (element) => element.toString().split('.').last == widget.bloodType,
+      (element) => element.toString().split('.').last == widget.bloodType,
     );
   }
 
@@ -58,7 +63,7 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
         MaterialPageRoute(builder: (context) => BloodDonationRecords()),
       );
     } catch (error) {
-      print('Error saving data: $error');
+      logger.severe('Error saving data: $error');
     }
   }
 

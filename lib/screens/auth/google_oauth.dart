@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:logging/logging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sustav_za_transfuziologiju/screens/auth/auth_service.dart';
 import 'package:sustav_za_transfuziologiju/screens/user/data_entry_page.dart';
@@ -19,6 +20,7 @@ class GoogleOauth extends StatefulWidget {
 
 class _GoogleOauthState extends State<GoogleOauth> {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final Logger logger = Logger('GoogleOauth');
   bool _isLoggedIn = false;
   late GoogleSignInAccount _userObj;
   late AuthService _authService;
@@ -132,7 +134,7 @@ class _GoogleOauthState extends State<GoogleOauth> {
         }
       }
     } catch (error) {
-      print('${AppLocalizations.of(context)!.oauthErrorSignin} $error');
+      logger.severe('Google oauth error sign in: $error');
     }
   }
 
@@ -149,7 +151,7 @@ class _GoogleOauthState extends State<GoogleOauth> {
         _isLoggedIn = false;
       });
     } catch (error) {
-      print('${AppLocalizations.of(context)!.oauthErrorSignOut} $error');
+      logger.severe('Google oauth error sign up: $error');
     }
   }
 
@@ -162,9 +164,9 @@ class _GoogleOauthState extends State<GoogleOauth> {
       });
       sessionManager.setUserId(user.id);
 
-      print(AppLocalizations.of(context)!.oauthUserDataSaved);
+      logger.info('User saved successfully!');
     } catch (error) {
-      print('${AppLocalizations.of(context)!.oauthUserDataSavedError} $error');
+      logger.severe('Error while saving user data $error');
     }
   }
 }
