@@ -110,5 +110,6 @@
   "donatedAmount": "Količina donirane krvi",
   "rejectionReason": "Razlog odbijanja: ",
   "donationNotUsed": "N/A",
-  "appTitle": "Sustav za transfuziologiju"
+  "appTitle": "Sustav za transfuziologiju",
+  "registrationError": "Lozinka mora imati minimalno 6 znakova, od kojih je jedno veliko slovo, jedan broj i jedan poseban znak!"
 }
