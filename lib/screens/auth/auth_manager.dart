@@ -38,11 +38,11 @@ class AuthManager {
 
   Future<oauth2.Client> _getOauthClient(Uri redirectUrl) async {
     var grant = oauth2.AuthorizationCodeGrant(
-      dotenv.env['Oauth_ClientId']!,
+      dotenv.env['OAUTH_CLIENTID']!,
       Uri.parse(Constants.googleAuthApi),
       Uri.parse(tokenApi),
       httpClient: JsonAcceptingHttpClient(),
-      secret: dotenv.env['Oauth_SecretId'],
+      secret: dotenv.env['OAUTH_SECRETID'],
     );
 
     var authorizationUrl =
