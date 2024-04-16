@@ -161,10 +161,7 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
                 technicianName: data.technicianName
             );
 
-            Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => BloodDonationRecords()),
-            );
+            Navigator.pop(context);
           } catch (e) {
             logger.severe("Error while trying to update and accept donations!");
             SnackBar(
