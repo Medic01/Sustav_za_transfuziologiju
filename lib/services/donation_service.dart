@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:logging/logging.dart';
 import 'package:sustav_za_transfuziologiju/models/donation.dart';
 
 class DonationService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
+  final Logger logger = Logger('DonationService');
 
   Future<void> saveBloodDonationData({
     required String donorName,
@@ -19,9 +21,9 @@ class DonationService {
         'blood_type': bloodType,
         'user_id': userId,
       });
-      print('Blood donation data successfully saved to Firestore!');
+      logger.info('Blood donation data successfully saved to Firestore!');
     } catch (e) {
-      print('Error while saving blood donation data: $e');
+      logger.severe('Error while saving blood donation data: $e');
       throw e;
     }
   }
@@ -35,20 +37,23 @@ class DonationService {
         'hemoglobin': data.hemoglobin,
         'doctor_name': data.doctorName,
         'technician_name': data.technicianName,
-        'blood_type': data.bloodType != null ? data.bloodType.toString().split('.').last : null,
+        'blood_type': data.bloodType != null
+            ? data.bloodType.toString().split('.').last
+            : null,
         'donor_name': data.donorName,
         'user_id': data.userId,
       });
 
-      print('Data successfuly saved to firestore!');
+      logger.info('Data successfuly saved to firestore!');
     } catch (e) {
-      print("Error $e while saving data!");
+      logger.severe("Error $e while saving data!");
       throw e;
     }
   }
 
-  Future<void> acceptDonation(String documentId, Map<String, dynamic> data) async {
-    try{
+  Future<void> acceptDonation(
+      String documentId, Map<String, dynamic> data) async {
+    try {
       CollectionReference bloodDonationRef = _db.collection('blood_donation');
       CollectionReference acceptedRef = _db.collection('accepted');
 
@@ -64,13 +69,14 @@ class DonationService {
       });
 
       await bloodDonationRef.doc(documentId).delete();
-    } catch(e) {
-      print('Error $e has occured!');
+    } catch (e) {
+      logger.severe('Error $e has occured!');
       throw e;
     }
   }
 
-  Future<void> rejectDonation(String documentId, Map<String, dynamic> data, String rejectionReason) async {
+  Future<void> rejectDonation(String documentId, Map<String, dynamic> data,
+      String rejectionReason) async {
     try {
       CollectionReference donationRef = _db.collection('blood_donation');
       CollectionReference rejectedRef = _db.collection('rejected');
@@ -92,12 +98,13 @@ class DonationService {
         'reason_for_rejection': rejectionReason,
       });
     } catch (e) {
-      print('Error $e has occurred!');
+      logger.severe('Error $e has occurred!');
       throw e;
     }
   }
 
-  Future<void> acceptDonationAfterReservation(String documentId, Map<String, dynamic> data) async {
+  Future<void> acceptDonationAfterReservation(
+      String documentId, Map<String, dynamic> data) async {
     try {
       CollectionReference donationRef = _db.collection('donation_date');
       CollectionReference acceptedRef = _db.collection('accepted');
@@ -115,12 +122,13 @@ class DonationService {
 
       await donationRef.doc(documentId).delete();
     } catch (e) {
-      print('Error $e has occured!');
+      logger.severe('Error $e has occured!');
       throw e;
     }
   }
 
-  Future<void> rejectDonationAfterReservation(String documentId, Map<String, dynamic> data, String rejectionReason) async {
+  Future<void> rejectDonationAfterReservation(String documentId,
+      Map<String, dynamic> data, String rejectionReason) async {
     try {
       CollectionReference donationRef = _db.collection('donation_date');
       CollectionReference rejectedRef = _db.collection('rejected');
@@ -144,7 +152,7 @@ class DonationService {
 
       await donationRef.doc(documentId).delete();
     } catch (e) {
-      print('Error $e has occurred!');
+      logger.severe('Error $e has occurred!');
       throw e;
     }
   }
@@ -153,7 +161,8 @@ class DonationService {
     Query collectionRef = _db.collection('accepted');
 
     if (selectedBloodType != null && selectedBloodType != 'All') {
-      collectionRef = collectionRef.where('blood_type', isEqualTo: selectedBloodType);
+      collectionRef =
+          collectionRef.where('blood_type', isEqualTo: selectedBloodType);
     }
 
     return collectionRef.snapshots().map((snapshot) =>
@@ -166,9 +175,10 @@ class DonationService {
         'dose_processed': true,
       });
 
-      print("Dose marked as processed!");
+      logger.info("Dose marked as processed!");
     } catch (e) {
-      print("Error occurred while trying to mark dose as processed: $e");
+      logger
+          .severe("Error occurred while trying to mark dose as processed: $e");
     }
   }
 
@@ -177,9 +187,9 @@ class DonationService {
       await _db.collection('accepted').doc(donationId).update({
         'dose_used': true,
       });
-      print('Dose marked as used');
+      logger.info('Dose marked as used');
     } catch (e) {
-      print('Error occurred while marking dose as used: $e');
+      logger.severe('Error occurred while marking dose as used: $e');
       throw e;
     }
   }
@@ -189,9 +199,9 @@ class DonationService {
       await _db.collection('accepted').doc(donationId).update({
         'donated_dose': newQuantity,
       });
-      print('Donated dose quantity updated');
+      logger.info('Donated dose quantity updated');
     } catch (e) {
-      print('Error occurred while updating donated dose quantity: $e');
+      logger.severe('Error occurred while updating donated dose quantity: $e');
       throw e;
     }
   }
