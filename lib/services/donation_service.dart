@@ -1,10 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:logging/logging.dart';
 import 'package:sustav_za_transfuziologiju/models/donation.dart';
 
 class DonationService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
-  final Logger logger = Logger("DonationService");
+
   Future<void> saveBloodDonationData({
     required String donorName,
     required String email,
@@ -20,9 +19,9 @@ class DonationService {
         'blood_type': bloodType,
         'user_id': userId,
       });
-      logger.info('Blood donation data successfully saved to Firestore!');
+      print('Blood donation data successfully saved to Firestore!');
     } catch (e) {
-      logger.severe('Error while saving blood donation data: $e');
+      print('Error while saving blood donation data: $e');
       throw e;
     }
   }
@@ -41,9 +40,9 @@ class DonationService {
         'user_id': data.userId,
       });
 
-      logger.info('Data successfuly saved to firestore!');
+      print('Data successfuly saved to firestore!');
     } catch (e) {
-      logger.severe("Error $e while saving data!");
+      print("Error $e while saving data!");
       throw e;
     }
   }
@@ -66,7 +65,7 @@ class DonationService {
 
       await bloodDonationRef.doc(documentId).delete();
     } catch(e) {
-      logger.severe('Error $e has occured!');
+      print('Error $e has occured!');
       throw e;
     }
   }
@@ -93,7 +92,7 @@ class DonationService {
         'reason_for_rejection': rejectionReason,
       });
     } catch (e) {
-      logger.severe('Error $e has occurred!');
+      print('Error $e has occurred!');
       throw e;
     }
   }
@@ -116,7 +115,7 @@ class DonationService {
 
       await donationRef.doc(documentId).delete();
     } catch (e) {
-      logger.severe('Error $e has occured!');
+      print('Error $e has occured!');
       throw e;
     }
   }
@@ -145,7 +144,7 @@ class DonationService {
 
       await donationRef.doc(documentId).delete();
     } catch (e) {
-      logger.severe('Error $e has occurred!');
+      print('Error $e has occurred!');
       throw e;
     }
   }
@@ -167,9 +166,9 @@ class DonationService {
         'dose_processed': true,
       });
 
-      logger.info("Dose marked as processed!");
+      print("Dose marked as processed!");
     } catch (e) {
-      logger.severe("Error occurred while trying to mark dose as processed: $e");
+      print("Error occurred while trying to mark dose as processed: $e");
     }
   }
 
@@ -178,9 +177,9 @@ class DonationService {
       await _db.collection('accepted').doc(donationId).update({
         'dose_used': true,
       });
-      logger.info('Dose marked as used');
+      print('Dose marked as used');
     } catch (e) {
-      logger.severe('Error occurred while marking dose as used: $e');
+      print('Error occurred while marking dose as used: $e');
       throw e;
     }
   }
@@ -190,9 +189,9 @@ class DonationService {
       await _db.collection('accepted').doc(donationId).update({
         'donated_dose': newQuantity,
       });
-      logger.info('Donated dose quantity updated');
+      print('Donated dose quantity updated');
     } catch (e) {
-      logger.severe('Error occurred while updating donated dose quantity: $e');
+      print('Error occurred while updating donated dose quantity: $e');
       throw e;
     }
   }

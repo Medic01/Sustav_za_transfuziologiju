@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:logging/logging.dart';
 import 'package:sustav_za_transfuziologiju/screens/donation/blood_donation_form.dart';
 import 'package:sustav_za_transfuziologiju/services/donation_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Reservations extends StatelessWidget {
   final DonationService _donationService = DonationService();
-  final Logger logger = Logger("Reservations");
 
   @override
   Widget build(BuildContext context) {
@@ -54,9 +52,9 @@ class Reservations extends StatelessWidget {
                           ),
                         ).then((_) {
                           _donationService.acceptDonationAfterReservation(document.id, data).then((_) {
-                            logger.info('Document successfully accepted after reservation');
+                            print('Document successfully accepted after reservation');
                           }).catchError((error) {
-                            logger.severe('Error accepting document after reservation: $error');
+                            print('Error accepting document after reservation: $error');
                           });
                         });
                       },
@@ -85,9 +83,9 @@ class Reservations extends StatelessWidget {
                                     String userId = data['user_id'];
 
                                     _donationService.rejectDonationAfterReservation(document.id, data, rejectionReason).then((_) {
-                                      logger.info('Document successfully rejected after reservation');
+                                      print('Document successfully rejected after reservation');
                                     }).catchError((error) {
-                                      logger.severe('Error rejecting document after reservation: $error');
+                                      print('Error rejecting document after reservation: $error');
                                     });
 
                                     Navigator.of(context).pop();

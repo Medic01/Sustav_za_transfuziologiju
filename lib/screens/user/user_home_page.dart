@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sustav_za_transfuziologiju/main.dart';
 import 'package:sustav_za_transfuziologiju/screens/user/blood_donation_reservation_page.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -22,6 +24,8 @@ class _UserHomePageState extends State<UserHomePage> {
         widget.userData != null ? widget.userData!['email'] ?? '' : '';
     final String userId =
         widget.userData != null ? widget.userData!['user_id'] ?? '' : '';
+    final GoogleSignIn _googleSignIn = GoogleSignIn();
+    bool _isLoggedIn = false;
 
     return Scaffold(
       appBar: AppBar(
@@ -75,7 +79,8 @@ class _UserHomePageState extends State<UserHomePage> {
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.hasError) {
-                  return Text('${AppLocalizations.of(context)!.genericErrMsg} ${snapshot.error}');
+                  return Text(
+                      '${AppLocalizations.of(context)!.genericErrMsg} ${snapshot.error}');
                 }
 
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -83,7 +88,8 @@ class _UserHomePageState extends State<UserHomePage> {
                 }
 
                 if (snapshot.data!.docs.isEmpty) {
-                  return Center(child: Text(AppLocalizations.of(context)!.noData));
+                  return Center(
+                      child: Text(AppLocalizations.of(context)!.noData));
                 }
 
                 final dataList = snapshot.data!.docs
@@ -115,9 +121,7 @@ class _UserHomePageState extends State<UserHomePage> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
             IconButton(
-              onPressed: () {
-
-              },
+              onPressed: () {},
               icon: const Icon(Icons.home),
             ),
             IconButton(
@@ -132,7 +136,22 @@ class _UserHomePageState extends State<UserHomePage> {
               icon: const Icon(Icons.calendar_today),
             ),
             IconButton(
-              onPressed: () {
+              onPressed: () async {
+                try {
+                  await _googleSignIn.signOut();
+
+                  await _googleSignIn.disconnect();
+
+                  final prefs = await SharedPreferences.getInstance();
+                  await prefs.clear();
+
+                  setState(() {
+                    _isLoggedIn = false;
+                  });
+                } catch (error) {
+                  print(
+                      '${AppLocalizations.of(context)!.oauthErrorSignOut} $error');
+                }
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => const HomePage()),

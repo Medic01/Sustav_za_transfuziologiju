@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_pw_validator/flutter_pw_validator.dart';
+import 'package:crypto/crypto.dart';
 import 'package:logging/logging.dart';
 import 'package:sustav_za_transfuziologiju/screens/utils/email.validator.dart';
 import 'package:sustav_za_transfuziologiju/services/user_data_service.dart';
