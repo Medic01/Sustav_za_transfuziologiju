@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crypto/crypto.dart';
+import 'package:logging/logging.dart';
 import 'dart:convert';
 import 'package:sustav_za_transfuziologiju/screens/admin/admin_page.dart';
 import 'package:sustav_za_transfuziologiju/screens/enums/user_role.dart';
@@ -20,6 +21,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final Logger logger = Logger("LoginPage");
   SessionManager sessionManager = SessionManager();
 
   bool _isPasswordVisible = false;
@@ -28,7 +30,6 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     final formKey = GlobalKey<FormState>();
-
 
     return Scaffold(
       appBar: AppBar(
@@ -45,7 +46,7 @@ class _LoginPageState extends State<LoginPage> {
                 TextFormField(
                   controller: _emailController,
                   decoration: InputDecoration(
-                      labelText: AppLocalizations.of(context)!.usernameLabel,
+                    labelText: AppLocalizations.of(context)!.usernameLabel,
                   ),
                   validator: (value) {
                     if (value?.isEmpty ?? true) {
@@ -106,13 +107,15 @@ class _LoginPageState extends State<LoginPage> {
                             final isFirstLogin =
                                 userData['is_first_login'] ?? true;
 
+                            logger.info(isFirstLogin);
 
                             if (role == UserRole.ADMIN.name) {
                               showDialog(
                                   context: context,
                                   builder: (BuildContext context) {
                                     return AlertDialog(
-                                      title: Text(AppLocalizations.of(context)!.welcome),
+                                      title: Text(AppLocalizations.of(context)!
+                                          .welcome),
                                       actions: [
                                         TextButton(
                                           onPressed: () {
@@ -120,11 +123,11 @@ class _LoginPageState extends State<LoginPage> {
                                               context,
                                               MaterialPageRoute(
                                                   builder: (context) =>
-                                                      const WelcomePage()
-                                              ),
+                                                      const WelcomePage()),
                                             );
                                           },
-                                          child: Text(AppLocalizations.of(context)!.ok),
+                                          child: Text(
+                                              AppLocalizations.of(context)!.ok),
                                         ),
                                       ],
                                     );
@@ -132,8 +135,7 @@ class _LoginPageState extends State<LoginPage> {
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => const AdminPage()
-                                ),
+                                    builder: (context) => const AdminPage()),
                               );
                             } else if (role == UserRole.USER.name) {
                               if (isFirstLogin) {
@@ -142,15 +144,14 @@ class _LoginPageState extends State<LoginPage> {
                                   MaterialPageRoute(
                                       builder: (context) => DataEntryPage(
                                             email: _emailController.text,
-                                          )
-                                  ),
+                                          )),
                                 );
                               } else {
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => UserHomePage(userData: _loggedInUserData)
-                                  ),
+                                      builder: (context) => UserHomePage(
+                                          userData: _loggedInUserData)),
                                 );
                               }
                             }
@@ -160,14 +161,16 @@ class _LoginPageState extends State<LoginPage> {
 
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text(AppLocalizations.of(context)!.invalidCredentialsMessage),
+                            content: Text(AppLocalizations.of(context)!
+                                .invalidCredentialsMessage),
                             duration: const Duration(seconds: 2),
                           ),
                         );
                       } catch (e) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text('${AppLocalizations.of(context)!.unsuccessfulLoginMessage} $e'),
+                            content: Text(
+                                '${AppLocalizations.of(context)!.unsuccessfulLoginMessage} $e'),
                             duration: const Duration(seconds: 2),
                           ),
                         );
