@@ -111,5 +111,20 @@
   "rejectionReason": "Razlog odbijanja: ",
   "donationNotUsed": "N/A",
   "appTitle": "Sustav za transfuziologiju",
-  "oauth":"Prijava uz gmail"
-}
+  "oauth":"Prijava uz gmail",
+  "oauthErrorLaunch":"Can not launch",
+  "oauthContent": "content-type",
+  "oauthTextPlain": "text/plain",
+  "oauthCloseTab": "Please close the tab",
+  "oauthAuthenticateError": "Could not authenticate",
+  "oauthSomethingWrong": "Something went wrong",
+  "googleOauth": "Google OAuth",
+  "oauthLogout": "Logout",
+  "oauthSignIn": "Sign in with Google",
+  "oauthErrorSignin": "Error signing in with Google:",
+  "oauthErrorSignOut": "Error signing out:",
+  "oauthUserDataSaved": "User data saved to Firestore",
+  "oauthUserDataSavedError": "Error saving user data to Firestore:",
+  "dataEntryErrorSaving": "Error saving data:",
+  "dataEntrySavingSuccessfull": "Data successfully saved to Firestore."
+  }

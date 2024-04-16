@@ -25,7 +25,8 @@ class _DataEntryPageState extends State<DataEntryPage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _surnameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _uniqueCitizensIdController = TextEditingController();
+  final TextEditingController _uniqueCitizensIdController =
+      TextEditingController();
   final TextEditingController _dateOfBirthController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _cityController = TextEditingController();
@@ -122,7 +123,7 @@ class _DataEntryPageState extends State<DataEntryPage> {
         _userDataService.updateUser(userData);
       }
 
-      print('Data successfully saved to Firestore.');
+      print(AppLocalizations.of(context)!.dataEntrySavingSuccessfull);
 
       showDialog(
         context: context,
@@ -140,7 +141,7 @@ class _DataEntryPageState extends State<DataEntryPage> {
         MaterialPageRoute(builder: (context) => const WelcomePage()),
       );
     } catch (error) {
-      print('Error saving data: $error');
+      print('${AppLocalizations.of(context)!.dataEntryErrorSaving} $error');
     }
   }
 
@@ -157,12 +158,16 @@ class _DataEntryPageState extends State<DataEntryPage> {
           children: <Widget>[
             Text(
               AppLocalizations.of(context)!.fillOutForm,
-              style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+              style:
+                  const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20.0),
-            _buildTextField(labelText: AppLocalizations.of(context)!.nameText, controller: _nameController),
             _buildTextField(
-                labelText: AppLocalizations.of(context)!.surnameTxt, controller: _surnameController),
+                labelText: AppLocalizations.of(context)!.nameText,
+                controller: _nameController),
+            _buildTextField(
+                labelText: AppLocalizations.of(context)!.surnameTxt,
+                controller: _surnameController),
             _buildTextField(
                 labelText: AppLocalizations.of(context)!.emailTxt,
                 controller: _emailController,
@@ -172,19 +177,23 @@ class _DataEntryPageState extends State<DataEntryPage> {
                 controller: _uniqueCitizensIdController),
             DatePickerWidget(controller: _dateOfBirthController),
             _buildGenderDropdownField(
-                labelText: AppLocalizations.of(context)!.genderTxt,
-                value: _selectedGender,
-                onChanged: (value) {
-                  setState(() {
-                    _selectedGender = value!;
-                  });
-                },
+              labelText: AppLocalizations.of(context)!.genderTxt,
+              value: _selectedGender,
+              onChanged: (value) {
+                setState(() {
+                  _selectedGender = value!;
+                });
+              },
             ),
             _buildTextField(
-                labelText: AppLocalizations.of(context)!.addressTxt, controller: _addressController),
-            _buildTextField(labelText: AppLocalizations.of(context)!.cityTxt, controller: _cityController),
+                labelText: AppLocalizations.of(context)!.addressTxt,
+                controller: _addressController),
             _buildTextField(
-                labelText: AppLocalizations.of(context)!.phoneNumberTxt, controller: _phoneNumberController),
+                labelText: AppLocalizations.of(context)!.cityTxt,
+                controller: _cityController),
+            _buildTextField(
+                labelText: AppLocalizations.of(context)!.phoneNumberTxt,
+                controller: _phoneNumberController),
             BloodTypeDropdownWidget(
               onChanged: (newValue) {
                 setState(() {
@@ -203,8 +212,8 @@ class _DataEntryPageState extends State<DataEntryPage> {
 
   Widget _buildTextField(
       {required String labelText,
-        required TextEditingController controller,
-        bool readOnly = false}) {
+      required TextEditingController controller,
+      bool readOnly = false}) {
     return Container(
       margin: const EdgeInsets.only(bottom: 10.0),
       child: TextFormField(
@@ -247,24 +256,23 @@ class _DataEntryPageState extends State<DataEntryPage> {
       width: double.infinity,
       child: ElevatedButton(
         onPressed: () async {
-
           if (_selectedBloodType == null) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                  content: Text(AppLocalizations.of(context)!.chooseBloodType),
+                content: Text(AppLocalizations.of(context)!.chooseBloodType),
               ),
             );
             return;
           }
-          
+
           if (_selectedGender == null) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                  content: Text(AppLocalizations.of(context)!.chooseGender),
+                content: Text(AppLocalizations.of(context)!.chooseGender),
               ),
             );
           }
-          
+
           await saveDataLocally(
             name: _nameController.text,
             email: _emailController.text,

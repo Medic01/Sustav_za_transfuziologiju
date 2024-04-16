@@ -58,10 +58,9 @@ class HomePage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              AppLocalizations.of(context)!.welcome,
-              style: const TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold)
-            ),
+            Text(AppLocalizations.of(context)!.welcome,
+                style: const TextStyle(
+                    fontSize: 24.0, fontWeight: FontWeight.bold)),
             const SizedBox(height: 20.0),
             ElevatedButton(
               onPressed: () {

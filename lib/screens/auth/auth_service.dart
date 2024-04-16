@@ -1,16 +1,22 @@
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/src/widgets/framework.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:oauth2/oauth2.dart';
 import 'package:oauth2/oauth2.dart' as oauth2;
+import 'package:sustav_za_transfuziologiju/services/oauth_constants.dart';
 import 'package:window_to_front/window_to_front.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final AuthManager _authManager = AuthManager();
+  final BuildContext context;
+
+  AuthService({required this.context});
 
   Future<User?> signInWithGoogle() async {
     User? user;
@@ -26,7 +32,8 @@ class AuthService {
             await _auth.signInWithCredential(authCredential);
         user = userCredential.user;
       } on FirebaseAuthException catch (error) {
-        throw Exception('Could not authenticate $error');
+        throw Exception(
+            '${AppLocalizations.of(context)!.oauthAuthenticateError} $error');
       }
     }
 
@@ -49,7 +56,7 @@ class AuthService {
       }
       await auth.signOut();
     } on Exception {
-      throw Exception('Something went wrong');
+      throw Exception(AppLocalizations.of(context)!.oauthSomethingWrong);
     }
   }
 
@@ -57,11 +64,11 @@ class AuthService {
 }
 
 class AuthManager {
-  static const String revokeTokenUrl = 'https://oauth2.googleapis.com/revoke';
+  String revokeUrl = Constants.revokeTokenUrl;
 
   Future<bool> signOutFromGoogle(String accessToken) async {
-    final Uri uri = Uri.parse(revokeTokenUrl)
-        .replace(queryParameters: {'token': accessToken});
+    final Uri uri =
+        Uri.parse(revokeUrl).replace(queryParameters: {'token': accessToken});
     final http.Response response = await http.post(uri);
 
     if (response.statusCode == 200) {

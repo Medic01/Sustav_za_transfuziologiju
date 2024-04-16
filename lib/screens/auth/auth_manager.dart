@@ -1,5 +1,6 @@
 import 'dart:html';
 import 'dart:io';
+import 'package:flutter/src/widgets/framework.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:oauth2/oauth2.dart' as oauth2;
@@ -8,21 +9,27 @@ import 'package:window_to_front/window_to_front.dart';
 import 'package:window_to_front/window_to_front.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import '../../services/oauth_constants.dart';
 
 class AuthManager {
   HttpServer? redirectServer;
+  final BuildContext context;
 
-  static const String googleAuthApi =
-      "https://accounts.google.com/o/oauth2/v2/auth";
-  static const String googleTokenApi = "https://oauth2.googleapis.com/token";
-  static const String emailScope = "email";
-  static const String redirectURL = 'http://localhost:';
+  AuthManager({required this.context});
+
+  String authApi = Constants.googleAuthApi;
+  String tokenApi = Constants.googleTokenApi;
+  String scope = Constants.emailScope;
+  String url = Constants.redirectURL;
 
   Future<oauth2.Credentials> login() async {
     await redirectServer?.close();
 
     redirectServer = await HttpServer.bind('localhost', 0);
-    final redirectUrl = redirectURL + redirectServer!.port.toString();
+    final redirectUrl = url + redirectServer!.port.toString();
 
     oauth2.Client authenticatedHttpClient =
         await _getOauthClient(Uri.parse(redirectUrl));
@@ -32,14 +39,14 @@ class AuthManager {
   Future<oauth2.Client> _getOauthClient(Uri redirectUrl) async {
     var grant = oauth2.AuthorizationCodeGrant(
       dotenv.env['Oauth_ClientId']!,
-      Uri.parse(googleAuthApi),
-      Uri.parse(googleTokenApi),
+      Uri.parse(Constants.googleAuthApi),
+      Uri.parse(tokenApi),
       httpClient: JsonAcceptingHttpClient(),
       secret: dotenv.env['Oauth_SecretId'],
     );
 
     var authorizationUrl =
-        grant.getAuthorizationUrl(redirectUrl, scopes: [emailScope]);
+        grant.getAuthorizationUrl(redirectUrl, scopes: [scope]);
     await redirect(authorizationUrl);
     var responseQueryParameters = await listen();
     var client =
@@ -51,7 +58,8 @@ class AuthManager {
     if (await canLaunchUrl(authorizationUri)) {
       await launchUrl(authorizationUri);
     } else {
-      throw Exception('Can not launch $authorizationUri');
+      throw Exception(
+          '${AppLocalizations.of(context)!.oauthErrorLaunch} URL: $authorizationUri');
     }
   }
 
@@ -61,8 +69,11 @@ class AuthManager {
     await WindowToFront.activate();
 
     request.response.statusCode = 200;
-    request.response.headers.set('content-type', 'text/plain');
-    request.response.writeln('Please close the tab');
+    request.response.headers.set(
+        AppLocalizations.of(context as BuildContext)!.oauthContent,
+        AppLocalizations.of(context as BuildContext)!.oauthTextPlain);
+    request.response
+        .writeln(AppLocalizations.of(context as BuildContext)!.oauthCloseTab);
 
     await request.response.close();
     await redirectServer!.close();

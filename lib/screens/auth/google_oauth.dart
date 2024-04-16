@@ -8,6 +8,7 @@ import 'package:sustav_za_transfuziologiju/screens/user/user_home_page.dart';
 import 'package:sustav_za_transfuziologiju/screens/utils/session_manager.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class GoogleOauth extends StatefulWidget {
   const GoogleOauth({Key? key}) : super(key: key);
@@ -20,7 +21,14 @@ class _GoogleOauthState extends State<GoogleOauth> {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   bool _isLoggedIn = false;
   late GoogleSignInAccount _userObj;
-  final AuthService _authService = AuthService();
+  late AuthService _authService;
+
+  @override
+  void initState() {
+    super.initState();
+    _authService = AuthService(context: context);
+  }
+
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   SessionManager sessionManager = SessionManager();
 
@@ -28,7 +36,7 @@ class _GoogleOauthState extends State<GoogleOauth> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Google OAuth'),
+        title: Text(AppLocalizations.of(context)!.googleOauth),
       ),
       body: _isLoggedIn
           ? Center(
@@ -52,7 +60,7 @@ class _GoogleOauthState extends State<GoogleOauth> {
                       backgroundColor: Colors.red,
                       minimumSize: const Size(100, 50),
                     ),
-                    child: const Text('Logout'),
+                    child: Text(AppLocalizations.of(context)!.oauthLogout),
                   ),
                 ],
               ),
@@ -64,7 +72,7 @@ class _GoogleOauthState extends State<GoogleOauth> {
                 minWidth: 200,
                 color: Colors.blue,
                 textColor: Colors.white,
-                child: const Text('Sign in with Google'),
+                child: Text(AppLocalizations.of(context)!.oauthSignIn),
               ),
             ),
     );
@@ -124,7 +132,7 @@ class _GoogleOauthState extends State<GoogleOauth> {
         }
       }
     } catch (error) {
-      print('Error signing in with Google: $error');
+      print('${AppLocalizations.of(context)!.oauthErrorSignin} $error');
     }
   }
 
@@ -141,7 +149,7 @@ class _GoogleOauthState extends State<GoogleOauth> {
         _isLoggedIn = false;
       });
     } catch (error) {
-      print('Error signing out: $error');
+      print('${AppLocalizations.of(context)!.oauthErrorSignOut} $error');
     }
   }
 
@@ -154,9 +162,9 @@ class _GoogleOauthState extends State<GoogleOauth> {
       });
       sessionManager.setUserId(user.id);
 
-      print('User data saved to Firestore');
+      print(AppLocalizations.of(context)!.oauthUserDataSaved);
     } catch (error) {
-      print('Error saving user data to Firestore: $error');
+      print('${AppLocalizations.of(context)!.oauthUserDataSavedError} $error');
     }
   }
 }
