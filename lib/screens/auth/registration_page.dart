@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_pw_validator/flutter_pw_validator.dart';
 import 'package:crypto/crypto.dart';
+import 'package:logging/logging.dart';
 import 'package:sustav_za_transfuziologiju/screens/utils/email.validator.dart';
 import 'package:sustav_za_transfuziologiju/services/user_data_service.dart';
-import 'dart:convert';
 import '../user/data_entry_page.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class RegistrationPage extends StatefulWidget {
-  const RegistrationPage({super.key});
+  const RegistrationPage({Key? key}) : super(key: key);
 
   @override
   _RegistrationPageState createState() => _RegistrationPageState();
@@ -21,11 +21,11 @@ class _RegistrationPageState extends State<RegistrationPage> {
   final TextEditingController _confirmPasswordController = TextEditingController();
   final FocusNode _passwordFocusNode = FocusNode();
   final UserDataService _userDataService = UserDataService();
-  bool _isPasswordValid = false;
+  final Logger logger = Logger("RegistrationPage");
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
   bool _isPasswordFocused = false;
-
+  bool _isPasswordValid = false;
 
   @override
   void dispose() {
@@ -87,11 +87,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       _isPasswordFocused = true;
                     });
                   },
-                  onChanged: (_) {
-                    setState(() {
-                      _isPasswordValid = false;
-                    });
-                  },
                 ),
                 const SizedBox(height: 20.0),
                 if (_isPasswordFocused)
@@ -105,28 +100,26 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     width: 200,
                     height: 100,
                     onSuccess: () {
-                      if (!_isPasswordValid) {
-                        setState(() {
-                          _isPasswordValid = true;
-                        });
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(AppLocalizations.of(context)!.validPasswordMessage),
-                          ),
-                        );
-                      }
+                      setState(() {
+                        _isPasswordValid = true;
+                      });
+                      ScaffoldMessenger.of(context).removeCurrentSnackBar();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(AppLocalizations.of(context)!.validPasswordMessage),
+                        ),
+                      );
                     },
                     onFail: () {
-                      if (_isPasswordValid) {
-                        setState(() {
-                          _isPasswordValid = false;
-                        });
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(AppLocalizations.of(context)!.invalidPasswordMessage),
-                          ),
-                        );
-                      }
+                      setState(() {
+                        _isPasswordValid = false;
+                      });
+                      ScaffoldMessenger.of(context).removeCurrentSnackBar();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(AppLocalizations.of(context)!.invalidPasswordMessage),
+                        ),
+                      );
                     },
                   ),
                 const SizedBox(height: 20.0),
@@ -152,9 +145,13 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 const SizedBox(height: 20.0),
                 ElevatedButton(
                   onPressed: () async {
-                    if (_usernameController.text.isEmpty ||
-                        _passwordController.text.isEmpty ||
-                        _confirmPasswordController.text.isEmpty) {
+                    final String username = _usernameController.text.trim();
+                    final String password = _passwordController.text.trim();
+                    final String confirmPassword = _confirmPasswordController.text.trim();
+
+                    if (username.isEmpty ||
+                        password.isEmpty ||
+                        confirmPassword.isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(AppLocalizations.of(context)!.fillAllFieldsMessage),
@@ -162,7 +159,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       );
                       return;
                     }
-                    if (EmailValidator.isValid(_usernameController.text) != true) {
+                    if (!EmailValidator.isValid(username)) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(AppLocalizations.of(context)!.emailErrorMessage),
@@ -170,8 +167,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       );
                       return;
                     }
-                    if (_passwordController.text !=
-                        _confirmPasswordController.text) {
+                    if (password != confirmPassword) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(AppLocalizations.of(context)!.passwordMismatchMessage),
@@ -179,11 +175,18 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       );
                       return;
                     }
-
+                    if (!_isPasswordValid) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(AppLocalizations.of(context)!.invalidPasswordMessage),
+                        ),
+                      );
+                      return;
+                    }
                     try {
                       final existingUser = await FirebaseFirestore.instance
                           .collection('users')
-                          .where('email', isEqualTo: _usernameController.text)
+                          .where('email', isEqualTo: username)
                           .get();
                       if (existingUser.docs.isNotEmpty) {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -194,24 +197,23 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         return;
                       }
                       await _userDataService.registerUser(
-                          email: _usernameController.text,
-                          password: _passwordController.text
+                        email: username,
+                        password: password,
                       );
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(AppLocalizations.of(context)!.successfulSignup),
-                          duration: Duration(seconds: 2),
+                          duration: const Duration(seconds: 2),
                         ),
                       );
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>
-                              DataEntryPage(email: _usernameController.text),
+                          builder: (context) => DataEntryPage(email: username),
                         ),
                       );
                     } catch (e) {
-                      print("Greška prilikom registracije $e");
+                      logger.severe("Error during registration: $e");
                     }
                   },
                   child: Text(AppLocalizations.of(context)!.registrationButton),
