@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:logging/logging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sustav_za_transfuziologiju/models/user_data.dart';
 import 'package:sustav_za_transfuziologiju/screens/enums/gender.dart';
@@ -31,6 +32,7 @@ class _DataEntryPageState extends State<DataEntryPage> {
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _cityController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
+  final Logger logger = Logger("DataEntryPage");
   UserDataService _userDataService = UserDataService();
   BloodTypes? _selectedBloodType;
   Gender? _selectedGender;
@@ -113,17 +115,19 @@ class _DataEntryPageState extends State<DataEntryPage> {
           .collection('users')
           .where('email', isEqualTo: email)
           .get();
-      print("User Snapshot: $userSnapshot");
+
 
       if (userSnapshot.docs.isNotEmpty) {
         final userId = userSnapshot.docs.first.id;
         sessionManager.setUserId(userId);
-        print("UserID: $userId");
+
 
         _userDataService.updateUser(userData);
       }
 
-      print(AppLocalizations.of(context)!.dataEntrySavingSuccessfull);
+
+      logger.info('Data successfully saved to Firestore.');
+
 
       showDialog(
         context: context,
@@ -141,7 +145,9 @@ class _DataEntryPageState extends State<DataEntryPage> {
         MaterialPageRoute(builder: (context) => const WelcomePage()),
       );
     } catch (error) {
-      print('${AppLocalizations.of(context)!.dataEntryErrorSaving} $error');
+
+      logger.severe('Error saving data: $error');
+
     }
   }
 
