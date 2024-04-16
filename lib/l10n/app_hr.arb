@@ -124,7 +124,5 @@
   "oauthErrorSignin": "Error signing in with Google:",
   "oauthErrorSignOut": "Error signing out:",
   "oauthUserDataSaved": "User data saved to Firestore",
-  "oauthUserDataSavedError": "Error saving user data to Firestore:",
-  "dataEntryErrorSaving": "Error saving data:",
-  "dataEntrySavingSuccessfull": "Data successfully saved to Firestore."
+  "oauthUserDataSavedError": "Error saving user data to Firestore:"
   }
