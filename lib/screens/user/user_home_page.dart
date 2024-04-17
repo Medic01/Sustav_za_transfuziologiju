@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sustav_za_transfuziologiju/main.dart';
 import 'package:sustav_za_transfuziologiju/screens/user/blood_donation_reservation_page.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:sustav_za_transfuziologiju/services/donation_service.dart';
 
 class UserHomePage extends StatefulWidget {
   final Map<String, dynamic>? userData;
@@ -27,6 +28,7 @@ class _UserHomePageState extends State<UserHomePage> {
         widget.userData != null ? widget.userData!['user_id'] ?? '' : '';
     final GoogleSignIn _googleSignIn = GoogleSignIn();
     bool _isLoggedIn = false;
+    final DonationService _donationService = DonationService();
     final Logger logger = Logger('UserHomePage');
 
     return Scaffold(
@@ -69,15 +71,7 @@ class _UserHomePageState extends State<UserHomePage> {
           ),
           Expanded(
             child: StreamBuilder(
-              stream: _selectedList == 'accepted'
-                  ? FirebaseFirestore.instance
-                      .collection('accepted')
-                      .where('user_id', isEqualTo: userId)
-                      .snapshots()
-                  : FirebaseFirestore.instance
-                      .collection('rejected')
-                      .where('user_id', isEqualTo: userId)
-                      .snapshots(),
+              stream: _donationService.getUserBloodDonationStream(userId, _selectedList),
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.hasError) {

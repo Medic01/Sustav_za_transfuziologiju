@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:sustav_za_transfuziologiju/screens/enums/donation_status.dart';
+import 'package:sustav_za_transfuziologiju/services/donation_service.dart';
 
 class AdminWelcomePage extends StatefulWidget {
   @override
@@ -8,7 +10,8 @@ class AdminWelcomePage extends StatefulWidget {
 }
 
 class _AdminWelcomePageState extends State<AdminWelcomePage> {
-  String _selectedFilter = 'Accepted';
+  DonationStatus _selectedFilter = DonationStatus.ACCEPTED;
+  DonationService _donationService = DonationService();
 
   @override
   Widget build(BuildContext context) {
@@ -21,26 +24,28 @@ class _AdminWelcomePageState extends State<AdminWelcomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const SizedBox(height: 20.0),
-            DropdownButton<String>(
+            DropdownButton<DonationStatus>(
               value: _selectedFilter,
-              onChanged: (String? newValue) {
+              onChanged: (DonationStatus? newValue) {
                 setState(() {
                   _selectedFilter = newValue!;
                 });
               },
-              items: <String>['Accepted', 'Rejected'].map((String value) {
-                return DropdownMenuItem<String>(
+              items: [
+                DonationStatus.ACCEPTED,
+                DonationStatus.REJECTED,
+              ].map((DonationStatus value) {
+                return DropdownMenuItem<DonationStatus>(
                   value: value,
-                  child: Text(value),
+                  child: Text(value.toString().split('.').last),
                 );
               }).toList(),
             ),
             const SizedBox(height: 20.0),
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
-                stream: _selectedFilter == 'Accepted'
-                    ? FirebaseFirestore.instance.collection('accepted').snapshots()
-                    : FirebaseFirestore.instance.collection('rejected').snapshots(),
+                stream: _donationService.getBloodDonationStream(_selectedFilter),
+
                 builder: (context, snapshot) {
                   if (snapshot.hasError) {
                     return Text('${AppLocalizations.of(context)!.genericErrMsg} ${snapshot.error}');
@@ -54,10 +59,9 @@ class _AdminWelcomePageState extends State<AdminWelcomePage> {
                         itemCount: snapshot.data!.docs.length,
                         itemBuilder: (context, index) {
                           DocumentSnapshot document = snapshot.data!.docs[index];
-                          if (_selectedFilter == 'Accepted') {
+                          if (_selectedFilter == DonationStatus.ACCEPTED) {
                             String donorName = document['donor_name'];
                             String bloodType = document['blood_type'];
-                            //int? donatedAmount = document['donated_dose'];
 
                             return Card(
                               child: ListTile(
@@ -73,7 +77,7 @@ class _AdminWelcomePageState extends State<AdminWelcomePage> {
                           } else {
                             String name = document['donor_name'];
                             String bloodType = document['blood_type'];
-                            String rejectionReason = document['reason_for_rejection'];
+                            String rejectionReason = document['rejection_reason'];
 
                             return Card(
                               child: ListTile(

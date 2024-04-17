@@ -27,12 +27,11 @@ class _DataEntryPageState extends State<DataEntryPage> {
   final TextEditingController _surnameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _uniqueCitizensIdController =
-      TextEditingController();
+  TextEditingController();
   final TextEditingController _dateOfBirthController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _cityController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
-
   final Logger logger = Logger("DataEntryPage");
   UserDataService _userDataService = UserDataService();
   BloodTypes? _selectedBloodType;
@@ -59,8 +58,6 @@ class _DataEntryPageState extends State<DataEntryPage> {
     required BuildContext context,
   }) async {
     try {
-      FirebaseFirestore firestore = FirebaseFirestore.instance;
-
       Future<void> saveDataLocally({
         required String name,
         required String surname,
@@ -112,17 +109,12 @@ class _DataEntryPageState extends State<DataEntryPage> {
         isFirstLogin: false,
       );
 
-      final userSnapshot = await firestore
-          .collection('users')
-          .where('email', isEqualTo: email)
-          .get();
+      final userSnapshot = await _userDataService.getUserSnapshotByEmail(email);
 
-      if (userSnapshot.docs.isNotEmpty) {
-        final userId = userSnapshot.docs.first.id;
-        sessionManager.setUserId(userId);
+      final userId = userSnapshot.id;
+      sessionManager.setUserId(userId);
 
-        _userDataService.updateUser(userData);
-      }
+      _userDataService.updateUser(userData);
 
       logger.info('Data successfully saved to Firestore.');
 
@@ -160,7 +152,7 @@ class _DataEntryPageState extends State<DataEntryPage> {
             Text(
               AppLocalizations.of(context)!.fillOutForm,
               style:
-                  const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+              const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20.0),
             _buildTextField(
@@ -213,8 +205,8 @@ class _DataEntryPageState extends State<DataEntryPage> {
 
   Widget _buildTextField(
       {required String labelText,
-      required TextEditingController controller,
-      bool readOnly = false}) {
+        required TextEditingController controller,
+        bool readOnly = false}) {
     return Container(
       margin: const EdgeInsets.only(bottom: 10.0),
       child: TextFormField(
