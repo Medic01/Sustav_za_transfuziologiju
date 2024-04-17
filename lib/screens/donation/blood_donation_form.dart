@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:logging/logging.dart';
-import 'package:sustav_za_transfuziologiju/models/donation.dart';
 import 'package:sustav_za_transfuziologiju/screens/enums/blood_types.dart';
 import 'package:sustav_za_transfuziologiju/services/donation_service.dart';
 import '../widgets/date_picker_widget.dart';
@@ -14,7 +13,6 @@ class BloodDonationForm extends StatefulWidget {
   final String bloodType;
   final String userId;
   final String documentId;
-  final Function(String, String, String, String, String) onAccept;
 
   const BloodDonationForm({
     Key? key,
@@ -23,7 +21,6 @@ class BloodDonationForm extends StatefulWidget {
     required this.bloodType,
     required this.userId,
     required this.documentId,
-    required this.onAccept,
   }) : super(key: key);
 
   @override
@@ -38,7 +35,6 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
   final TextEditingController _technicianNameController = TextEditingController();
   final TextEditingController _hemoglobinController = TextEditingController();
   final TextEditingController _bloodPressureController = TextEditingController();
-  final TextEditingController _rejectionReasonController = TextEditingController();
   final DonationService _donationService = DonationService();
   final Logger logger = Logger("BloodDonationForm");
   BloodTypes? _selectedBloodType;
@@ -51,10 +47,9 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
     _dateController.text = widget.date;
     _donorNameController.text = widget.donorName;
     _selectedBloodType = BloodTypes.values.firstWhere(
-      (element) => element.toString().split('.').last == widget.bloodType,
+          (element) => element.toString().split('.').last == widget.bloodType,
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -136,34 +131,20 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
       width: double.infinity,
       child: ElevatedButton(
         onPressed: () async {
-          Donation data = Donation(
-            date: _dateController.text,
-            place: _placeController.text,
-            doctorName: _doctorNameController.text,
-            technicianName: _technicianNameController.text,
-            hemoglobin: _hemoglobinController.text,
-            bloodPressure: _bloodPressureController.text,
-            donationRejected: false,
-            rejectionReason: _rejectionReasonController.text,
-            bloodType: _selectedBloodType,
-            donorName: _donorNameController.text,
-            userId: _userId,
-          );
           try {
             await _donationService.updateReservationAndAccept(
-                documentId: widget.documentId,
-                location: data.place,
-                hemoglobin: data.hemoglobin,
-                bloodPressure: data.bloodPressure,
-                doctorName: data.doctorName,
-                technicianName: data.technicianName
+              documentId: widget.documentId,
+              location: _placeController.text,
+              hemoglobin: _hemoglobinController.text,
+              bloodPressure: _bloodPressureController.text,
+              doctorName: _doctorNameController.text,
+              technicianName: _technicianNameController.text,
             );
-
             Navigator.pop(context);
-          } catch (e) {
+          } catch (error) {
             logger.severe("Error while trying to update and accept donations!");
-            SnackBar(
-              content: Text(AppLocalizations.of(context)!.genericErrMsg),
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(AppLocalizations.of(context)!.genericErrMsg)),
             );
           }
         },

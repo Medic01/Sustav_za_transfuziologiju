@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:sustav_za_transfuziologiju/screens/enums/donation_status.dart';
+import 'package:sustav_za_transfuziologiju/services/donation_service.dart';
 
 class AdminWelcomePage extends StatefulWidget {
   @override
@@ -10,6 +11,7 @@ class AdminWelcomePage extends StatefulWidget {
 
 class _AdminWelcomePageState extends State<AdminWelcomePage> {
   DonationStatus _selectedFilter = DonationStatus.ACCEPTED;
+  DonationService _donationService = DonationService();
 
   @override
   Widget build(BuildContext context) {
@@ -42,9 +44,7 @@ class _AdminWelcomePageState extends State<AdminWelcomePage> {
             const SizedBox(height: 20.0),
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
-                stream: FirebaseFirestore.instance.collection('blood_donation')
-                    .where('status', isEqualTo: _selectedFilter.toString().split('.').last)
-                    .snapshots(),
+                stream: _donationService.getBloodDonationStream(_selectedFilter),
 
                 builder: (context, snapshot) {
                   if (snapshot.hasError) {

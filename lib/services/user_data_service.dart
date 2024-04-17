@@ -9,6 +9,23 @@ class UserDataService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   final Logger logger = Logger('UserDataService');
 
+  Future<DocumentSnapshot> getUserSnapshotByEmail(String email) async {
+    try {
+      final userSnapshot = await _db
+          .collection('users')
+          .where('email', isEqualTo: email)
+          .get();
+
+      if (userSnapshot.docs.isNotEmpty) {
+        return userSnapshot.docs.first;
+      }
+    } catch (e) {
+      logger.severe('Error while fetching user snapshot: $e');
+      rethrow;
+    }
+    throw Exception('User with email $email not found');
+  }
+
   Future<void> updateUser(UserData userData) async {
     try {
       final userSnapshot = await _db

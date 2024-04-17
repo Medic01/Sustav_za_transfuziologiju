@@ -54,30 +54,6 @@ class DonationService {
     }
   }
 
-
-  Future<void> acceptDonation(String documentId, Map<String, dynamic> data) async {
-    try{
-      CollectionReference bloodDonationRef = _db.collection('blood_donation');
-      CollectionReference acceptedRef = _db.collection('accepted');
-
-      await acceptedRef.add({
-        'location': data['location'],
-        'date': data['date'],
-        'blood_pressure': data['blood_pressure'],
-        'hemoglobin': data['hemoglobin'],
-        'doctor_name': data['doctor_name'],
-        'blood_type': data['blood_type'],
-        'user_id': data['user_id'],
-        'donor_name': data['donor_name'],
-      });
-
-      await bloodDonationRef.doc(documentId).delete();
-    } catch(e) {
-      logger.severe('Error $e has occured!');
-      throw e;
-    }
-  }
-
   Future<void> rejectDonation(String documentId, String rejectionReason) async {
     print(documentId);
     try {
@@ -128,5 +104,29 @@ class DonationService {
       logger.severe('Error occurred while updating donated dose quantity: $e');
       throw e;
     }
+  }
+
+  Stream<QuerySnapshot> getBloodDonationStream(DonationStatus status, {String? selectedBloodType}) {
+    Query bloodDonationQuery = _db.collection('blood_donation').where('status', isEqualTo: status.toString().split('.').last);
+
+    if (selectedBloodType != null && selectedBloodType != 'All') {
+      bloodDonationQuery = bloodDonationQuery.where('blood_type', isEqualTo: selectedBloodType);
+    }
+
+    return bloodDonationQuery.snapshots();
+  }
+
+  Stream<QuerySnapshot> getPendingBloodDonationStream() {
+    return _db.collection('blood_donation')
+        .where('status', isEqualTo: DonationStatus.PENDING.toString().split('.').last)
+        .snapshots();
+  }
+
+  Stream<QuerySnapshot> getUserBloodDonationStream(String userId, String selectedList) {
+    return _db
+        .collection('blood_donation')
+        .where('user_id', isEqualTo: userId)
+        .where('status', isEqualTo: selectedList == 'accepted' ? 'ACCEPTED' : 'REJECTED')
+        .snapshots();
   }
 }

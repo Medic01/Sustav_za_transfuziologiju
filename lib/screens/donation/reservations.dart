@@ -17,9 +17,7 @@ class Reservations extends StatelessWidget {
         title: Text(AppLocalizations.of(context)!.reservationTitle),
       ),
       body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('blood_donation')
-            .where('status', isEqualTo: DonationStatus.PENDING.toString().split('.').last)
-            .snapshots(),
+        stream: _donationService.getPendingBloodDonationStream(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
             return Text('${AppLocalizations.of(context)!.genericErrMsg} ${snapshot.error}');
@@ -32,8 +30,7 @@ class Reservations extends StatelessWidget {
             itemCount: snapshot.data!.docs.length,
             itemBuilder: (BuildContext context, int index) {
               DocumentSnapshot document = snapshot.data!.docs[index];
-              Map<String, dynamic> data = document.data() as Map<String,
-                  dynamic>;
+              Map<String, dynamic> data = document.data() as Map<String, dynamic>;
 
               if (data['status'] == DonationStatus.PENDING.toString().split('.').last) {
                 return ListTile(
@@ -79,32 +76,16 @@ class Reservations extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) =>
-            BloodDonationForm(
-              date: data['date'],
-              donorName: data['donor_name'],
-              bloodType: data['blood_type'],
-              userId: data['user_id'],
-              documentId: document.id,
-              onAccept: (location, hemoglobin, bloodPressure, doctorName, technicianName) {
-                _donationService.updateReservationAndAccept(
-                  documentId: document.id,
-                  location: location,
-                  hemoglobin: hemoglobin,
-                  bloodPressure: bloodPressure,
-                  doctorName: doctorName,
-                  technicianName: technicianName,
-                ).then((_) {
-                  logger.info('Reservation updated and accepted successfully');
-                }).catchError((error) {
-                  logger.severe('Error updating and accepting reservation: $error');
-                });
-              },
-            ),
+        builder: (context) => BloodDonationForm(
+          date: data['date'],
+          donorName: data['donor_name'],
+          bloodType: data['blood_type'],
+          userId: data['user_id'],
+          documentId: document.id,
+        ),
       ),
     );
   }
-
   void _handleReject(BuildContext context, DocumentSnapshot document) {
     showDialog(
       context: context,

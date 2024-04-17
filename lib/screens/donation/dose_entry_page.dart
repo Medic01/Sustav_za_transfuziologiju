@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sustav_za_transfuziologiju/screens/enums/blood_types.dart';
+import 'package:sustav_za_transfuziologiju/screens/enums/donation_status.dart';
 import 'package:sustav_za_transfuziologiju/services/donation_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'donation_list_item.dart';
@@ -59,13 +60,10 @@ class _DoseEntryPageState extends State<DoseEntryPage> {
 
   Widget buildDonationList() {
     return StreamBuilder<QuerySnapshot>(
-      stream: selectedBloodType == 'All'
-          ? FirebaseFirestore.instance.collection('blood_donation').where('status', isEqualTo: 'ACCEPTED').snapshots()
-          : FirebaseFirestore.instance
-          .collection('blood_donation')
-          .where('status', isEqualTo: 'ACCEPTED')
-          .where('blood_type', isEqualTo: selectedBloodType)
-          .snapshots(),
+      stream: _donationService.getBloodDonationStream(
+          DonationStatus.ACCEPTED,
+          selectedBloodType: selectedBloodType
+      ),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasError) {
           return Text('${AppLocalizations.of(context)!.genericErrMsg} ${snapshot.error}');
