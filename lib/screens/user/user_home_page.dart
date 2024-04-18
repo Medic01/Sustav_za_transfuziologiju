@@ -33,6 +33,7 @@ class _UserHomePageState extends State<UserHomePage> {
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text(AppLocalizations.of(context)!.homePageTitle),
       ),
       body: Column(
@@ -71,7 +72,8 @@ class _UserHomePageState extends State<UserHomePage> {
           ),
           Expanded(
             child: StreamBuilder(
-              stream: _donationService.getUserBloodDonationStream(userId, _selectedList),
+              stream: _donationService.getUserBloodDonationStream(
+                  userId, _selectedList),
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.hasError) {

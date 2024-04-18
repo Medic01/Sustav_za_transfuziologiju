@@ -5,6 +5,7 @@ import 'package:crypto/crypto.dart';
 import 'package:logging/logging.dart';
 import 'package:sustav_za_transfuziologiju/screens/utils/email.validator.dart';
 import 'package:sustav_za_transfuziologiju/services/user_data_service.dart';
+import 'package:sustav_za_transfuziologiju/styles/styles.dart';
 import '../user/data_entry_page.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -18,7 +19,8 @@ class RegistrationPage extends StatefulWidget {
 class _RegistrationPageState extends State<RegistrationPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
   final FocusNode _passwordFocusNode = FocusNode();
   final UserDataService _userDataService = UserDataService();
   final Logger logger = Logger("RegistrationPage");
@@ -47,7 +49,11 @@ class _RegistrationPageState extends State<RegistrationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.registrationTitle),
+        title: Text(
+          AppLocalizations.of(context)!.registrationTitle,
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.red,
       ),
       body: SingleChildScrollView(
         child: Center(
@@ -59,7 +65,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 TextField(
                   controller: _usernameController,
                   decoration: InputDecoration(
+                    border: OutlineInputBorder(),
                     labelText: AppLocalizations.of(context)!.usernameLabel,
+                    labelStyle: TextStyle(color: Colors.red),
                   ),
                 ),
                 const SizedBox(height: 20.0),
@@ -67,7 +75,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   focusNode: _passwordFocusNode,
                   controller: _passwordController,
                   decoration: InputDecoration(
+                    border: OutlineInputBorder(),
                     labelText: AppLocalizations.of(context)!.passwordLabel,
+                    labelStyle: TextStyle(color: Colors.red),
                     suffixIcon: IconButton(
                       onPressed: () {
                         setState(() {
@@ -75,10 +85,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         });
                       },
                       icon: Icon(
-                        _isPasswordVisible
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                      ),
+                          _isPasswordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                          color: Colors.red),
                     ),
                   ),
                   obscureText: !_isPasswordVisible,
@@ -106,7 +116,11 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       ScaffoldMessenger.of(context).removeCurrentSnackBar();
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text(AppLocalizations.of(context)!.validPasswordMessage),
+                          content: Text(
+                            AppLocalizations.of(context)!.validPasswordMessage,
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          backgroundColor: Colors.green,
                         ),
                       );
                     },
@@ -117,7 +131,12 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       ScaffoldMessenger.of(context).removeCurrentSnackBar();
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text(AppLocalizations.of(context)!.invalidPasswordMessage),
+                          content: Text(
+                            AppLocalizations.of(context)!
+                                .invalidPasswordMessage,
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          backgroundColor: Colors.red,
                         ),
                       );
                     },
@@ -126,18 +145,21 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 TextField(
                   controller: _confirmPasswordController,
                   decoration: InputDecoration(
+                    border: OutlineInputBorder(),
                     labelText: AppLocalizations.of(context)!.passwordLabel,
+                    labelStyle: passwordLabelStyle,
                     suffixIcon: IconButton(
                       onPressed: () {
                         setState(() {
-                          _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
+                          _isConfirmPasswordVisible =
+                              !_isConfirmPasswordVisible;
                         });
                       },
                       icon: Icon(
-                        _isConfirmPasswordVisible
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                      ),
+                          _isConfirmPasswordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                          color: visibilityIconColor),
                     ),
                   ),
                   obscureText: !_isConfirmPasswordVisible,
@@ -147,14 +169,19 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   onPressed: () async {
                     final String username = _usernameController.text.trim();
                     final String password = _passwordController.text.trim();
-                    final String confirmPassword = _confirmPasswordController.text.trim();
+                    final String confirmPassword =
+                        _confirmPasswordController.text.trim();
 
                     if (username.isEmpty ||
                         password.isEmpty ||
                         confirmPassword.isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text(AppLocalizations.of(context)!.fillAllFieldsMessage),
+                          content: Text(
+                            AppLocalizations.of(context)!.fillAllFieldsMessage,
+                            style: fillAllFieldsSnackBarTextStyle,
+                          ),
+                          backgroundColor: fillAllFieldsSnackBarBackgroundColor,
                         ),
                       );
                       return;
@@ -162,7 +189,11 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     if (!EmailValidator.isValid(username)) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text(AppLocalizations.of(context)!.emailErrorMessage),
+                          content: Text(
+                            AppLocalizations.of(context)!.emailErrorMessage,
+                            style: emailErrorSnackBarTextStyle,
+                          ),
+                          backgroundColor: emailErrorSnackBarBackgroundColor,
                         ),
                       );
                       return;
@@ -170,7 +201,13 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     if (password != confirmPassword) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text(AppLocalizations.of(context)!.passwordMismatchMessage),
+                          content: Text(
+                            AppLocalizations.of(context)!
+                                .passwordMismatchMessage,
+                            style: passwordMismatchSnackBarTextStyle,
+                          ),
+                          backgroundColor:
+                              passwordMismatchSnackBarBackgroundColor,
                         ),
                       );
                       return;
@@ -178,7 +215,13 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     if (!_isPasswordValid) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text(AppLocalizations.of(context)!.invalidPasswordMessage),
+                          content: Text(
+                            AppLocalizations.of(context)!
+                                .invalidPasswordMessage,
+                            style: invalidPasswordSnackBarTextStyle,
+                          ),
+                          backgroundColor:
+                              invalidPasswordSnackBarBackgroundColor,
                         ),
                       );
                       return;
@@ -191,7 +234,12 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       if (existingUser.docs.isNotEmpty) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text(AppLocalizations.of(context)!.usernameAlreadyInUse),
+                            content: Text(
+                              AppLocalizations.of(context)!
+                                  .usernameAlreadyInUse,
+                              style: usernameSnackBarTextStyle,
+                            ),
+                            backgroundColor: usernameSnackBarBackgroundColor,
                           ),
                         );
                         return;
@@ -202,7 +250,11 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       );
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text(AppLocalizations.of(context)!.successfulSignup),
+                          content: Text(
+                            AppLocalizations.of(context)!.successfulSignup,
+                            style: snackBarTextStyle,
+                          ),
+                          backgroundColor: snackBarBackgroundColor,
                           duration: const Duration(seconds: 2),
                         ),
                       );
@@ -216,7 +268,11 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       logger.severe("Error during registration: $e");
                     }
                   },
-                  child: Text(AppLocalizations.of(context)!.registrationButton),
+                  child: Text(
+                    AppLocalizations.of(context)!.registrationButton,
+                    style: registrationButtonTextStyle,
+                  ),
+                  style: registrationButtonStyle,
                 ),
               ],
             ),
