@@ -55,7 +55,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
         ),
         backgroundColor: appBarBackgroundColor,
       ),
-      body: SingleChildScrollView(
+      body: Center(
         child: Center(
           child: Padding(
             padding: EdgeInsets.all(allSidesPadding),
