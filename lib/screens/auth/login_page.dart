@@ -43,7 +43,7 @@ class _LoginPageState extends State<LoginPage> {
       ),
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.all(allSidesPadding),
           child: Form(
             key: formKey,
             child: Column(
@@ -63,7 +63,7 @@ class _LoginPageState extends State<LoginPage> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 20.0),
+                const SizedBox(height: standardPadding),
                 TextFormField(
                   controller: _passwordController,
                   decoration: InputDecoration(
@@ -91,7 +91,7 @@ class _LoginPageState extends State<LoginPage> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 20.0),
+                const SizedBox(height: standardPadding),
                 ElevatedButton(
                   onPressed: () async {
                     if (formKey.currentState!.validate()) {

@@ -4,7 +4,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:sustav_za_transfuziologiju/screens/auth/google_oauth.dart';
 import 'package:sustav_za_transfuziologiju/screens/auth/login_page.dart';
 import 'package:sustav_za_transfuziologiju/screens/auth/registration_page.dart';
-import 'package:sustav_za_transfuziologiju/screens/splash_screen.dart';
+import 'package:sustav_za_transfuziologiju/screens/widgets/splash_screen.dart';
 import 'package:sustav_za_transfuziologiju/screens/utils/default_firebase_options.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:logging/logging.dart';
@@ -82,6 +82,7 @@ class HomePage extends StatelessWidget {
           ),
         ),
         automaticallyImplyLeading: false,
+        centerTitle: true,
       ),
       body: AnimatedContainer(
         duration: const Duration(seconds: 1),
@@ -98,7 +99,7 @@ class HomePage extends StatelessWidget {
                   child: MySvgWidget(),
                 ),
               ),
-              const SizedBox(height: 20.0),
+              const SizedBox(height: standardPadding),
               ElevatedButton(
                 onPressed: () {
                   logger.info("Registration button pressed!");
@@ -113,7 +114,7 @@ class HomePage extends StatelessWidget {
                 ),
                 style: elevatedButtonStyle,
               ),
-              const SizedBox(height: 10.0),
+              const SizedBox(height: littlePadding),
               TextButton(
                 onPressed: () {
                   Navigator.push(
@@ -128,7 +129,7 @@ class HomePage extends StatelessWidget {
                 ),
                 style: textButtonStyle,
               ),
-              const SizedBox(height: 10.0),
+              const SizedBox(height: littlePadding),
               TextButton(
                 onPressed: () {
                   Navigator.push(

@@ -44,12 +44,9 @@ class _SplashScreenState extends State<SplashScreen> {
                       duration: const Duration(milliseconds: 4000),
                     ),
                   ],
-                  totalRepeatCount:
-                      1, // Ovo osigurava da animacija igra samo jednom
-                  pause: const Duration(
-                      milliseconds: 1000), // Ovo je pauza između animacija
-                  displayFullTextOnTap:
-                      true, // Ovo omogućuje korisniku da tapne kako bi prikazao puni tekst odmah
+                  totalRepeatCount: 1,
+                  pause: const Duration(milliseconds: 1000),
+                  displayFullTextOnTap: true,
                 ),
               ),
             ),

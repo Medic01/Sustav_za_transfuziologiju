@@ -51,33 +51,33 @@ class _RegistrationPageState extends State<RegistrationPage> {
       appBar: AppBar(
         title: Text(
           AppLocalizations.of(context)!.registrationTitle,
-          style: TextStyle(color: Colors.white),
+          style: appBarTitleTextStyle,
         ),
-        backgroundColor: Colors.red,
+        backgroundColor: appBarBackgroundColor,
       ),
       body: SingleChildScrollView(
         child: Center(
           child: Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding: EdgeInsets.all(allSidesPadding),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: columnMainAxisAlignment,
               children: <Widget>[
                 TextField(
                   controller: _usernameController,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: AppLocalizations.of(context)!.usernameLabel,
-                    labelStyle: TextStyle(color: Colors.red),
+                    labelStyle: labelTextStyle,
                   ),
                 ),
-                const SizedBox(height: 20.0),
+                const SizedBox(height: standardPadding),
                 TextField(
                   focusNode: _passwordFocusNode,
                   controller: _passwordController,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: AppLocalizations.of(context)!.passwordLabel,
-                    labelStyle: TextStyle(color: Colors.red),
+                    labelStyle: passwordLabelStyle,
                     suffixIcon: IconButton(
                       onPressed: () {
                         setState(() {
@@ -88,7 +88,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                           _isPasswordVisible
                               ? Icons.visibility
                               : Icons.visibility_off,
-                          color: Colors.red),
+                          color: visibilityIconColor),
                     ),
                   ),
                   obscureText: !_isPasswordVisible,
@@ -98,17 +98,17 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     });
                   },
                 ),
-                const SizedBox(height: 20.0),
+                const SizedBox(height: standardPadding),
                 if (_isPasswordFocused)
                   FlutterPwValidator(
                     controller: _passwordController,
-                    minLength: 6,
-                    uppercaseCharCount: 1,
-                    numericCharCount: 1,
-                    specialCharCount: 1,
-                    normalCharCount: 3,
-                    width: 200,
-                    height: 100,
+                    minLength: passwordMinLength,
+                    uppercaseCharCount: passwordUppercaseCharCount,
+                    numericCharCount: passwordNumericCharCount,
+                    specialCharCount: passwordSpecialCharCount,
+                    normalCharCount: passwordNormalCharCount,
+                    width: passwordValidatorWidth,
+                    height: passwordValidatorHeight,
                     onSuccess: () {
                       setState(() {
                         _isPasswordValid = true;
@@ -116,12 +116,12 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       ScaffoldMessenger.of(context).removeCurrentSnackBar();
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text(
-                            AppLocalizations.of(context)!.validPasswordMessage,
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          backgroundColor: Colors.green,
-                        ),
+                            content: Text(
+                                AppLocalizations.of(context)!
+                                    .validPasswordMessage,
+                                style: validPasswordSnackBarTextStyle),
+                            backgroundColor:
+                                validPasswordSnackBarBackgroundColor),
                       );
                     },
                     onFail: () {
@@ -132,16 +132,16 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(
-                            AppLocalizations.of(context)!
-                                .invalidPasswordMessage,
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          backgroundColor: Colors.red,
+                              AppLocalizations.of(context)!
+                                  .invalidPasswordMessage,
+                              style: invalidPasswordSnackBarTextStyle),
+                          backgroundColor:
+                              invalidPasswordSnackBarBackgroundColor,
                         ),
                       );
                     },
                   ),
-                const SizedBox(height: 20.0),
+                const SizedBox(height: standardPadding),
                 TextField(
                   controller: _confirmPasswordController,
                   decoration: InputDecoration(
@@ -164,7 +164,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   ),
                   obscureText: !_isConfirmPasswordVisible,
                 ),
-                const SizedBox(height: 20.0),
+                const SizedBox(height: standardPadding),
                 ElevatedButton(
                   onPressed: () async {
                     final String username = _usernameController.text.trim();
