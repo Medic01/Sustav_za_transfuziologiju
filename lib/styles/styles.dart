@@ -57,11 +57,7 @@ final TextStyle passwordLabelStyle = TextStyle(color: Colors.red);
 final Color visibilityIconColor = Colors.red;
 final OutlineInputBorder inputBorder = OutlineInputBorder();
 final Color appBarColor = Colors.red;
-final TextStyle appBarTextStyle = GoogleFonts.aDLaMDisplay(
-  color: Colors.white,
-  fontSize: 26,
-  fontWeight: FontWeight.bold,
-);
+TextStyle appBarTextStyle = TextStyle(color: Colors.white);
 // Login i register koriste
 const double standardPadding = 20.0;
 const double littlePadding = 10.0;
@@ -101,3 +97,37 @@ const double passwordValidatorWidth = 200.0;
 const double passwordValidatorHeight = 100.0;
 
 const MainAxisAlignment columnMainAxisAlignment = MainAxisAlignment.center;
+
+//GoogleOauth izdvojeni stilovi
+const appBarTitleStyle = TextStyle(color: Colors.white);
+const materialButtonHeight = 50.0;
+const materialButtonMinWidth = 200.0;
+const materialButtonColor = Colors.red;
+const materialButtonTextColor = Colors.white;
+const sizedBoxHeight = 20.0;
+const columnMainAxisAlignmentCenter = MainAxisAlignment.center;
+const columnCrossAxisAlignment = CrossAxisAlignment.center;
+
+//SplashScreen izdvojeni stilovi
+const backgroundColor = Colors.white;
+const containerDecoration = BoxDecoration(
+  gradient: LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [
+      Colors.white,
+      Colors.red,
+    ],
+  ),
+);
+
+const svgPictureWidth = 150.0;
+const svgPictureHeight = 150.0;
+
+const sizedBoxWidth = 250.0;
+const defaultTextStyle = TextStyle(
+  fontSize: 50.0,
+  color: Colors.white,
+);
+const fadeAnimatedTextDuration = Duration(milliseconds: 4000);
+const animatedTextKitPause = Duration(milliseconds: 1000);

@@ -47,7 +47,7 @@ class _LoginPageState extends State<LoginPage> {
           child: Form(
             key: formKey,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: columnMainAxisAlignment,
               children: <Widget>[
                 TextFormField(
                   controller: _emailController,

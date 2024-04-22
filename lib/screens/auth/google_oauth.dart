@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:logging/logging.dart';
@@ -7,6 +6,7 @@ import 'package:sustav_za_transfuziologiju/screens/auth/auth_service.dart';
 import 'package:sustav_za_transfuziologiju/screens/user/data_entry_page.dart';
 import 'package:sustav_za_transfuziologiju/screens/user/user_home_page.dart';
 import 'package:sustav_za_transfuziologiju/screens/utils/session_manager.dart';
+import 'package:sustav_za_transfuziologiju/styles/styles.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -38,31 +38,30 @@ class _GoogleOauthState extends State<GoogleOauth> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.googleOauth),
+        title: Text(
+          AppLocalizations.of(context)!.googleOauth,
+          style: appBarTitleStyle,
+        ),
+        backgroundColor: appBarBackgroundColor,
       ),
       body: _isLoggedIn
           ? Center(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: columnMainAxisAlignment,
+                crossAxisAlignment: columnCrossAxisAlignment,
                 children: [
-                  CircleAvatar(
-                    backgroundImage: NetworkImage(_userObj.photoUrl ?? ''),
-                    radius: 50,
-                  ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: sizedBoxHeight),
                   Text(_userObj.displayName ?? ''),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: sizedBoxHeight),
                   Text(_userObj.email),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: sizedBoxHeight),
                   ElevatedButton(
                     onPressed: _handleGoogleSignOut,
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      backgroundColor: Colors.red,
-                      minimumSize: const Size(100, 50),
+                    style: elevatedButtonStyle,
+                    child: Text(
+                      AppLocalizations.of(context)!.oauthLogout,
+                      style: buttonTextStyle,
                     ),
-                    child: Text(AppLocalizations.of(context)!.oauthLogout),
                   ),
                 ],
               ),
@@ -70,10 +69,10 @@ class _GoogleOauthState extends State<GoogleOauth> {
           : Center(
               child: MaterialButton(
                 onPressed: _handleGoogleSignIn,
-                height: 50,
-                minWidth: 200,
-                color: Colors.blue,
-                textColor: Colors.white,
+                height: materialButtonHeight,
+                minWidth: materialButtonMinWidth,
+                color: materialButtonColor,
+                textColor: materialButtonTextColor,
                 child: Text(AppLocalizations.of(context)!.oauthSignIn),
               ),
             ),
