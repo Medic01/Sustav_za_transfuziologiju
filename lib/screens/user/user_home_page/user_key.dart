@@ -32,3 +32,26 @@ String getDisplayName(String key) {
       return key;
   }
 }
+
+String mapBloodType(String bloodType) {
+  switch (bloodType) {
+    case 'A_NEGATIVE':
+      return 'A-';
+    case 'A_POSITIVE':
+      return 'A+';
+    case 'B_NEGATIVE':
+      return 'B-';
+    case 'B_POSITIVE':
+      return 'B+';
+    case 'AB_NEGATIVE':
+      return 'AB-';
+    case 'AB_POSITIVE':
+      return 'AB+';
+    case 'O_NEGATIVE':
+      return 'O-';
+    case 'O_POSITIVE':
+      return 'O+';
+    default:
+      return bloodType;
+  }
+}

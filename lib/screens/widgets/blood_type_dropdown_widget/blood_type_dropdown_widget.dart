@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sustav_za_transfuziologiju/screens/widgets/blood_type_dropdown_widget/blood_type_dropdown_widget_sign.dart';
 import 'package:sustav_za_transfuziologiju/screens/widgets/blood_type_dropdown_widget/blood_type_dropdown_widget_styles.dart';
 import '../../enums/blood_types.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -30,7 +31,7 @@ class _BloodTypeDropdownWidgetState extends State<BloodTypeDropdownWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(top: 10.0),
+      margin: topMargin10,
       child: DropdownButtonFormField<BloodTypes>(
         decoration: InputDecoration(
           labelText: AppLocalizations.of(context)!.bloodType,
@@ -47,7 +48,9 @@ class _BloodTypeDropdownWidgetState extends State<BloodTypeDropdownWidget> {
         items: BloodTypes.values.map<DropdownMenuItem<BloodTypes>>((type) {
           return DropdownMenuItem<BloodTypes>(
             value: type,
-            child: Text(type.toString().split('.').last),
+            child: Text(
+              getBloodTypeDisplayName(type),
+            ),
           );
         }).toList(),
       ),

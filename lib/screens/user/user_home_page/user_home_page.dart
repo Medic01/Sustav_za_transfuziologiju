@@ -147,7 +147,9 @@ class _UserHomePageState extends State<UserHomePage> {
                                     style: titleTextStyle,
                                   ),
                                   subtitle: Text(
-                                    entry.value.toString(),
+                                    entry.key == 'blood_type'
+                                        ? mapBloodType(entry.value.toString())
+                                        : entry.value.toString(),
                                     style: subtitleTextStyle,
                                   ),
                                 ))
