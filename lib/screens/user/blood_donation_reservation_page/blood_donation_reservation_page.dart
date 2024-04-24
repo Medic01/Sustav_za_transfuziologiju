@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:sustav_za_transfuziologiju/screens/user/blood_donation_reservation_page/blood_donation_reservation_page_styles.dart';
 import 'package:sustav_za_transfuziologiju/screens/utils/session_manager.dart';
 import 'package:sustav_za_transfuziologiju/services/donation_service.dart';
-import '../enums/blood_types.dart';
-import '../widgets/blood_type_dropdown_widget.dart';
+import '../../enums/blood_types.dart';
+import '../../widgets/blood_type_dropdown_widget/blood_type_dropdown_widget.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class BloodDonationReservationPage extends StatefulWidget {
-  const BloodDonationReservationPage({super.key});
+  const BloodDonationReservationPage({Key? key});
 
   @override
   _BloodDonationReservationPageState createState() =>
@@ -16,7 +17,7 @@ class BloodDonationReservationPage extends StatefulWidget {
 }
 
 class _BloodDonationReservationPageState
-    extends State<BloodDonationReservationPage> {
+    extends State<BloodDonationReservationPage> with TickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
@@ -28,6 +29,14 @@ class _BloodDonationReservationPageState
   final _emailRegExp = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
 
   SessionManager sessionManager = SessionManager();
+  late final AnimationController _bloodDropController = AnimationController(
+    duration: const Duration(seconds: 2),
+    vsync: this,
+  )..repeat(reverse: true);
+  late final Animation<double> _bloodDropAnimation = CurvedAnimation(
+    parent: _bloodDropController,
+    curve: Curves.easeIn,
+  );
 
   @override
   void initState() {
@@ -82,9 +91,14 @@ class _BloodDonationReservationPageState
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text(AppLocalizations.of(context)!.success),
-          content:
-          Text(AppLocalizations.of(context)!.reservationSuccessText),
+          title: Row(
+            children: [
+              successIcon,
+              sizedBoxWidth10,
+              Expanded(child: Text(AppLocalizations.of(context)!.success)),
+            ],
+          ),
+          content: Text(AppLocalizations.of(context)!.reservationSuccessText),
           actions: [
             TextButton(
               onPressed: () {
@@ -99,14 +113,25 @@ class _BloodDonationReservationPageState
   }
 
   @override
+  void dispose() {
+    _bloodDropController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.donationDateReservation),
+        title: Text(
+          AppLocalizations.of(context)!.donationDateReservation,
+          style: appBarTextStyle,
+        ),
+        backgroundColor: appBarBackgroundColor,
+        iconTheme: appBarIconTheme,
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: SingleChildScrollViewPadding,
           child: Form(
             key: _formKey,
             child: Column(
@@ -114,7 +139,11 @@ class _BloodDonationReservationPageState
               children: [
                 TextFormField(
                   controller: _nameController,
-                  decoration: InputDecoration(labelText: AppLocalizations.of(context)!.fullNameLabel),
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: AppLocalizations.of(context)!.fullNameLabel,
+                    labelStyle: labelTextStyle,
+                  ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return AppLocalizations.of(context)!.fullNameTxt;
@@ -122,10 +151,14 @@ class _BloodDonationReservationPageState
                     return null;
                   },
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: sizedBoxHeight),
                 TextFormField(
                   controller: _emailController,
-                  decoration: InputDecoration(labelText: AppLocalizations.of(context)!.emailTxt),
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: AppLocalizations.of(context)!.emailTxt,
+                    labelStyle: labelTextStyle,
+                  ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return AppLocalizations.of(context)!.emailReminder;
@@ -136,10 +169,14 @@ class _BloodDonationReservationPageState
                     return null;
                   },
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: sizedBoxHeight),
                 TextFormField(
                   controller: _dateController,
-                  decoration: InputDecoration(labelText: AppLocalizations.of(context)!.date),
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: AppLocalizations.of(context)!.date,
+                    labelStyle: labelTextStyle,
+                  ),
                   inputFormatters: [_dateMaskFormatter],
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -148,7 +185,7 @@ class _BloodDonationReservationPageState
                     return null;
                   },
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: sizedBoxHeight),
                 BloodTypeDropdownWidget(
                   onChanged: (value) {
                     setState(() {
@@ -157,14 +194,24 @@ class _BloodDonationReservationPageState
                   },
                   value: _selectedBloodType != null
                       ? BloodTypes.values.firstWhere((element) =>
-                  element.toString().split('.').last ==
-                      _selectedBloodType)
+                          element.toString().split('.').last ==
+                          _selectedBloodType)
                       : null,
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: sizedBoxHeight),
                 ElevatedButton(
-                  onPressed: _submitForm,
-                  child: Text(AppLocalizations.of(context)!.submitBtn),
+                    onPressed: _submitForm,
+                    child: Text(AppLocalizations.of(context)!.submitBtn),
+                    style: elevatedButtonStylee),
+                Center(
+                  child: FadeTransition(
+                    opacity: _bloodDropAnimation,
+                    child: Icon(
+                      Icons.bloodtype,
+                      size: bloodTypeIconSize,
+                      color: bloodTypeIconColor,
+                    ),
+                  ),
                 ),
               ],
             ),

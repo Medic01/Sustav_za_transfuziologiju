@@ -12,7 +12,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../services/oauth_constants.dart';
+import '../../../services/oauth_constants.dart';
 
 class AuthManager {
   HttpServer? redirectServer;

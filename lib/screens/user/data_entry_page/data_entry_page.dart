@@ -3,13 +3,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sustav_za_transfuziologiju/models/user_data.dart';
 import 'package:sustav_za_transfuziologiju/screens/enums/gender.dart';
-import 'package:sustav_za_transfuziologiju/screens/user/user_home_page.dart';
-import 'package:sustav_za_transfuziologiju/screens/user/welcome_page.dart';
+import 'package:sustav_za_transfuziologiju/screens/user/data_entry_page/data_entry_page_styles.dart';
+import 'package:sustav_za_transfuziologiju/screens/user/user_home_page/user_home_page.dart';
+import 'package:sustav_za_transfuziologiju/screens/user/user_footer/user_footer.dart';
 import 'package:sustav_za_transfuziologiju/screens/utils/session_manager.dart';
 import 'package:sustav_za_transfuziologiju/services/user_data_service.dart';
-import '../enums/blood_types.dart';
-import '../widgets/blood_type_dropdown_widget.dart';
-import '../widgets/date_picker_widget.dart';
+import '../../enums/blood_types.dart';
+import '../../widgets/blood_type_dropdown_widget/blood_type_dropdown_widget.dart';
+import '../../widgets/date_picker/date_picker_widget.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:logging/logging.dart';
 
@@ -27,7 +28,7 @@ class _DataEntryPageState extends State<DataEntryPage> {
   final TextEditingController _surnameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _uniqueCitizensIdController =
-  TextEditingController();
+      TextEditingController();
   final TextEditingController _dateOfBirthController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _cityController = TextEditingController();
@@ -142,19 +143,21 @@ class _DataEntryPageState extends State<DataEntryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.homePageTitle),
+        title: Text(AppLocalizations.of(context)!.registrationTitle),
+        titleTextStyle: appBarTitleTextStyle,
+        backgroundColor: appBarBackgroundColor,
+        iconTheme: appBarIconTheme,
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20.0),
+        padding: paddingAll20,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(
               AppLocalizations.of(context)!.fillOutForm,
-              style:
-              const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+              style: fillOutFormTextStyle,
             ),
-            const SizedBox(height: 20.0),
+            sizedBoxHeight20,
             _buildTextField(
                 labelText: AppLocalizations.of(context)!.nameText,
                 controller: _nameController),
@@ -195,7 +198,7 @@ class _DataEntryPageState extends State<DataEntryPage> {
               },
               value: _selectedBloodType,
             ),
-            const SizedBox(height: 20.0),
+            sizedBoxHeight20,
             _buildSaveButton(context),
           ],
         ),
@@ -205,15 +208,16 @@ class _DataEntryPageState extends State<DataEntryPage> {
 
   Widget _buildTextField(
       {required String labelText,
-        required TextEditingController controller,
-        bool readOnly = false}) {
+      required TextEditingController controller,
+      bool readOnly = false}) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 10.0),
+      margin: marginOnlyBottom10,
       child: TextFormField(
         controller: controller,
         readOnly: readOnly,
         decoration: InputDecoration(
           labelText: labelText,
+          labelStyle: labelTextStyle,
           border: const OutlineInputBorder(),
         ),
       ),
@@ -226,10 +230,11 @@ class _DataEntryPageState extends State<DataEntryPage> {
     required ValueChanged<Gender?> onChanged,
   }) {
     return Container(
-      margin: const EdgeInsets.only(top: 10.0, bottom: 10.0),
+      margin: marginOnlyTopBottom10,
       child: DropdownButtonFormField<Gender>(
         decoration: InputDecoration(
           labelText: labelText,
+          labelStyle: labelTextStyle,
           border: const OutlineInputBorder(),
         ),
         value: value,
@@ -248,57 +253,57 @@ class _DataEntryPageState extends State<DataEntryPage> {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
-        onPressed: () async {
-          if (_selectedBloodType == null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(AppLocalizations.of(context)!.chooseBloodType),
+          onPressed: () async {
+            if (_selectedBloodType == null) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(AppLocalizations.of(context)!.chooseBloodType),
+                ),
+              );
+              return;
+            }
+
+            if (_selectedGender == null) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(AppLocalizations.of(context)!.chooseGender),
+                ),
+              );
+            }
+
+            await saveDataLocally(
+              name: _nameController.text,
+              email: _emailController.text,
+            );
+
+            Map<String, String> _loggedInUserData = {
+              'name': _nameController.text,
+              'email': _emailController.text,
+            };
+
+            saveDataToFirestore(
+              name: _nameController.text,
+              surname: _surnameController.text,
+              email: _emailController.text,
+              uniqueCitizensId: _uniqueCitizensIdController.text,
+              dateOfBirth: _dateOfBirthController.text,
+              address: _addressController.text,
+              city: _cityController.text,
+              phoneNumber: _phoneNumberController.text,
+              bloodType: _selectedBloodType,
+              gender: _selectedGender!.toString().split('.').last,
+              context: context,
+            );
+
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => UserHomePage(userData: _loggedInUserData),
               ),
             );
-            return;
-          }
-
-          if (_selectedGender == null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(AppLocalizations.of(context)!.chooseGender),
-              ),
-            );
-          }
-
-          await saveDataLocally(
-            name: _nameController.text,
-            email: _emailController.text,
-          );
-
-          Map<String, String> _loggedInUserData = {
-            'name': _nameController.text,
-            'email': _emailController.text,
-          };
-
-          saveDataToFirestore(
-            name: _nameController.text,
-            surname: _surnameController.text,
-            email: _emailController.text,
-            uniqueCitizensId: _uniqueCitizensIdController.text,
-            dateOfBirth: _dateOfBirthController.text,
-            address: _addressController.text,
-            city: _cityController.text,
-            phoneNumber: _phoneNumberController.text,
-            bloodType: _selectedBloodType,
-            gender: _selectedGender!.toString().split('.').last,
-            context: context,
-          );
-
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => UserHomePage(userData: _loggedInUserData),
-            ),
-          );
-        },
-        child: Text(AppLocalizations.of(context)!.saveBtn),
-      ),
+          },
+          child: Text(AppLocalizations.of(context)!.saveBtn),
+          style: elevatedButtonStylee),
     );
   }
 

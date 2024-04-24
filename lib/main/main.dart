@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:sustav_za_transfuziologiju/screens/auth/google_oauth.dart';
-import 'package:sustav_za_transfuziologiju/screens/auth/login_page.dart';
-import 'package:sustav_za_transfuziologiju/screens/auth/registration_page.dart';
-import 'package:sustav_za_transfuziologiju/screens/widgets/splash_screen.dart';
+import 'package:sustav_za_transfuziologiju/screens/auth/google_oauth/google_oauth.dart';
+import 'package:sustav_za_transfuziologiju/screens/auth/login/login_page.dart';
+import 'package:sustav_za_transfuziologiju/screens/auth/registration/registration_page.dart';
+import 'package:sustav_za_transfuziologiju/screens/widgets/splash_screen/splash_screen.dart';
 import 'package:sustav_za_transfuziologiju/screens/utils/default_firebase_options.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:logging/logging.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:sustav_za_transfuziologiju/styles/styles.dart';
+import 'package:sustav_za_transfuziologiju/main/main_styles.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -92,10 +92,10 @@ class HomePage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.only(bottom: 20.0),
+                padding: paddingOnlyBottom20,
                 child: Container(
-                  width: 200,
-                  height: 200,
+                  width: container200Size.width,
+                  height: container200Size.height,
                   child: MySvgWidget(),
                 ),
               ),

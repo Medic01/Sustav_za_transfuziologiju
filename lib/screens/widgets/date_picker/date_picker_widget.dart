@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:sustav_za_transfuziologiju/screens/widgets/date_picker/date_picker_widget_styles.dart';
 
 class DatePickerWidget extends StatefulWidget {
   final TextEditingController controller;
 
-  const DatePickerWidget({super.key, required this.controller});
+  const DatePickerWidget({Key? key, required this.controller})
+      : super(key: key);
 
   @override
   _DatePickerWidgetState createState() => _DatePickerWidgetState();
@@ -25,10 +27,22 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
       initialDate: _selectedDate,
       firstDate: DateTime(1900),
       lastDate: DateTime.now(),
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: datePickerThemeData,
+          child: child!,
+        );
+      },
     );
     if (picked != null) {
       setState(() {
-        _selectedDate = DateTime(picked.year, picked.month, picked.day, DateTime.now().hour, DateTime.now().minute);
+        _selectedDate = DateTime(
+          picked.year,
+          picked.month,
+          picked.day,
+          DateTime.now().hour,
+          DateTime.now().minute,
+        );
         widget.controller.text = _selectedDate.toString();
       });
     }
@@ -41,9 +55,8 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
       child: AbsorbPointer(
         child: TextField(
           controller: widget.controller,
-          decoration: InputDecoration(
+          decoration: inputDecoration.copyWith(
             labelText: AppLocalizations.of(context)!.date,
-            border: const OutlineInputBorder(),
           ),
         ),
       ),

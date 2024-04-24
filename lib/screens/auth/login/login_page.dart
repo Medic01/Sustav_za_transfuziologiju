@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crypto/crypto.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:logging/logging.dart';
 import 'dart:convert';
 import 'package:sustav_za_transfuziologiju/screens/admin/admin_page.dart';
+import 'package:sustav_za_transfuziologiju/screens/auth/login/login_page_styles.dart';
 import 'package:sustav_za_transfuziologiju/screens/enums/user_role.dart';
-import 'package:sustav_za_transfuziologiju/screens/user/data_entry_page.dart';
-import 'package:sustav_za_transfuziologiju/screens/user/welcome_page.dart';
-import 'package:sustav_za_transfuziologiju/screens/user/user_home_page.dart';
+import 'package:sustav_za_transfuziologiju/screens/user/data_entry_page/data_entry_page.dart';
+import 'package:sustav_za_transfuziologiju/screens/user/user_footer/user_footer.dart';
+import 'package:sustav_za_transfuziologiju/screens/user/user_home_page/user_home_page.dart';
 import 'package:sustav_za_transfuziologiju/screens/utils/session_manager.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:sustav_za_transfuziologiju/styles/styles.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -40,6 +39,7 @@ class _LoginPageState extends State<LoginPage> {
           AppLocalizations.of(context)!.loginTitle,
           style: appBarTextStyle,
         ),
+        iconTheme: appBarIconTheme,
       ),
       body: Center(
         child: Padding(

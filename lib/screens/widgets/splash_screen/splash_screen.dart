@@ -2,9 +2,9 @@ import 'dart:async';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:sustav_za_transfuziologiju/main.dart';
-import 'package:sustav_za_transfuziologiju/styles/styles.dart';
+import 'package:sustav_za_transfuziologiju/main/main.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:sustav_za_transfuziologiju/screens/widgets/splash_screen/splash_style.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
