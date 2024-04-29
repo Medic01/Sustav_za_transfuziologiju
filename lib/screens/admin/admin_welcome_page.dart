@@ -17,6 +17,7 @@ class _AdminWelcomePageState extends State<AdminWelcomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text(AppLocalizations.of(context)!.homePageTitle),
       ),
       body: Center(
@@ -44,11 +45,12 @@ class _AdminWelcomePageState extends State<AdminWelcomePage> {
             const SizedBox(height: 20.0),
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
-                stream: _donationService.getBloodDonationStream(_selectedFilter),
-
+                stream:
+                    _donationService.getBloodDonationStream(_selectedFilter),
                 builder: (context, snapshot) {
                   if (snapshot.hasError) {
-                    return Text('${AppLocalizations.of(context)!.genericErrMsg} ${snapshot.error}');
+                    return Text(
+                        '${AppLocalizations.of(context)!.genericErrMsg} ${snapshot.error}');
                   }
 
                   switch (snapshot.connectionState) {
@@ -58,7 +60,8 @@ class _AdminWelcomePageState extends State<AdminWelcomePage> {
                       return ListView.builder(
                         itemCount: snapshot.data!.docs.length,
                         itemBuilder: (context, index) {
-                          DocumentSnapshot document = snapshot.data!.docs[index];
+                          DocumentSnapshot document =
+                              snapshot.data!.docs[index];
                           if (_selectedFilter == DonationStatus.ACCEPTED) {
                             String donorName = document['donor_name'];
                             String bloodType = document['blood_type'];
@@ -68,8 +71,10 @@ class _AdminWelcomePageState extends State<AdminWelcomePage> {
                                 title: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text('${AppLocalizations.of(context)!.donorName} $donorName'),
-                                    Text('${AppLocalizations.of(context)!.bloodType} $bloodType'),
+                                    Text(
+                                        '${AppLocalizations.of(context)!.donorName} $donorName'),
+                                    Text(
+                                        '${AppLocalizations.of(context)!.bloodType} $bloodType'),
                                   ],
                                 ),
                               ),
@@ -77,16 +82,20 @@ class _AdminWelcomePageState extends State<AdminWelcomePage> {
                           } else {
                             String name = document['donor_name'];
                             String bloodType = document['blood_type'];
-                            String rejectionReason = document['rejection_reason'];
+                            String rejectionReason =
+                                document['rejection_reason'];
 
                             return Card(
                               child: ListTile(
                                 title: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text('${AppLocalizations.of(context)!.donorName} $name'),
-                                    Text('${AppLocalizations.of(context)!.bloodType} $bloodType'),
-                                    Text('${AppLocalizations.of(context)!.rejectionReason} $rejectionReason'),
+                                    Text(
+                                        '${AppLocalizations.of(context)!.donorName} $name'),
+                                    Text(
+                                        '${AppLocalizations.of(context)!.bloodType} $bloodType'),
+                                    Text(
+                                        '${AppLocalizations.of(context)!.rejectionReason} $rejectionReason'),
                                   ],
                                 ),
                               ),

@@ -23,7 +23,8 @@ class DonationService {
       });
       logger.info('Appointment for blood donation made');
     } catch (e) {
-      logger.severe('Error while trying to make a blood donation appointment: $e');
+      logger.severe(
+          'Error while trying to make a blood donation appointment: $e');
       throw e;
     }
   }
@@ -36,7 +37,6 @@ class DonationService {
     required String doctorName,
     required String technicianName,
   }) async {
-
     try {
       await _db.collection('blood_donation').doc(documentId).update({
         'location': location,
@@ -69,7 +69,6 @@ class DonationService {
     }
   }
 
-
   Future<void> markDoseProcessed(String donationId) async {
     try {
       await _db.collection('blood_donation').doc(donationId).update({
@@ -78,7 +77,8 @@ class DonationService {
 
       logger.info("Dose marked as processed!");
     } catch (e) {
-      logger.severe("Error occurred while trying to mark dose as processed: $e");
+      logger
+          .severe("Error occurred while trying to mark dose as processed: $e");
     }
   }
 
@@ -106,27 +106,35 @@ class DonationService {
     }
   }
 
-  Stream<QuerySnapshot> getBloodDonationStream(DonationStatus status, {String? selectedBloodType}) {
-    Query bloodDonationQuery = _db.collection('blood_donation').where('status', isEqualTo: status.toString().split('.').last);
+  Stream<QuerySnapshot> getBloodDonationStream(DonationStatus status,
+      {String? selectedBloodType}) {
+    Query bloodDonationQuery = _db
+        .collection('blood_donation')
+        .where('status', isEqualTo: status.toString().split('.').last);
 
     if (selectedBloodType != null && selectedBloodType != 'All') {
-      bloodDonationQuery = bloodDonationQuery.where('blood_type', isEqualTo: selectedBloodType);
+      bloodDonationQuery =
+          bloodDonationQuery.where('blood_type', isEqualTo: selectedBloodType);
     }
 
     return bloodDonationQuery.snapshots();
   }
 
   Stream<QuerySnapshot> getPendingBloodDonationStream() {
-    return _db.collection('blood_donation')
-        .where('status', isEqualTo: DonationStatus.PENDING.toString().split('.').last)
+    return _db
+        .collection('blood_donation')
+        .where('status',
+            isEqualTo: DonationStatus.PENDING.toString().split('.').last)
         .snapshots();
   }
 
-  Stream<QuerySnapshot> getUserBloodDonationStream(String userId, String selectedList) {
+  Stream<QuerySnapshot> getUserBloodDonationStream(
+      String userId, String selectedList) {
     return _db
         .collection('blood_donation')
         .where('user_id', isEqualTo: userId)
-        .where('status', isEqualTo: selectedList == 'accepted' ? 'ACCEPTED' : 'REJECTED')
+        .where('status',
+            isEqualTo: selectedList == 'accepted' ? 'ACCEPTED' : 'REJECTED')
         .snapshots();
   }
 }

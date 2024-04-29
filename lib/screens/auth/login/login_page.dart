@@ -4,10 +4,11 @@ import 'package:crypto/crypto.dart';
 import 'package:logging/logging.dart';
 import 'dart:convert';
 import 'package:sustav_za_transfuziologiju/screens/admin/admin_page.dart';
+import 'package:sustav_za_transfuziologiju/screens/auth/login/login_page_styles.dart';
 import 'package:sustav_za_transfuziologiju/screens/enums/user_role.dart';
-import 'package:sustav_za_transfuziologiju/screens/user/data_entry_page.dart';
-import 'package:sustav_za_transfuziologiju/screens/user/welcome_page.dart';
-import 'package:sustav_za_transfuziologiju/screens/user/user_home_page.dart';
+import 'package:sustav_za_transfuziologiju/screens/user/data_entry_page/data_entry_page.dart';
+import 'package:sustav_za_transfuziologiju/screens/user/user_footer/user_footer.dart';
+import 'package:sustav_za_transfuziologiju/screens/user/user_home_page/user_home_page.dart';
 import 'package:sustav_za_transfuziologiju/screens/utils/session_manager.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -33,20 +34,27 @@ class _LoginPageState extends State<LoginPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.loginTitle),
+        backgroundColor: appBarColor,
+        title: Text(
+          AppLocalizations.of(context)!.loginTitle,
+          style: appBarTextStyle,
+        ),
+        iconTheme: appBarIconTheme,
       ),
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.all(allSidesPadding),
           child: Form(
             key: formKey,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: columnMainAxisAlignment,
               children: <Widget>[
                 TextFormField(
                   controller: _emailController,
                   decoration: InputDecoration(
+                    border: OutlineInputBorder(),
                     labelText: AppLocalizations.of(context)!.usernameLabel,
+                    labelStyle: passwordLabelStyle,
                   ),
                   validator: (value) {
                     if (value?.isEmpty ?? true) {
@@ -55,21 +63,25 @@ class _LoginPageState extends State<LoginPage> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 20.0),
+                const SizedBox(height: standardPadding),
                 TextFormField(
                   controller: _passwordController,
                   decoration: InputDecoration(
-                    labelText: 'Lozinka',
+                    border: OutlineInputBorder(),
+                    labelText: AppLocalizations.of(context)!.passwordLabel,
                     suffixIcon: IconButton(
-                      icon: Icon(_isPasswordVisible
-                          ? Icons.visibility
-                          : Icons.visibility_off),
+                      icon: Icon(
+                          _isPasswordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                          color: visibilityIconColor),
                       onPressed: () {
                         setState(() {
                           _isPasswordVisible = !_isPasswordVisible;
                         });
                       },
                     ),
+                    labelStyle: passwordLabelStyle,
                   ),
                   obscureText: !_isPasswordVisible,
                   validator: (value) {
@@ -79,7 +91,7 @@ class _LoginPageState extends State<LoginPage> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 20.0),
+                const SizedBox(height: standardPadding),
                 ElevatedButton(
                   onPressed: () async {
                     if (formKey.currentState!.validate()) {
@@ -111,47 +123,53 @@ class _LoginPageState extends State<LoginPage> {
 
                             if (role == UserRole.ADMIN.name) {
                               showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      title: Text(AppLocalizations.of(context)!
-                                          .welcome),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () {
-                                            Navigator.pushReplacement(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const WelcomePage()),
-                                            );
-                                          },
-                                          child: Text(
-                                              AppLocalizations.of(context)!.ok),
-                                        ),
-                                      ],
-                                    );
-                                  });
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: Text(
+                                        AppLocalizations.of(context)!.welcome),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const WelcomePage(),
+                                            ),
+                                          );
+                                        },
+                                        child: Text(
+                                            AppLocalizations.of(context)!.ok),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => const AdminPage()),
+                                  builder: (context) => const AdminPage(),
+                                ),
                               );
                             } else if (role == UserRole.USER.name) {
                               if (isFirstLogin) {
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => DataEntryPage(
-                                            email: _emailController.text,
-                                          )),
+                                    builder: (context) => DataEntryPage(
+                                      email: _emailController.text,
+                                    ),
+                                  ),
                                 );
                               } else {
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => UserHomePage(
-                                          userData: _loggedInUserData)),
+                                    builder: (context) => UserHomePage(
+                                      userData: _loggedInUserData,
+                                    ),
+                                  ),
                                 );
                               }
                             }
@@ -177,7 +195,11 @@ class _LoginPageState extends State<LoginPage> {
                       }
                     }
                   },
-                  child: Text(AppLocalizations.of(context)!.loginButton),
+                  child: Text(
+                    AppLocalizations.of(context)!.loginButton,
+                    style: loginButtonTextStyle,
+                  ),
+                  style: loginButtonStyle,
                 ),
               ],
             ),

@@ -1,11 +1,11 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:logging/logging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sustav_za_transfuziologiju/screens/auth/auth_service.dart';
-import 'package:sustav_za_transfuziologiju/screens/user/data_entry_page.dart';
-import 'package:sustav_za_transfuziologiju/screens/user/user_home_page.dart';
+import 'package:sustav_za_transfuziologiju/screens/auth/google_oauth/auth_service.dart';
+import 'package:sustav_za_transfuziologiju/screens/auth/google_oauth/google_oauth_styles.dart';
+import 'package:sustav_za_transfuziologiju/screens/user/data_entry_page/data_entry_page.dart';
+import 'package:sustav_za_transfuziologiju/screens/user/user_home_page/user_home_page.dart';
 import 'package:sustav_za_transfuziologiju/screens/utils/session_manager.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -38,42 +38,34 @@ class _GoogleOauthState extends State<GoogleOauth> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.googleOauth),
+        title: Text(
+          AppLocalizations.of(context)!.googleOauth,
+          style: appBarTitleStyle,
+        ),
+        backgroundColor: appBarBackgroundColor,
+        iconTheme: appBarIconTheme,
       ),
       body: _isLoggedIn
           ? Center(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: columnMainAxisAlignment,
+                crossAxisAlignment: columnCrossAxisAlignment,
                 children: [
-                  CircleAvatar(
-                    backgroundImage: NetworkImage(_userObj.photoUrl ?? ''),
-                    radius: 50,
-                  ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: sizedBoxHeight),
                   Text(_userObj.displayName ?? ''),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: sizedBoxHeight),
                   Text(_userObj.email),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: _handleGoogleSignOut,
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      backgroundColor: Colors.red,
-                      minimumSize: const Size(100, 50),
-                    ),
-                    child: Text(AppLocalizations.of(context)!.oauthLogout),
-                  ),
+                  const SizedBox(height: sizedBoxHeight),
                 ],
               ),
             )
           : Center(
               child: MaterialButton(
                 onPressed: _handleGoogleSignIn,
-                height: 50,
-                minWidth: 200,
-                color: Colors.blue,
-                textColor: Colors.white,
+                height: materialButtonHeight,
+                minWidth: materialButtonMinWidth,
+                color: materialButtonColor,
+                textColor: materialButtonTextColor,
                 child: Text(AppLocalizations.of(context)!.oauthSignIn),
               ),
             ),

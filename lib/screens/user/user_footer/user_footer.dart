@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:sustav_za_transfuziologiju/main.dart';
-import 'package:sustav_za_transfuziologiju/screens/user/user_home_page.dart';
-import 'package:sustav_za_transfuziologiju/screens/user/blood_donation_reservation_page.dart';
+import 'package:sustav_za_transfuziologiju/main/main.dart';
+import 'package:sustav_za_transfuziologiju/screens/user/user_home_page/user_home_page.dart';
+import 'package:sustav_za_transfuziologiju/screens/user/blood_donation_reservation_page/blood_donation_reservation_page.dart';
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({super.key});

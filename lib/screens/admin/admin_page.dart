@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sustav_za_transfuziologiju/main.dart';
+import 'package:sustav_za_transfuziologiju/main/main.dart';
 import 'package:sustav_za_transfuziologiju/screens/admin/admin_welcome_page.dart';
 import 'package:sustav_za_transfuziologiju/screens/donation/dose_entry_page.dart';
 import 'package:sustav_za_transfuziologiju/screens/donation/reservations.dart';
@@ -30,7 +30,6 @@ class _AdminPageState extends State<AdminPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: _pages[_selectedIndex],
-
       bottomNavigationBar: BottomAppBar(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -41,7 +40,6 @@ class _AdminPageState extends State<AdminPage> {
                 _onTappedItem(0);
               },
             ),
-
             IconButton(
               icon: const Icon(Icons.list),
               onPressed: () {

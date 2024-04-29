@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:logging/logging.dart';
 import 'package:sustav_za_transfuziologiju/screens/enums/blood_types.dart';
 import 'package:sustav_za_transfuziologiju/services/donation_service.dart';
-import '../widgets/date_picker_widget.dart';
-import '../widgets/blood_type_dropdown_widget.dart';
+import '../widgets/date_picker/date_picker_widget.dart';
+import '../widgets/blood_type_dropdown_widget/blood_type_dropdown_widget.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class BloodDonationForm extends StatefulWidget {
@@ -32,9 +32,11 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
   final TextEditingController _donorNameController = TextEditingController();
   final TextEditingController _placeController = TextEditingController();
   final TextEditingController _doctorNameController = TextEditingController();
-  final TextEditingController _technicianNameController = TextEditingController();
+  final TextEditingController _technicianNameController =
+      TextEditingController();
   final TextEditingController _hemoglobinController = TextEditingController();
-  final TextEditingController _bloodPressureController = TextEditingController();
+  final TextEditingController _bloodPressureController =
+      TextEditingController();
   final DonationService _donationService = DonationService();
   final Logger logger = Logger("BloodDonationForm");
   BloodTypes? _selectedBloodType;
@@ -47,7 +49,7 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
     _dateController.text = widget.date;
     _donorNameController.text = widget.donorName;
     _selectedBloodType = BloodTypes.values.firstWhere(
-          (element) => element.toString().split('.').last == widget.bloodType,
+      (element) => element.toString().split('.').last == widget.bloodType,
     );
   }
 
@@ -64,7 +66,8 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
           children: <Widget>[
             Text(
               AppLocalizations.of(context)!.donorTxt,
-              style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+              style:
+                  const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20.0),
             DatePickerWidget(controller: _dateController),
@@ -144,7 +147,8 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
           } catch (error) {
             logger.severe("Error while trying to update and accept donations!");
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(AppLocalizations.of(context)!.genericErrMsg)),
+              SnackBar(
+                  content: Text(AppLocalizations.of(context)!.genericErrMsg)),
             );
           }
         },
