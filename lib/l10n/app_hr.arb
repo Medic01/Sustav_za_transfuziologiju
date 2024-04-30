@@ -8,7 +8,7 @@
   "success": "Uspjeh!",
   "submitBtn": "Pošalji",
   "rejectBtn": "Odbij",
-  "doseUsed": "Doza iskorištena",
+  "doseUsed": "Doza iskorištena:",
   "quantity": "Količina",
   "processed": "Obrađeno ",
   "doseQuantity": "Količina iskorištena",
@@ -107,7 +107,7 @@
   "acceptedBloodDonations": "Prihvaćene donacije krvi",
   "rejectedFilter": "Odbijeno",
   "bloodType": "Krvna grupa: ",
-  "donatedAmount": "Količina donirane krvi",
+  "donatedAmount": "Količina donirane krvi(mL): ",
   "rejectionReason": "Razlog odbijanja: ",
   "donationNotUsed": "N/A",
   "appTitle": "Sustav za transfuziologiju",
@@ -127,5 +127,7 @@
   "oauthUserDataSavedError": "Error saving user data to Firestore:",
   "registrationError": "Lozinka mora imati minimalno 6 znakova, od kojih je jedno veliko slovo, jedan broj i jedan poseban znak!",
   "reservationTitle": "Rezervirani datumi doniranja krvi!",
-  "welcomeMessage": "Dobrodošli"
+  "welcomeMessage": "Dobrodošli",
+  "popupErrorMessage": "Greška pri spremanju podataka!",
+  "loading": "Učitavanje!"
 }

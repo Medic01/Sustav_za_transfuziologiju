@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:logging/logging.dart';
 import 'package:sustav_za_transfuziologiju/screens/enums/blood_types.dart';
+import 'package:sustav_za_transfuziologiju/screens/widgets/blood_type_dropdown_widget/blood_type_dropdown_widget.dart';
+import 'package:sustav_za_transfuziologiju/screens/widgets/date_picker/date_picker_widget.dart';
+import 'package:sustav_za_transfuziologiju/screens/widgets/error_dialog/error_dialog.dart';
+import 'package:sustav_za_transfuziologiju/screens/widgets/success_dialog/success_dialog.dart';
 import 'package:sustav_za_transfuziologiju/services/donation_service.dart';
-import '../widgets/date_picker/date_picker_widget.dart';
-import '../widgets/blood_type_dropdown_widget/blood_type_dropdown_widget.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'blood_donation_form_styles.dart';
 
 class BloodDonationForm extends StatefulWidget {
   final String date;
@@ -32,15 +35,15 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
   final TextEditingController _donorNameController = TextEditingController();
   final TextEditingController _placeController = TextEditingController();
   final TextEditingController _doctorNameController = TextEditingController();
-  final TextEditingController _technicianNameController =
-      TextEditingController();
+  final TextEditingController _technicianNameController = TextEditingController();
   final TextEditingController _hemoglobinController = TextEditingController();
-  final TextEditingController _bloodPressureController =
-      TextEditingController();
+  final TextEditingController _bloodPressureController = TextEditingController();
+  final TextEditingController _millilitersController = TextEditingController();
   final DonationService _donationService = DonationService();
   final Logger logger = Logger("BloodDonationForm");
   BloodTypes? _selectedBloodType;
   late String _userId;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -49,27 +52,31 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
     _dateController.text = widget.date;
     _donorNameController.text = widget.donorName;
     _selectedBloodType = BloodTypes.values.firstWhere(
-      (element) => element.toString().split('.').last == widget.bloodType,
+          (element) => element.toString().split('.').last == widget.bloodType,
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.donationForm),
+        title: Text(
+            AppLocalizations.of(context)!.donationForm,
+            style: headerTextColor,
+        ),
+        backgroundColor: titleBackgroundColor,
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20.0),
+        padding: bodyPadding,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(
               AppLocalizations.of(context)!.donorTxt,
-              style:
-                  const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+              style: textStyle,
             ),
-            const SizedBox(height: 20.0),
+            const SizedBox(height: sizedBoxHeight),
             DatePickerWidget(controller: _dateController),
             _buildTextField(
               labelText: AppLocalizations.of(context)!.donorName,
@@ -95,6 +102,10 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
               labelText: AppLocalizations.of(context)!.bloodPressure,
               controller: _bloodPressureController,
             ),
+            _buildTextField(
+              labelText: AppLocalizations.of(context)!.donatedAmount,
+              controller: _millilitersController,
+            ),
             BloodTypeDropdownWidget(
               onChanged: (BloodTypes? newValue) {
                 setState(() {
@@ -103,7 +114,7 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
               },
               value: _selectedBloodType,
             ),
-            const SizedBox(height: 20.0),
+            const SizedBox(height: sizedBoxHeight),
             _buildSaveButton(context),
           ],
         ),
@@ -117,16 +128,44 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
     List<TextInputFormatter>? inputFormatter,
   }) {
     return Container(
-      margin: const EdgeInsets.only(top: 10.0),
+      margin: textFieldMargin,
       child: TextField(
         controller: controller,
         inputFormatters: inputFormatter,
         decoration: InputDecoration(
           labelText: labelText,
-          border: const OutlineInputBorder(),
+          border: inputDecorationBorder,
         ),
       ),
     );
+  }
+
+  bool _validateHemoglobin(String hemoglobinText) {
+    if (hemoglobinText.isEmpty) {
+      ErrorDialog.show(context);
+      return false;
+    }
+    try {
+      int.parse(hemoglobinText);
+    } catch (e) {
+      ErrorDialog.show(context);
+      return false;
+    }
+    return true;
+  }
+
+  bool _validateMilliliters(String millilitersText) {
+    if (millilitersText.isEmpty) {
+      ErrorDialog.show(context);
+      return false;
+    }
+    try {
+      int.parse(millilitersText);
+    } catch (e) {
+      ErrorDialog.show(context);
+      return false;
+    }
+    return true;
   }
 
   Widget _buildSaveButton(BuildContext context) {
@@ -134,6 +173,10 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
       width: double.infinity,
       child: ElevatedButton(
         onPressed: () async {
+          if (!_validateHemoglobin(_hemoglobinController.text) || !_validateMilliliters(_millilitersController.text)) {
+            return;
+          }
+
           try {
             await _donationService.updateReservationAndAccept(
               documentId: widget.documentId,
@@ -142,17 +185,22 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
               bloodPressure: _bloodPressureController.text,
               doctorName: _doctorNameController.text,
               technicianName: _technicianNameController.text,
+              donatedDose: int.tryParse(_millilitersController.text) ?? 0,
             );
             Navigator.pop(context);
+            SuccessDialog.show(context);
           } catch (error) {
             logger.severe("Error while trying to update and accept donations!");
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                  content: Text(AppLocalizations.of(context)!.genericErrMsg)),
+              SnackBar(content: Text(AppLocalizations.of(context)!.genericErrMsg)),
             );
           }
         },
-        child: Text(AppLocalizations.of(context)!.saveBtn),
+        style: buttonStyle,
+        child: Text(
+          AppLocalizations.of(context)!.saveBtn,
+          style: buttonTextStyle,
+        ),
       ),
     );
   }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sustav_za_transfuziologiju/main/main.dart';
-import 'package:sustav_za_transfuziologiju/screens/admin/admin_welcome_page.dart';
-import 'package:sustav_za_transfuziologiju/screens/donation/dose_entry_page.dart';
-import 'package:sustav_za_transfuziologiju/screens/donation/reservations.dart';
+import 'package:sustav_za_transfuziologiju/screens/admin/admin_welcome_page/admin_welcome_page.dart';
+import 'package:sustav_za_transfuziologiju/screens/donation/dose_entry_lists/dose_entry_lists.dart';
+import 'package:sustav_za_transfuziologiju/screens/donation/reservations/reservations.dart';
 
 class AdminPage extends StatefulWidget {
   const AdminPage({super.key});
@@ -17,7 +17,7 @@ class _AdminPageState extends State<AdminPage> {
   final List<Widget> _pages = [
     AdminWelcomePage(),
     Reservations(),
-    DoseEntryPage(),
+    DoseEntryLists(),
   ];
 
   void _onTappedItem(int index) {
