@@ -7,6 +7,7 @@ import 'package:sustav_za_transfuziologiju/screens/widgets/blood_drop_loading_wi
 import 'package:sustav_za_transfuziologiju/services/donation_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'dose_entry_lists_stlyes.dart';
+import 'package:sustav_za_transfuziologiju/screens/widgets/blood_type_dropdown_widget/blood_type_dropdown_widget_sign.dart';
 
 class DoseEntryLists extends StatefulWidget {
   const DoseEntryLists({Key? key}) : super(key: key);
@@ -55,6 +56,7 @@ class _DoseEntryListState extends State<DoseEntryLists> {
           labelText: AppLocalizations.of(context)!.chooseBloodType,
           contentPadding: dropdownContentPadding,
           border: const OutlineInputBorder(),
+          labelStyle: dropDownTextFieldColor,
         ),
         value: selectedBloodType,
         onChanged: (String? newValue) {
@@ -63,9 +65,10 @@ class _DoseEntryListState extends State<DoseEntryLists> {
           });
         },
         items: BloodTypes.values.map((BloodTypes value) {
+          String displayName = getBloodTypeDisplayName(value);
           return DropdownMenuItem<String>(
             value: value.toString().split('.').last,
-            child: Text(value.toString().split('.').last),
+            child: Text(displayName),
           );
         }).toList(),
       ),

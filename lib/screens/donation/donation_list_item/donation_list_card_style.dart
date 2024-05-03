@@ -26,4 +26,14 @@ const sizedBoxHeight = 8.0;
 const checkMarkTextStyle = TextStyle(
   color: Colors.black,
 );
+final disabledButtonStyle = ButtonStyle(
+  foregroundColor: MaterialStateProperty.all<Color>(Colors.grey),
+  backgroundColor: MaterialStateProperty.all<Color>(Colors.grey[200]!),
+  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+    RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(16.0),
+      side: const BorderSide(color: Colors.grey),
+    ),
+  ),
+);
 const checkMarkIcon = Icon(Icons.check, color: Colors.green);

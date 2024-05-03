@@ -14,3 +14,4 @@ final buttonStyle = ButtonStyle(
 );
 const buttonTextStyle = TextStyle(color: Colors.white);
 const headerTextColor = TextStyle(color: Colors.white);
+const labelTextStyle = TextStyle(color: Colors.red);

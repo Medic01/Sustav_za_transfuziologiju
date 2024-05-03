@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:logging/logging.dart';
 import 'package:sustav_za_transfuziologiju/screens/enums/blood_types.dart';
-import 'package:sustav_za_transfuziologiju/screens/widgets/blood_type_dropdown_widget/blood_type_dropdown_widget.dart';
+import 'package:sustav_za_transfuziologiju/screens/widgets/blood_type_dropdown_widget/blood_type_dropdown_widget_sign.dart';
 import 'package:sustav_za_transfuziologiju/screens/widgets/date_picker/date_picker_widget.dart';
 import 'package:sustav_za_transfuziologiju/screens/widgets/error_dialog/error_dialog.dart';
 import 'package:sustav_za_transfuziologiju/screens/widgets/success_dialog/success_dialog.dart';
 import 'package:sustav_za_transfuziologiju/services/donation_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../widgets/blood_type_dropdown_widget/blood_type_dropdown_widget.dart';
 import 'blood_donation_form_styles.dart';
 
 class BloodDonationForm extends StatefulWidget {
@@ -31,7 +32,6 @@ class BloodDonationForm extends StatefulWidget {
 }
 
 class _BloodDonationFormState extends State<BloodDonationForm> {
-  final TextEditingController _dateController = TextEditingController();
   final TextEditingController _donorNameController = TextEditingController();
   final TextEditingController _placeController = TextEditingController();
   final TextEditingController _doctorNameController = TextEditingController();
@@ -49,7 +49,6 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
   void initState() {
     super.initState();
     _userId = widget.userId;
-    _dateController.text = widget.date;
     _donorNameController.text = widget.donorName;
     _selectedBloodType = BloodTypes.values.firstWhere(
           (element) => element.toString().split('.').last == widget.bloodType,
@@ -62,8 +61,8 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
       key: _scaffoldKey,
       appBar: AppBar(
         title: Text(
-            AppLocalizations.of(context)!.donationForm,
-            style: headerTextColor,
+          AppLocalizations.of(context)!.donationForm,
+          style: headerTextColor,
         ),
         backgroundColor: titleBackgroundColor,
       ),
@@ -77,10 +76,18 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
               style: textStyle,
             ),
             const SizedBox(height: sizedBoxHeight),
-            DatePickerWidget(controller: _dateController),
-            _buildTextField(
-              labelText: AppLocalizations.of(context)!.donorName,
-              controller: _donorNameController,
+            IgnorePointer(
+              ignoring: true,
+              child: DatePickerWidget(
+                controller: TextEditingController(text: widget.date),
+              ),
+            ),
+            IgnorePointer(
+              ignoring: true,
+              child: _buildTextField(
+                labelText: AppLocalizations.of(context)!.donorName,
+                controller: _donorNameController,
+              ),
             ),
             _buildTextField(
               labelText: AppLocalizations.of(context)!.donationLocation,
@@ -106,14 +113,18 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
               labelText: AppLocalizations.of(context)!.donatedAmount,
               controller: _millilitersController,
             ),
-            BloodTypeDropdownWidget(
-              onChanged: (BloodTypes? newValue) {
-                setState(() {
-                  _selectedBloodType = newValue;
-                });
-              },
-              value: _selectedBloodType,
+            IgnorePointer(
+              ignoring: true,
+              child: BloodTypeDropdownWidget(
+                onChanged: (BloodTypes? newValue) {
+                  setState(() {
+                    _selectedBloodType = newValue;
+                  });
+                },
+                value: _selectedBloodType,
+              ),
             ),
+
             const SizedBox(height: sizedBoxHeight),
             _buildSaveButton(context),
           ],
@@ -135,6 +146,7 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
         decoration: InputDecoration(
           labelText: labelText,
           border: inputDecorationBorder,
+          labelStyle: labelTextStyle,
         ),
       ),
     );

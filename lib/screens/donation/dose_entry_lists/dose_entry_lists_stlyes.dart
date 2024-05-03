@@ -11,5 +11,6 @@ final dropdownBoxDecoration = BoxDecoration(
   ),
 );
 const dropdownContentPadding = EdgeInsets.symmetric(horizontal: 16.0);
+const dropDownTextFieldColor = TextStyle(color: Colors.red);
 const cardElevation = 3.0;
 const cardMargin = EdgeInsets.all(8.0);

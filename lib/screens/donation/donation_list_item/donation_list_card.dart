@@ -24,6 +24,11 @@ class DonationListCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isProcessed = data['dose_processed'] == true;
+    bool isUsed = data['dose_used'] == true;
+
+    String bloodTypeDisplayName = mapBloodType(data['blood_type']);
+
     return Column(
       crossAxisAlignment: columnCrossAxisAlignment,
       children: [
@@ -36,11 +41,11 @@ class DonationListCard extends StatelessWidget {
               Text('${AppLocalizations.of(context)!.bloodPressure} ${data['blood_pressure']}'),
               Text('${AppLocalizations.of(context)!.hemoglobin} ${data['hemoglobin']}'),
               Text('${AppLocalizations.of(context)!.doctorName} ${data['doctor_name']}'),
-              Text('${AppLocalizations.of(context)!.bloodType} ${data['blood_type']}'),
+              Text('${AppLocalizations.of(context)!.bloodType} $bloodTypeDisplayName'),
               Text('${AppLocalizations.of(context)!.donorName} ${data['donor_name']}'),
               Text('${AppLocalizations.of(context)!.donatedAmount} ${data['donated_dose']}'),
-              _buildCheckMarkText('${AppLocalizations.of(context)!.doseProcessed}', data['dose_processed'] == true),
-              _buildCheckMarkText('${AppLocalizations.of(context)!.doseUsed}', data['dose_used'] == true),
+              _buildCheckMarkText('${AppLocalizations.of(context)!.doseProcessed}', isProcessed),
+              _buildCheckMarkText('${AppLocalizations.of(context)!.doseUsed}', isUsed),
             ],
           ),
         ),
@@ -48,17 +53,17 @@ class DonationListCard extends StatelessWidget {
           mainAxisAlignment: rowMainAxisAlignment,
           children: [
             ElevatedButton(
-              onPressed: () {
+              onPressed: !isProcessed && !isUsed ? () {
                 donationService.markDoseProcessed(documentId);
-              },
-              style: doseProcessedButtonStyle,
+              } : null,
+              style: !isProcessed && !isUsed ? doseProcessedButtonStyle : disabledButtonStyle,
               child: Text(AppLocalizations.of(context)!.processed),
             ),
             ElevatedButton(
-              onPressed: () {
+              onPressed: isProcessed && !isUsed ? () {
                 donationService.markDoseUsed(documentId);
-              },
-              style: doseUsedButtonStyle,
+              } : null,
+              style: isProcessed && !isUsed ? doseUsedButtonStyle : disabledButtonStyle,
               child: Text(AppLocalizations.of(context)!.used),
             ),
           ],
@@ -81,5 +86,28 @@ class DonationListCard extends StatelessWidget {
             : const SizedBox(),
       ],
     );
+  }
+}
+
+String mapBloodType(String bloodType) {
+  switch (bloodType) {
+    case 'A_NEGATIVE':
+      return 'A-';
+    case 'A_POSITIVE':
+      return 'A+';
+    case 'B_NEGATIVE':
+      return 'B-';
+    case 'B_POSITIVE':
+      return 'B+';
+    case 'AB_NEGATIVE':
+      return 'AB-';
+    case 'AB_POSITIVE':
+      return 'AB+';
+    case 'O_NEGATIVE':
+      return 'O-';
+    case 'O_POSITIVE':
+      return 'O+';
+    default:
+      return bloodType;
   }
 }
