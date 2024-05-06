@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crypto/crypto.dart';
 import 'package:logging/logging.dart';
 import 'dart:convert';
-import 'package:sustav_za_transfuziologiju/screens/admin/admin_page.dart';
+import 'package:sustav_za_transfuziologiju/screens/admin/admin_footer.dart';
 import 'package:sustav_za_transfuziologiju/screens/auth/login/login_page_styles.dart';
 import 'package:sustav_za_transfuziologiju/screens/enums/user_role.dart';
 import 'package:sustav_za_transfuziologiju/screens/user/data_entry_page/data_entry_page.dart';

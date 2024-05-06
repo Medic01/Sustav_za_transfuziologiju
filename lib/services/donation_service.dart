@@ -36,6 +36,7 @@ class DonationService {
     required String bloodPressure,
     required String doctorName,
     required String technicianName,
+    required int donatedDose,
   }) async {
     try {
       await _db.collection('blood_donation').doc(documentId).update({
@@ -44,6 +45,7 @@ class DonationService {
         'blood_pressure': bloodPressure,
         'doctor_name': doctorName,
         'technician_name': technicianName,
+        'donated_dose': donatedDose,
         'status': DonationStatus.ACCEPTED.toString().split('.').last,
       });
 

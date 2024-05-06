@@ -80,6 +80,14 @@ flutter:
     - assets/cardiogram-svgrepo-com.svg
     - assets/heart-drop.gif
     - assets/nema-donacija.svg
+    - assets/a-negative-blood-type.svg
+    - assets/a-positive-blood-type.svg
+    - assets/ab-negative-blood-type.svg
+    - assets/ab-positive-blood-type.svg
+    - assets/b-negative-blood-type.svg
+    - assets/b-positive-blood-type.svg
+    - assets/o-negative-blood-type.svg
+    - assets/o-positive-blood-type.svg
     - .env
   # To add assets to your application, add an assets section, like this:
   # assets:
