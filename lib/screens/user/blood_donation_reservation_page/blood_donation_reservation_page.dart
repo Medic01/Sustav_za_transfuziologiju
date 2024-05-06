@@ -140,7 +140,7 @@ class _BloodDonationReservationPageState
                 TextFormField(
                   controller: _nameController,
                   decoration: InputDecoration(
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(),
                     labelText: AppLocalizations.of(context)!.fullNameLabel,
                     labelStyle: labelTextStyle,
                   ),
@@ -155,7 +155,7 @@ class _BloodDonationReservationPageState
                 TextFormField(
                   controller: _emailController,
                   decoration: InputDecoration(
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(),
                     labelText: AppLocalizations.of(context)!.emailTxt,
                     labelStyle: labelTextStyle,
                   ),
@@ -206,7 +206,7 @@ class _BloodDonationReservationPageState
                 Center(
                   child: FadeTransition(
                     opacity: _bloodDropAnimation,
-                    child: Icon(
+                    child: const Icon(
                       Icons.bloodtype,
                       size: bloodTypeIconSize,
                       color: bloodTypeIconColor,
