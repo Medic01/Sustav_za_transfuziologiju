@@ -1,6 +1,6 @@
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
-import 'package:sustav_za_transfuziologiju/email_sender/er.dart';
+import 'package:sustav_za_transfuziologiju/email_sender/email_strings.dart';
 
 Future<void> sendBloodDonationEmail(
     String recipientEmail, bool accepted) async {

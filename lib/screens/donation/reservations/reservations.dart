@@ -3,7 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:logging/logging.dart';
 import 'package:sustav_za_transfuziologiju/email_sender/email.dart';
-import 'package:sustav_za_transfuziologiju/email_sender/er.dart';
+import 'package:sustav_za_transfuziologiju/email_sender/email_strings.dart';
 import 'package:sustav_za_transfuziologiju/screens/donation/blood_donation_form/blood_donation_form.dart';
 import 'package:sustav_za_transfuziologiju/screens/enums/donation_status.dart';
 import 'package:sustav_za_transfuziologiju/screens/widgets/blood_drop_loading_widget/blood_drop_loading_widget.dart';
