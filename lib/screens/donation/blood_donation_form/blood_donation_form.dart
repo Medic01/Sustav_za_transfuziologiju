@@ -65,6 +65,13 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
           style: headerTextColor,
         ),
         backgroundColor: titleBackgroundColor,
+        leading: IconButton(
+          icon: icon,
+          color: iconColor,
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: SingleChildScrollView(
         padding: bodyPadding,
@@ -172,7 +179,11 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
       return false;
     }
     try {
-      int.parse(millilitersText);
+      int donatedAmount = int.parse(millilitersText);
+      if (donatedAmount < 0 || donatedAmount > 450) {
+        ErrorDialog.show(context);
+        return false;
+      }
     } catch (e) {
       ErrorDialog.show(context);
       return false;
