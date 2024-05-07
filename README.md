@@ -1,16 +1,30 @@
 # sustav_za_transfuziologiju
 
-A new Flutter project.
+# Devs:
+Antonio Pavković && Marko Medić
 
-## Getting Started
+## Basics about our app
+Aplikacija je namjenjena da olakša korisnicima rezerviranje datuma doniranja krvi
 
-This project is a starting point for a Flutter application.
+Postoje dvije vrste korisnika:
 
-A few resources to get you started if this is your first Flutter project:
+- obični korisnik - može rezervirati datum darivanja krvi
+- administrator - ima uvid u sve donacije, te mogućnost prihvaćanja odnosno odbijanja donacije
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Za razvoj aplikacije korišteni su <b><i>Flutter</i></b> i <b><i>Firebase</i></b>
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Screenshots
+
+![Screenshot 1](screenshots/Screen1.png?raw=true)
+<br />
+<br />
+![Screenshot 2](screenshots/Screen2.png?raw=true)
+<br />
+<br />
+![Screenshot 3](screenshots/Screen3.png?raw=true)
+<br />
+<br />
+![Screenshot 4](screenshots/Screen4.png?raw=true)
+<br />
+<br />
+![Screenshot 5](screenshots/Screen5.png?raw=true)
