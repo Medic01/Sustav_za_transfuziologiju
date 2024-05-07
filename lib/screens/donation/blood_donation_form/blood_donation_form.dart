@@ -35,9 +35,11 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
   final TextEditingController _donorNameController = TextEditingController();
   final TextEditingController _placeController = TextEditingController();
   final TextEditingController _doctorNameController = TextEditingController();
-  final TextEditingController _technicianNameController = TextEditingController();
+  final TextEditingController _technicianNameController =
+      TextEditingController();
   final TextEditingController _hemoglobinController = TextEditingController();
-  final TextEditingController _bloodPressureController = TextEditingController();
+  final TextEditingController _bloodPressureController =
+      TextEditingController();
   final TextEditingController _millilitersController = TextEditingController();
   final DonationService _donationService = DonationService();
   final Logger logger = Logger("BloodDonationForm");
@@ -51,7 +53,7 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
     _userId = widget.userId;
     _donorNameController.text = widget.donorName;
     _selectedBloodType = BloodTypes.values.firstWhere(
-          (element) => element.toString().split('.').last == widget.bloodType,
+      (element) => element.toString().split('.').last == widget.bloodType,
     );
   }
 
@@ -124,7 +126,6 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
                 value: _selectedBloodType,
               ),
             ),
-
             const SizedBox(height: sizedBoxHeight),
             _buildSaveButton(context),
           ],
@@ -185,7 +186,8 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
       width: double.infinity,
       child: ElevatedButton(
         onPressed: () async {
-          if (!_validateHemoglobin(_hemoglobinController.text) || !_validateMilliliters(_millilitersController.text)) {
+          if (!_validateHemoglobin(_hemoglobinController.text) ||
+              !_validateMilliliters(_millilitersController.text)) {
             return;
           }
 
@@ -204,7 +206,8 @@ class _BloodDonationFormState extends State<BloodDonationForm> {
           } catch (error) {
             logger.severe("Error while trying to update and accept donations!");
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(AppLocalizations.of(context)!.genericErrMsg)),
+              SnackBar(
+                  content: Text(AppLocalizations.of(context)!.genericErrMsg)),
             );
           }
         },
