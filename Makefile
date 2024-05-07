@@ -15,7 +15,7 @@ run-emulator:
 	$(FLUTTER_BIN) emulators --launch $(EMULATOR_NAME)
 
 run-android:
-	$(FLUTTER_BIN) run -t ($ENTRY_POINT)
+	$(FLUTTER_BIN) run -t $(ENTRY_POINT)
 
 run-web:
 	$(FLUTTER_BIN) run -d chrome -t $(ENTRY_POINT)
