@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:logging/logging.dart';
+import 'package:sustav_za_transfuziologiju/email_sender/email.dart';
+import 'package:sustav_za_transfuziologiju/email_sender/email_strings.dart';
 import 'package:sustav_za_transfuziologiju/screens/donation/blood_donation_form/blood_donation_form.dart';
 import 'package:sustav_za_transfuziologiju/screens/enums/donation_status.dart';
 import 'package:sustav_za_transfuziologiju/screens/widgets/blood_drop_loading_widget/blood_drop_loading_widget.dart';
@@ -22,7 +24,8 @@ class Reservations extends StatelessWidget {
         centerTitle: true,
         title: Text(
           AppLocalizations.of(context)!.reservationTitle,
-          style: const TextStyle(fontWeight: headerTitleFontWeight, color: headerTitleTextColor),
+          style: const TextStyle(
+              fontWeight: headerTitleFontWeight, color: headerTitleTextColor),
         ),
         backgroundColor: headerBackgroundColor,
         automaticallyImplyLeading: false,
@@ -31,7 +34,8 @@ class Reservations extends StatelessWidget {
         stream: _donationService.getPendingBloodDonationStream(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
-            return Text('${AppLocalizations.of(context)!.genericErrMsg} ${snapshot.error}');
+            return Text(
+                '${AppLocalizations.of(context)!.genericErrMsg} ${snapshot.error}');
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
@@ -46,16 +50,19 @@ class Reservations extends StatelessWidget {
                 return const SizedBox(height: 16.0);
               } else {
                 DocumentSnapshot document = snapshot.data!.docs[index - 1];
-                Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+                Map<String, dynamic> data =
+                    document.data() as Map<String, dynamic>;
 
-                if (data['status'] == DonationStatus.PENDING.toString().split('.').last) {
+                if (data['status'] ==
+                    DonationStatus.PENDING.toString().split('.').last) {
                   String bloodType = data['blood_type'];
-                  String svgAssetPath = BloodTypeAssets.bloodTypeAssetPaths[bloodType] ?? '';
+                  String svgAssetPath =
+                      BloodTypeAssets.bloodTypeAssetPaths[bloodType] ?? '';
 
                   return Card(
                     elevation: cardElevation,
                     margin: cardMargin,
-                    shape:cardShape,
+                    shape: cardShape,
                     child: Column(
                       crossAxisAlignment: crossAxisAlignment,
                       children: [
@@ -74,10 +81,13 @@ class Reservations extends StatelessWidget {
                                       children: [
                                         Text(
                                           '${AppLocalizations.of(context)!.donorName} ${data['donor_name']}',
-                                          style: const TextStyle(fontWeight: donorNameFontWeight),
+                                          style: const TextStyle(
+                                              fontWeight: donorNameFontWeight),
                                         ),
-                                        Text('${AppLocalizations.of(context)!.emailTxt} ${data['email']}'),
-                                        Text('${AppLocalizations.of(context)!.donationDate} ${data['date']}'),
+                                        Text(
+                                            '${AppLocalizations.of(context)!.emailTxt} ${data['email']}'),
+                                        Text(
+                                            '${AppLocalizations.of(context)!.donationDate} ${data['date']}'),
                                       ],
                                     ),
                                   ),
@@ -100,21 +110,26 @@ class Reservations extends StatelessWidget {
                               ElevatedButton(
                                 onPressed: () {
                                   _handleAccept(context, document, data);
+                                  String recipientEmail = data['email'];
+                                  sendBloodDonationEmail(recipientEmail, true);
                                 },
                                 style: acceptButtonStyle,
                                 child: Text(
                                     AppLocalizations.of(context)!.acceptBtn,
-                                    style: const TextStyle(color: acceptButtonTextColor)
-                                ),
+                                    style: const TextStyle(
+                                        color: acceptButtonTextColor)),
                               ),
                               ElevatedButton(
                                 onPressed: () {
                                   _handleReject(context, document);
+                                  String recipientEmail = data['email'];
+                                  sendBloodDonationEmail(recipientEmail, false);
                                 },
                                 style: rejectButtonStyle,
                                 child: Text(
                                   AppLocalizations.of(context)!.rejectBtn,
-                                  style: const TextStyle(color: rejectButtonTextColor),
+                                  style: const TextStyle(
+                                      color: rejectButtonTextColor),
                                 ),
                               ),
                             ],
@@ -134,7 +149,8 @@ class Reservations extends StatelessWidget {
     );
   }
 
-  void _handleAccept(BuildContext context, DocumentSnapshot document, Map<String, dynamic> data) {
+  void _handleAccept(BuildContext context, DocumentSnapshot document,
+      Map<String, dynamic> data) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -148,6 +164,7 @@ class Reservations extends StatelessWidget {
       ),
     );
   }
+
   void _handleReject(BuildContext context, DocumentSnapshot document) {
     showDialog(
       context: context,
@@ -166,10 +183,14 @@ class Reservations extends StatelessWidget {
           actions: <Widget>[
             ElevatedButton(
               onPressed: () {
-                _donationService.rejectDonation(document.id, rejectionReason).then((_) {
-                  logger.info('Document successfully rejected after reservation');
+                _donationService
+                    .rejectDonation(document.id, rejectionReason)
+                    .then((_) {
+                  logger
+                      .info('Document successfully rejected after reservation');
                 }).catchError((error) {
-                  logger.severe('Error rejecting document after reservation: $error');
+                  logger.severe(
+                      'Error rejecting document after reservation: $error');
                 });
                 Navigator.of(context).pop();
                 SuccessDialog.show(context);

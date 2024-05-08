@@ -1,33 +1,33 @@
 String getDisplayName(String key) {
   switch (key) {
     case 'date':
-      return 'Date';
+      return 'Datum';
     case 'donor_name':
-      return 'Donor Name';
+      return 'Ime donora';
     case 'blood_type':
-      return 'Blood Type';
+      return 'Krvna grupa';
     case 'dose_used':
-      return 'Dose Used';
+      return 'Doza iskorištena';
     case 'blood_pressure':
-      return 'Blood Pressure';
+      return 'Krvni tlak';
     case 'hemoglobin':
       return 'Hemoglobin';
     case 'donated_dose':
-      return 'Donated Dose';
+      return 'Donirana doza';
     case 'dose_processed':
-      return 'Dose Processed';
+      return 'Doza obrađena';
     case 'location':
-      return 'Location';
+      return 'Lokacija';
     case 'doctor_name':
-      return 'Doctor Name';
+      return 'Ime doktora';
     case 'email':
       return 'Email';
     case 'technician_name':
-      return 'Technician Name';
+      return 'Ime tehničara';
     case 'status':
       return 'Status';
     case 'rejection_reason':
-      return 'Rejection Reason';
+      return 'Razlog odbijanja';
     default:
       return key;
   }
